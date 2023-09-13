@@ -1,4 +1,4 @@
 # Tower-of-Rulers
 <div>
-Hello
+Tower of Rulers, random generated 2D RPG Game
 </div>
