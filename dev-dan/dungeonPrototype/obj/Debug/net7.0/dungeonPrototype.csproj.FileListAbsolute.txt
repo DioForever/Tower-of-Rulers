@@ -1,0 +1,15 @@
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\obj\Debug\net7.0\dungeonPrototype.csproj.AssemblyReference.cache
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\obj\Debug\net7.0\dungeonPrototype.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\obj\Debug\net7.0\dungeonPrototype.AssemblyInfoInputs.cache
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\obj\Debug\net7.0\dungeonPrototype.AssemblyInfo.cs
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\obj\Debug\net7.0\dungeonPrototype.csproj.CoreCompileInputs.cache
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\bin\Debug\net7.0\dungeonPrototype.exe
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\bin\Debug\net7.0\dungeonPrototype.deps.json
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\bin\Debug\net7.0\dungeonPrototype.runtimeconfig.json
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\bin\Debug\net7.0\dungeonPrototype.dll
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\bin\Debug\net7.0\dungeonPrototype.pdb
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\obj\Debug\net7.0\dungeonPrototype.dll
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\obj\Debug\net7.0\refint\dungeonPrototype.dll
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\obj\Debug\net7.0\dungeonPrototype.pdb
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\obj\Debug\net7.0\dungeonPrototype.genruntimeconfig.cache
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\dungeonPrototype\obj\Debug\net7.0\ref\dungeonPrototype.dll
