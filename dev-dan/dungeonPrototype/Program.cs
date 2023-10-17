@@ -79,18 +79,21 @@ namespace dungeonPrototype
     {
         static void Main(string[] args)
         {
-            DungeonFloor dungeon = new DungeonFloor();
+            Chunk[][] map = new Chunk[33][];
+            DungeonFloor dungeon = new DungeonFloor(map);
             dungeon.GenerateDungeon();
             dungeon.PrintDungeon();
 
 
         }
 
-        class DungeonFloor
+
+
+        class DungeonFloor : Floor
         {
-            public int floorNumber;
-            public int[][] layout = new int[33][];
-            public DungeonFloor()
+            public Chunk[][] map = new Chunk[33][];
+
+            public DungeonFloor(Chunk[][] map) : base(map)
             {
                 for (int i = 0; i < 33; i++)
                 {
@@ -118,8 +121,8 @@ namespace dungeonPrototype
                 {
                     int x = random.Next(0, 33);
                     int y = random.Next(0, 33);
-                    int roomHeight = random.Next(4, 6);
-                    int roomHWidth = random.Next(4, 6);
+                    int roomHeight = random.Next(4, 7);
+                    int roomHWidth = random.Next(4, 7);
                     if (AttemptGenerateRoom(x, y, roomHeight, roomHWidth))
                     {
                         succesRoomCount++;
@@ -166,9 +169,9 @@ namespace dungeonPrototype
             {
 
                 // Check if it overlaps another room
-                for (int i = x - 1; i < x + roomWidth + 1; i++)
+                for (int i = x - roomWidth / 2 - 1; i < x + roomWidth / 2 + 1; i++)
                 {
-                    for (int j = y - 1; j < y + roomHeight + 1; j++)
+                    for (int j = y - roomHeight / 2 - 1; j < y + roomHeight / 2 + 1; j++)
                     {
                         if (i < 0 || j < 0)
                         {
@@ -189,9 +192,9 @@ namespace dungeonPrototype
 
                 // If it can be generated, generate it
                 {
-                    for (int i = x; i < x + roomWidth; i++)
+                    for (int i = x - roomWidth / 2; i < x + roomWidth / 2; i++)
                     {
-                        for (int j = y; j < y + roomHeight; j++)
+                        for (int j = y - roomHeight / 2; j < y + roomHeight / 2; j++)
                         {
                             layout[i][j] = layerIdentifier;
                         }
@@ -236,6 +239,36 @@ namespace dungeonPrototype
 
                     }
                     Console.WriteLine();
+                }
+            }
+        }
+        class Floor
+        {
+            public int floorNumber;
+            public int[][] layout = new int[33][];
+            public Chunk[][] map;
+
+            public Floor(Chunk[][] map)
+            {
+                for (int i = 0; i < 33; i++)
+                {
+                    layout[i] = new int[33];
+                }
+                this.map = map;
+            }
+
+        }
+
+
+        class Chunk
+        {
+            int[][] layout = new int[3][];
+            // TODO: Add a way to store npc's and items in the chunk
+            public Chunk()
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    layout[i] = new int[3];
                 }
             }
         }
