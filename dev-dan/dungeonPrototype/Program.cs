@@ -79,7 +79,6 @@ namespace dungeonPrototype
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
             DungeonFloor dungeon = new DungeonFloor();
             dungeon.GenerateDungeon();
             dungeon.PrintDungeon();
@@ -97,7 +96,16 @@ namespace dungeonPrototype
                 {
                     layout[i] = new int[33];
                 }
+                layout[15][15] = 1;
+                layout[15][16] = 1;
+                layout[16][15] = 1;
+                layout[17][16] = 1;
+                layout[16][17] = 1;
+                layout[17][17] = 1;
+                layout[15][17] = 1;
+                layout[17][15] = 1;
                 layout[16][16] = 1;
+
             }
 
             public void GenerateDungeon()
@@ -105,58 +113,91 @@ namespace dungeonPrototype
                 Random random = new Random();
                 int roomCount = random.Next(10, 20);
                 int succesRoomCount = 0;
-                for (int tries = 0; tries < roomCount * 2 || succesRoomCount >= roomCount; tries++)
+                GenerateGuardianRoom(6, 6);
+                for (int tries = 0; tries < roomCount * 4 || succesRoomCount >= roomCount; tries++)
                 {
                     int x = random.Next(0, 33);
                     int y = random.Next(0, 33);
-                    int roomHeight = random.Next(4, 10);
-                    int roomHWidth = random.Next(4, 10);
+                    int roomHeight = random.Next(4, 6);
+                    int roomHWidth = random.Next(4, 6);
                     if (AttemptGenerateRoom(x, y, roomHeight, roomHWidth))
                     {
                         succesRoomCount++;
                     }
+                }
+            }
+            private void GenerateGuardianRoom(int roomHeight, int roomWidth)
+            {
+                Random random = new Random();
+                bool created = false;
 
+                // Generate the room
+                while (!created)
+                {
+                    int[] positions = PositionFromMiddle(32, 15);
+                    created = AttemptGenerateRoom(positions[0], positions[1], roomHeight, roomWidth, 4, 5);
                 }
             }
 
-            private bool AttemptGenerateRoom(int x, int y, int roomHeight, int roomWidth)
+            private static int[] PositionFromMiddle(int gridSize, int minDistance)
             {
-                bool canGenerate = true;
+                Random rand = new Random();
 
-                for (int i = x; i < x + roomWidth; i++)
+                while (true)
                 {
-                    for (int j = y; j < y + roomHeight; j++)
+                    int x = rand.Next(gridSize);
+                    int y = rand.Next(gridSize);
+
+                    double distance = Math.Sqrt(Math.Pow(x - gridSize / 2, 2) + Math.Pow(y - gridSize / 2, 2));
+
+                    if (distance >= minDistance)
                     {
+                        return new int[] { x, y };
+                    }
+                }
+            }
+
+            private void GenerateChestRooms(int ammount)
+            {
+
+            }
+
+            private bool AttemptGenerateRoom(int x, int y, int roomHeight, int roomWidth, int roomIdentifier = 2, int layerIdentifier = 3)
+            {
+
+                // Check if it overlaps another room
+                for (int i = x - 1; i < x + roomWidth + 1; i++)
+                {
+                    for (int j = y - 1; j < y + roomHeight + 1; j++)
+                    {
+                        if (i < 0 || j < 0)
+                        {
+                            return false;
+                        }
                         if (i > layout.Length - 1 || j > layout[0].Length - 1)
                         {
-                            canGenerate = false;
                             return false;
                         }
                         if (layout[i][j] != 0)
                         {
-                            canGenerate = false;
                             return false;
 
                         }
                     }
                 }
-                if (canGenerate)
+
+
+                // If it can be generated, generate it
                 {
                     for (int i = x; i < x + roomWidth; i++)
                     {
-                        if (i > layout.Length - 1 || x > layout[1].Length - 1)
-                        {
-                            canGenerate = false;
-                            return false;
-
-                        }
                         for (int j = y; j < y + roomHeight; j++)
                         {
-                            layout[i][j] = 3;
+                            layout[i][j] = layerIdentifier;
                         }
                     }
                 }
-                layout[x][y] = 2;
+                layout[x][y] = roomIdentifier;
                 return true;
             }
 
@@ -173,11 +214,11 @@ namespace dungeonPrototype
                         }
                         else if (layout[i][j] == 1)
                         {
-                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.ForegroundColor = ConsoleColor.Yellow;
                         }
                         else if (layout[i][j] == 2)
                         {
-                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.ForegroundColor = ConsoleColor.Cyan;
                         }
                         else if (layout[i][j] == 3)
                         {
@@ -186,6 +227,10 @@ namespace dungeonPrototype
                         else if (layout[i][j] == 4)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
+                        }
+                        else if (layout[i][j] == 5)
+                        {
+                            Console.ForegroundColor = ConsoleColor.DarkGreen;
                         }
                         Console.Write(layout[i][j] + " ");
 
