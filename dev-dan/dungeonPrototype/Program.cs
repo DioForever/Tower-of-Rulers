@@ -81,7 +81,6 @@ namespace dungeonPrototype
         {
             Chunk[][] map = new Chunk[33][];
             DungeonFloor dungeon = new DungeonFloor(map);
-            dungeon.GenerateDungeon();
             dungeon.PrintDungeon();
 
 
@@ -92,6 +91,7 @@ namespace dungeonPrototype
         class DungeonFloor : Floor
         {
             public Chunk[][] map = new Chunk[33][];
+            private int[][] roomLocations;
 
             public DungeonFloor(Chunk[][] map) : base(map)
             {
@@ -107,15 +107,18 @@ namespace dungeonPrototype
                 layout[17][17] = 1;
                 layout[15][17] = 1;
                 layout[17][15] = 1;
-                layout[16][16] = 1;
+                layout[16][16] = 2;
+                GenerateDungeon();
+                System.Console.WriteLine(roomLocations.Length);
 
             }
 
-            public void GenerateDungeon()
+            public int GenerateDungeon()
             {
                 Random random = new Random();
                 int roomCount = random.Next(10, 20);
                 int succesRoomCount = 0;
+                List<int[]> roomLocationsTemp = new List<int[]>();
                 GenerateGuardianRoom(6, 6);
                 for (int tries = 0; tries < roomCount * 4 || succesRoomCount >= roomCount; tries++)
                 {
@@ -126,20 +129,24 @@ namespace dungeonPrototype
                     if (AttemptGenerateRoom(x, y, roomHeight, roomHWidth))
                     {
                         succesRoomCount++;
+                        roomLocationsTemp.Add(new int[] { x, y });
                     }
                 }
+                roomLocations = roomLocationsTemp.ToArray();
+                return succesRoomCount;
             }
-            private void GenerateGuardianRoom(int roomHeight, int roomWidth)
+            private int[] GenerateGuardianRoom(int roomHeight, int roomWidth)
             {
-                Random random = new Random();
                 bool created = false;
-
+                int[] positions = new int[] { 0, 0 };
                 // Generate the room
                 while (!created)
                 {
-                    int[] positions = PositionFromMiddle(32, 15);
-                    created = AttemptGenerateRoom(positions[0], positions[1], roomHeight, roomWidth, 4, 5);
+                    positions = PositionFromMiddle(32, 15);
+                    created = AttemptGenerateRoom(positions[0], positions[1], roomHeight, roomWidth, 5, 6);
+                    return positions;
                 }
+                return positions;
             }
 
             private static int[] PositionFromMiddle(int gridSize, int minDistance)
@@ -160,12 +167,17 @@ namespace dungeonPrototype
                 }
             }
 
-            private void GenerateChestRooms(int ammount)
+            private void Hallways(int ammount = 3)
             {
 
             }
 
-            private bool AttemptGenerateRoom(int x, int y, int roomHeight, int roomWidth, int roomIdentifier = 2, int layerIdentifier = 3)
+            private int[][] GetRoomPair(int x, int y)
+            {
+                return new int[2][] { new int[2] { x, y }, new int[2] { x, y } };
+            }
+
+            private bool AttemptGenerateRoom(int x, int y, int roomHeight, int roomWidth, int roomIdentifier = 3, int layerIdentifier = 4)
             {
 
                 // Check if it overlaps another room
@@ -211,29 +223,29 @@ namespace dungeonPrototype
                     for (int j = 0; j < layout[0].Length - 1; j++)
                     {
 
-                        if (layout[i][j] == 0)
+                        switch (layout[i][j])
                         {
-                            Console.ForegroundColor = ConsoleColor.DarkGray;
-                        }
-                        else if (layout[i][j] == 1)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                        }
-                        else if (layout[i][j] == 2)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Cyan;
-                        }
-                        else if (layout[i][j] == 3)
-                        {
-                            Console.ForegroundColor = ConsoleColor.DarkRed;
-                        }
-                        else if (layout[i][j] == 4)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                        }
-                        else if (layout[i][j] == 5)
-                        {
-                            Console.ForegroundColor = ConsoleColor.DarkGreen;
+                            case 0:
+                                Console.ForegroundColor = ConsoleColor.DarkGray;
+                                break;
+                            case 1:
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                break;
+                            case 2:
+                                Console.ForegroundColor = ConsoleColor.Cyan;
+                                break;
+                            case 3:
+                                Console.ForegroundColor = ConsoleColor.DarkRed;
+                                break;
+                            case 4:
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                break;
+                            case 5:
+                                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                break;
+                            case 6:
+                                Console.ForegroundColor = ConsoleColor.Magenta;
+                                break;
                         }
                         Console.Write(layout[i][j] + " ");
 
