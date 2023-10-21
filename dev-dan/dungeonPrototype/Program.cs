@@ -73,6 +73,7 @@
 
 using System;
 
+
 namespace dungeonPrototype
 {
     class Program
@@ -110,7 +111,7 @@ namespace dungeonPrototype
                 layout[17][15] = 1;
                 layout[16][16] = 2;
                 GenerateDungeon();
-                System.Console.WriteLine(roomLocations.Length);
+
 
             }
 
@@ -120,6 +121,7 @@ namespace dungeonPrototype
                 int roomCount = random.Next(10, 20);
                 int succesRoomCount = 0;
                 List<int[]> roomLocationsTemp = new List<int[]>();
+                // Generate guardian room first so we are sure it is generated
                 int[] guardianLocation = GenerateGuardianRoom(6, 6);
                 roomLocationsTemp.Add(new int[] { 16, 16 });
                 roomLocationsTemp.Add(guardianLocation);
@@ -136,8 +138,21 @@ namespace dungeonPrototype
                         roomLocationsTemp.Add(new int[] { x, y });
                     }
                 }
-                System.Console.WriteLine("Succesfully generated " + succesRoomCount + 2 + " rooms");
+                System.Console.WriteLine("Succesfully generated " + (succesRoomCount + 2) + " rooms");
                 roomLocations = roomLocationsTemp.ToArray();
+
+                // Generate hallways
+                for (int i = 0; i < roomLocations.Length; i++)
+                {
+                    // System.Console.WriteLine(roomLocations[i][0] + ", " + roomLocations[i][1]);
+                    int[][] closest = GetClosestRooms(roomLocations[i][0], roomLocations[i][1], 3);
+                    System.Console.WriteLine("Closest rooms to " + roomLocations[i][0] + ", " + roomLocations[i][1] + ": ");
+                    for (int j = 0; j < closest.Length; j++)
+                    {
+                        System.Console.WriteLine(j + " " + closest[j][0] + ", " + closest[j][1]);
+                    }
+                    // layout[roomLocations[i][0]][roomLocations[i][1]] = 0;
+                }
                 return succesRoomCount;
             }
             private int[] GenerateGuardianRoom(int roomHeight, int roomWidth)
@@ -181,9 +196,24 @@ namespace dungeonPrototype
             private int[][] GetClosestRooms(int x, int y, int ammount = 3)
             {
                 int[][] closestRooms = new int[ammount][];
-                // double distance = Math.Sqrt(Math.Pow(x - gridSize / 2, 2) + Math.Pow(y - gridSize / 2, 2));
-                return new int[2][] { new int[2] { x, y }, new int[2] { x, y } };
+
+                for (int i = 0; i < roomLocations.Length; i++)
+                {
+                    int distance = Math.Abs(x - roomLocations[i][0]) + Math.Abs(y - roomLocations[i][1]);
+
+                    for (int j = 0; j < ammount; j++)
+                    {
+                        // if (closestRooms[j][0] != x && closestRooms[j][1] != y) continue;
+                        if ((closestRooms[j] == null || distance < Math.Abs(x - closestRooms[j][0]) + Math.Abs(y - closestRooms[j][1])) && distance != 0)
+                        {
+                            closestRooms[j] = new int[2] { roomLocations[i][0], roomLocations[i][1] };
+                            break;
+                        }
+                    }
+                }
+                return closestRooms;
             }
+
 
             private bool AttemptGenerateRoom(int x, int y, int roomHeight, int roomWidth, int roomIdentifier = 3, int layerIdentifier = 4)
             {
