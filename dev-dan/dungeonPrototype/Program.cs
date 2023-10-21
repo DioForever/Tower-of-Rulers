@@ -95,6 +95,7 @@ namespace dungeonPrototype
 
             public DungeonFloor(Chunk[][] map) : base(map)
             {
+                roomLocations = new int[0][] { };
                 for (int i = 0; i < 33; i++)
                 {
                     layout[i] = new int[33];
@@ -119,8 +120,11 @@ namespace dungeonPrototype
                 int roomCount = random.Next(10, 20);
                 int succesRoomCount = 0;
                 List<int[]> roomLocationsTemp = new List<int[]>();
-                GenerateGuardianRoom(6, 6);
-                for (int tries = 0; tries < roomCount * 4 || succesRoomCount >= roomCount; tries++)
+                int[] guardianLocation = GenerateGuardianRoom(6, 6);
+                roomLocationsTemp.Add(new int[] { 16, 16 });
+                roomLocationsTemp.Add(guardianLocation);
+                // Console.WriteLine(guardianLocation[0] + ", " + guardianLocation[1] + "guardian room");
+                for (int tries = 0; (tries < roomCount * 4 || succesRoomCount >= roomCount) && tries <= 100; tries++)
                 {
                     int x = random.Next(0, 33);
                     int y = random.Next(0, 33);
@@ -132,6 +136,7 @@ namespace dungeonPrototype
                         roomLocationsTemp.Add(new int[] { x, y });
                     }
                 }
+                System.Console.WriteLine("Succesfully generated " + succesRoomCount + 2 + " rooms");
                 roomLocations = roomLocationsTemp.ToArray();
                 return succesRoomCount;
             }
@@ -140,27 +145,28 @@ namespace dungeonPrototype
                 bool created = false;
                 int[] positions = new int[] { 0, 0 };
                 // Generate the room
-                while (!created)
+                while (created == false)
                 {
+                    // System.Console.WriteLine("Try guardian");
                     positions = PositionFromMiddle(32, 15);
                     created = AttemptGenerateRoom(positions[0], positions[1], roomHeight, roomWidth, 5, 6);
-                    return positions;
                 }
+                // System.Console.WriteLine("Guardian room generated at: " + positions[0] + ", " + positions[1]);
                 return positions;
             }
 
             private static int[] PositionFromMiddle(int gridSize, int minDistance)
             {
-                Random rand = new Random();
 
                 while (true)
                 {
+                    Random rand = new Random();
                     int x = rand.Next(gridSize);
                     int y = rand.Next(gridSize);
 
                     double distance = Math.Sqrt(Math.Pow(x - gridSize / 2, 2) + Math.Pow(y - gridSize / 2, 2));
 
-                    if (distance >= minDistance)
+                    if (distance >= minDistance && distance <= 18.5f)
                     {
                         return new int[] { x, y };
                     }
@@ -172,8 +178,10 @@ namespace dungeonPrototype
 
             }
 
-            private int[][] GetRoomPair(int x, int y)
+            private int[][] GetClosestRooms(int x, int y, int ammount = 3)
             {
+                int[][] closestRooms = new int[ammount][];
+                // double distance = Math.Sqrt(Math.Pow(x - gridSize / 2, 2) + Math.Pow(y - gridSize / 2, 2));
                 return new int[2][] { new int[2] { x, y }, new int[2] { x, y } };
             }
 
