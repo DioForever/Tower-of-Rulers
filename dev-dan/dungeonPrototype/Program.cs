@@ -92,11 +92,10 @@ namespace dungeonPrototype
         class DungeonFloor : Floor
         {
             public Chunk[][] map = new Chunk[33][];
-            private int[][] roomLocations;
+            // private int[][] roomLocations;
 
             public DungeonFloor(Chunk[][] map) : base(map)
             {
-                roomLocations = new int[0][] { };
                 for (int i = 0; i < 33; i++)
                 {
                     layout[i] = new int[33];
@@ -125,6 +124,8 @@ namespace dungeonPrototype
                 int[] guardianLocation = GenerateGuardianRoom(6, 6);
                 roomLocationsTemp.Add(new int[] { 16, 16 });
                 roomLocationsTemp.Add(guardianLocation);
+                Dictionary<int[], int[]> connectedRooms = new Dictionary<int[], int[]>();
+
                 // Console.WriteLine(guardianLocation[0] + ", " + guardianLocation[1] + "guardian room");
                 for (int tries = 0; (tries < roomCount * 4 || succesRoomCount >= roomCount) && tries <= 100; tries++)
                 {
@@ -139,20 +140,25 @@ namespace dungeonPrototype
                     }
                 }
                 System.Console.WriteLine("Succesfully generated " + (succesRoomCount + 2) + " rooms");
-                roomLocations = roomLocationsTemp.ToArray();
-
-                // Generate hallways
+                int[][] roomLocations = roomLocationsTemp.ToArray();
                 for (int i = 0; i < roomLocations.Length; i++)
                 {
-                    // System.Console.WriteLine(roomLocations[i][0] + ", " + roomLocations[i][1]);
-                    int[][] closest = GetClosestRooms(roomLocations[i][0], roomLocations[i][1], 3);
-                    System.Console.WriteLine("Closest rooms to " + roomLocations[i][0] + ", " + roomLocations[i][1] + ": ");
-                    for (int j = 0; j < closest.Length; j++)
-                    {
-                        System.Console.WriteLine(j + " " + closest[j][0] + ", " + closest[j][1]);
-                    }
-                    // layout[roomLocations[i][0]][roomLocations[i][1]] = 0;
+                    System.Console.WriteLine(roomLocations[i][0] + ", " + roomLocations[i][1]);
                 }
+
+                // Generate hallways
+                Hallways(roomLocations, connectedRooms);
+                // for (int i = 0; i < roomLocations.Length; i++)
+                // {
+                //     // System.Console.WriteLine(roomLocations[i][0] + ", " + roomLocations[i][1]);
+                //     int[][] closest = GetClosestRooms(roomLocations[i][0], roomLocations[i][1], roomLocations, 3);
+                //     System.Console.WriteLine("Closest rooms to " + roomLocations[i][0] + ", " + roomLocations[i][1] + ": ");
+                //     for (int j = 0; j < closest.Length; j++)
+                //     {
+                //         System.Console.WriteLine(j + " " + closest[j][0] + ", " + closest[j][1]);
+                //     }
+                //     // layout[roomLocations[i][0]][roomLocations[i][1]] = 0;
+                // }
                 return succesRoomCount;
             }
             private int[] GenerateGuardianRoom(int roomHeight, int roomWidth)
@@ -188,12 +194,97 @@ namespace dungeonPrototype
                 }
             }
 
-            private void Hallways(int ammount = 3)
+            private void Hallways(int[][] roomLocations, Dictionary<int[], int[]> connectedRooms, int ammount = 3)
             {
+                for (int r = 0; r < roomLocations.Length; r++)
+                {
+                    // Lets get closest rooms
+                    int[][] closest = GetClosestRooms(roomLocations[r][0], roomLocations[r][1], roomLocations, ammount);
+                    // Lets connect them
+                    for (int c = 0; c < 3; c++)
+                    {
+                        ConnectHallways(roomLocations[r][0], roomLocations[r][1], closest[c][0], closest[c][1]);
+                        break;
+                    }
+                    break;
+
+                }
 
             }
 
-            private int[][] GetClosestRooms(int x, int y, int ammount = 3)
+            private void ConnectHallways(int x, int y, int x2, int y2)
+            {
+                // Its same column
+                if (x == x2)
+                {
+                    // If its above go strait up
+                    if (y < y2)
+                    {
+                        for (int i = y; i < y2; i++)
+                        {
+                            MarkLocation(x, i, 7);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = y2; i < y; i++)
+                        {
+                            MarkLocation(x, i, 7);
+                        }
+                    }
+                    return;
+
+                }
+                // Its same row
+                else if (y == y2)
+                {
+                    // If its to the left go strait left
+                    if (x < x2)
+                    {
+                        for (int i = x; i < x2; i++)
+                        {
+                            MarkLocation(i, y, 7);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = x2; i < x; i++)
+                        {
+                            MarkLocation(i, y, 7);
+                        }
+                    }
+                    return;
+                }
+
+                // Its not in the same row nor column
+                int[] intersection = CalculateIntersection(x, y, x2, y2);
+                System.Console.WriteLine(intersection[0] + ", " + intersection[1]);
+                if (intersection[0] >= 0 && intersection[1] >= 0 && intersection[0] <= 31 && intersection[1] <= 31) { MarkLocation(intersection[0], intersection[1], 8); }
+                MarkLocation(x, y, 8);
+                MarkLocation(x2, y2, 8);
+                // Lets get the intersection
+
+
+            }
+
+            private int[] CalculateIntersection(int x1, int y1, int x2, int y2)
+            {
+                int x3 = x1 + (y2 - y1);
+                int y3 = y1 - (x2 - x1);
+
+                int x4 = x2 + (y2 - y1);
+                int y4 = y2 - (x2 - x1);
+
+
+                return new int[] { x3, y3 };
+            }
+
+            private void MarkLocation(int x, int y, int layerIdentifier = 4)
+            {
+                if (layout[y][x] == 0) layout[y][x] = layerIdentifier;
+            }
+
+            private int[][] GetClosestRooms(int x, int y, int[][] roomLocations, int ammount = 3)
             {
                 int[][] closestRooms = new int[ammount][];
 
@@ -231,7 +322,7 @@ namespace dungeonPrototype
                         {
                             return false;
                         }
-                        if (layout[i][j] != 0)
+                        if (layout[j][i] != 0)
                         {
                             return false;
 
@@ -246,11 +337,11 @@ namespace dungeonPrototype
                     {
                         for (int j = y - roomHeight / 2; j < y + roomHeight / 2; j++)
                         {
-                            layout[i][j] = layerIdentifier;
+                            layout[j][i] = layerIdentifier;
                         }
                     }
                 }
-                layout[x][y] = roomIdentifier;
+                layout[y][x] = roomIdentifier;
                 return true;
             }
 
@@ -283,6 +374,12 @@ namespace dungeonPrototype
                                 break;
                             case 6:
                                 Console.ForegroundColor = ConsoleColor.Magenta;
+                                break;
+                            case 7:
+                                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                                break;
+                            case 8:
+                                Console.ForegroundColor = ConsoleColor.White;
                                 break;
                         }
                         Console.Write(layout[i][j] + " ");
