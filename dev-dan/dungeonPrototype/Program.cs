@@ -204,77 +204,114 @@ namespace dungeonPrototype
                     for (int c = 0; c < 3; c++)
                     {
                         ConnectHallways(roomLocations[r][0], roomLocations[r][1], closest[c][0], closest[c][1]);
-                        break;
                     }
-                    break;
 
                 }
 
             }
 
-            private void ConnectHallways(int x, int y, int x2, int y2)
+            private void ConnectHallways(int x1, int y1, int x2, int y2)
             {
-                // Its same column
-                if (x == x2)
+                // Lets first check if its Guardian room, we want only 1 hallway to it
+                if (layout[y2][x2] == 5 && layout[y1][x1] != 5)
                 {
-                    // If its above go strait up
-                    if (y < y2)
+                    // Lets check if there is already a hallway to it
+                    if (CheckHallways(x2, y2) == false || CheckHallways(x1, y1) == false)
                     {
-                        for (int i = y; i < y2; i++)
-                        {
-                            MarkLocation(x, i, 7);
-                        }
+                        return;
                     }
-                    else
-                    {
-                        for (int i = y2; i < y; i++)
-                        {
-                            MarkLocation(x, i, 7);
-                        }
-                    }
+                }
+                // Its same column or row we dont need to calculate anythin
+                if (x1 == x2 || y1 == y2)
+                {
+                    ConnectStraight(x1, y1, x2, y2);
                     return;
 
                 }
-                // Its same row
-                else if (y == y2)
-                {
-                    // If its to the left go strait left
-                    if (x < x2)
-                    {
-                        for (int i = x; i < x2; i++)
-                        {
-                            MarkLocation(i, y, 7);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = x2; i < x; i++)
-                        {
-                            MarkLocation(i, y, 7);
-                        }
-                    }
-                    return;
-                }
 
-                // Its not in the same row nor column
-                int[] intersection = CalculateIntersection(x, y, x2, y2);
-                System.Console.WriteLine(intersection[0] + ", " + intersection[1]);
-                if (intersection[0] >= 0 && intersection[1] >= 0 && intersection[0] <= 31 && intersection[1] <= 31) { MarkLocation(intersection[0], intersection[1], 8); }
-                MarkLocation(x, y, 8);
-                MarkLocation(x2, y2, 8);
-                // Lets get the intersection
+                // Lets get the third corner
+                int[] corner = CalculateCorner(x1, y1, x2, y2);
+                System.Console.WriteLine(corner[0] + ", " + corner[1]);
+
+                // lets connect the rooms to the corner
+                ConnectStraight(x1, y1, corner[0], corner[1]);
+                ConnectStraight(x2, y2, corner[0], corner[1]);
 
 
             }
-
-            private int[] CalculateIntersection(int x1, int y1, int x2, int y2)
+            private bool CheckHallways(int x, int y)
             {
-                int x3 = x1 + (y2 - y1);
-                int y3 = y1 - (x2 - x1);
+                for (int i = x - 1; i < x + 1; i++)
+                {
+                    for (int j = y - 1; j < y + 1; j++)
+                    {
+                        if (layout[i][j] == 7)
+                        {
+                            return false;
+                        }
+                    }
 
-                int x4 = x2 + (y2 - y1);
-                int y4 = y2 - (x2 - x1);
+                }
+                return true;
+            }
 
+            private void ConnectStraight(int x1, int y1, int x2, int y2, bool overwrite = false)
+            {
+                if (x1 == x2)
+                {
+                    if (y1 < y2)
+                    {
+                        for (int i = y1; i < y2; i++)
+                        {
+                            MarkLocation(x1, i, 7);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = y2; i < y1; i++)
+                        {
+                            MarkLocation(x1, i, 7);
+                        }
+                    }
+                }
+                else if (y1 == y2)
+                {
+                    if (x1 < x2)
+                    {
+                        for (int i = x1; i < x2; i++)
+                        {
+                            MarkLocation(i, y1, 7);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = x2; i < x1; i++)
+                        {
+                            MarkLocation(i, y1, 7);
+                        }
+                    }
+                }
+                else
+                {
+                    System.Console.WriteLine("Error: ConnectStraight() called with non straight coordinates");
+                }
+            }
+
+            private int[] CalculateCorner(int x1, int y1, int x2, int y2)
+            {
+                int x3 = 0;
+                int y3 = 0;
+                // 1 Its above 2
+                if (y1 < y2)
+                {
+                    x3 = x2;
+                    y3 = y1;
+                }
+                else
+                {
+                    x3 = x1;
+                    y3 = y2;
+                }
 
                 return new int[] { x3, y3 };
             }
