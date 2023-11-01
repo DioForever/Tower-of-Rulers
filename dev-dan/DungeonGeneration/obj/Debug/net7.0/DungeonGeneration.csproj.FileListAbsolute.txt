@@ -1,0 +1,15 @@
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\obj\Debug\net7.0\DungeonGeneration.csproj.AssemblyReference.cache
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\obj\Debug\net7.0\DungeonGeneration.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\obj\Debug\net7.0\DungeonGeneration.AssemblyInfoInputs.cache
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\obj\Debug\net7.0\DungeonGeneration.AssemblyInfo.cs
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\obj\Debug\net7.0\DungeonGeneration.csproj.CoreCompileInputs.cache
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\bin\Debug\net7.0\DungeonGeneration.exe
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\bin\Debug\net7.0\DungeonGeneration.deps.json
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\bin\Debug\net7.0\DungeonGeneration.runtimeconfig.json
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\bin\Debug\net7.0\DungeonGeneration.dll
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\bin\Debug\net7.0\DungeonGeneration.pdb
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\obj\Debug\net7.0\DungeonGeneration.dll
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\obj\Debug\net7.0\refint\DungeonGeneration.dll
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\obj\Debug\net7.0\DungeonGeneration.pdb
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\obj\Debug\net7.0\DungeonGeneration.genruntimeconfig.cache
+C:\Users\vasko\Unity\Tower-of-Rules\dev-dan\DungeonGeneration\obj\Debug\net7.0\ref\DungeonGeneration.dll

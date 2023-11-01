@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vasko\\Unity\\Tower-of-Rules\\dev-dan\\dungeonPrototype\\dungeonPrototype.csproj": {}
+    "C:\\Users\\vasko\\Unity\\Tower-of-Rules\\dev-dan\\DungeonGeneration\\DungeonGeneration.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vasko\\Unity\\Tower-of-Rules\\dev-dan\\dungeonPrototype\\dungeonPrototype.csproj": {
+    "C:\\Users\\vasko\\Unity\\Tower-of-Rules\\dev-dan\\DungeonGeneration\\DungeonGeneration.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vasko\\Unity\\Tower-of-Rules\\dev-dan\\dungeonPrototype\\dungeonPrototype.csproj",
-        "projectName": "dungeonPrototype",
-        "projectPath": "C:\\Users\\vasko\\Unity\\Tower-of-Rules\\dev-dan\\dungeonPrototype\\dungeonPrototype.csproj",
+        "projectUniqueName": "C:\\Users\\vasko\\Unity\\Tower-of-Rules\\dev-dan\\DungeonGeneration\\DungeonGeneration.csproj",
+        "projectName": "DungeonGeneration",
+        "projectPath": "C:\\Users\\vasko\\Unity\\Tower-of-Rules\\dev-dan\\DungeonGeneration\\DungeonGeneration.csproj",
         "packagesPath": "C:\\Users\\vasko\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vasko\\Unity\\Tower-of-Rules\\dev-dan\\dungeonPrototype\\obj\\",
+        "outputPath": "C:\\Users\\vasko\\Unity\\Tower-of-Rules\\dev-dan\\DungeonGeneration\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
