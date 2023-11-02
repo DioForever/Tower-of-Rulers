@@ -165,21 +165,21 @@ namespace LayoutGeneration
 
 
         }
-        private bool CheckHallways(int x, int y)
-        {
-            for (int i = x - 1; i < x + 1; i++)
-            {
-                for (int j = y - 1; j < y + 1; j++)
-                {
-                    if (layout[i][j] == 7)
-                    {
-                        return false;
-                    }
-                }
+        // private bool CheckHallways(int x, int y)
+        // {
+        //     for (int i = x - 1; i < x + 1; i++)
+        //     {
+        //         for (int j = y - 1; j < y + 1; j++)
+        //         {
+        //             if (layout[i][j] == 7)
+        //             {
+        //                 return false;
+        //             }
+        //         }
 
-            }
-            return true;
-        }
+        //     }
+        //     return true;
+        // }
 
         private void ConnectStraight(int x1, int y1, int x2, int y2, bool overwrite = false)
         {
@@ -254,7 +254,7 @@ namespace LayoutGeneration
                     }
                     else if (identifierLast == 7)
                     {
-                        if (layout[y][startX] == 4 || layout[y][startX] == 6) MarkLocation(startX, y, 9, true);
+                        if (layout[y][startX] == 4 || layout[y][startX] == 6 || layout[y][startX] == 1) MarkLocation(startX, y, 9, true);
                     }
                     xLast = startX;
                     yLast = y;
@@ -439,8 +439,51 @@ namespace LayoutGeneration
                 Console.WriteLine();
             }
         }
-    }
 
+
+        private void GenerateMap()
+        {
+
+        }
+
+        private void GenerateChunk(int identifier, int x, int y)
+        {
+            Chunk chunk = new Chunk();
+            switch (identifier)
+            {
+                case 0:
+                    // Empty
+                    break;
+                case 1:
+                    // Spawn Room 
+                    break;
+                case 2:
+                    // Spawn Room middle
+                    break;
+                case 3:
+                    // Dungeon Room middle
+                    break;
+                case 4:
+                    // Dungeon room
+                    break;
+                case 5:
+                    // Guardian room middle
+                    break;
+                case 6:
+                    // Dungeon Room 
+                    break;
+                case 7:
+                    // Hallway 
+                    break;
+                case 9:
+                    // Hallway entry/exit point
+                    break;
+            }
+
+        }
+
+
+    }
 }
 
 
