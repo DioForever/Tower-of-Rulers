@@ -2,46 +2,47 @@ using System;
 using FloorSystem;
 
 
-namespace LayoutGeneration
+namespace DungeonGeneration
 {
 
-    static class DungeonLayoutGenerator
-    {
-        public static DungeonFloor InitDungeonLayout(int floorNumber, bool debug = false)
-        {
-            Chunk[,] DungeonMap = new Chunk[33, 33];
-            DungeonFloor dungeon = new DungeonFloor(DungeonMap, floorNumber);
-            if (debug) dungeon.PrintDungeon();
-            return dungeon;
-        }
-    }
+    // static class DungeonLayoutGenerator
+    // {
+    //     public static DungeonFloor InitDungeonLayout(int floorNumber, bool debug = false)
+    //     {
+    //         Chunk[,] DungeonMap = new Chunk[33, 33];
+    //         DungeonFloor dungeon = new DungeonFloor(DungeonMap, floorNumber);
+    //         if (debug) dungeon.PrintDungeon();
+    //         return dungeon;
+    //     }
+    // }
 
 
 
-    public class DungeonFloor : Floor
+    public partial class DungeonFloor : Floor
     {
         public Chunk[,] DungeonMap = new Chunk[33, 33];
-        public static int[][] layout = new int[33][];
+        public static int[][] Layout = new int[33][];
+        public static int[,] MapLayout = new int[5 * 33, 5 * 33];
         // private int[][] roomLocations;
 
 
-        public DungeonFloor(Chunk[,] DungeonMap, int floorNumber) : base(DungeonMap, layout, floorNumber)
+        public DungeonFloor(Chunk[,] DungeonMap, int floorNumber) : base(DungeonMap, Layout, floorNumber)
         {
 
             for (int i = 0; i < 33; i++)
             {
-                layout[i] = new int[33];
+                Layout[i] = new int[33];
             }
-            layout[15][15] = 1;
-            layout[15][16] = 1;
-            layout[16][15] = 1;
-            layout[17][16] = 1;
-            layout[16][17] = 1;
-            layout[17][17] = 1;
-            layout[15][17] = 1;
-            layout[17][15] = 1;
-            layout[16][16] = 2;
-            GenerateDungeon();
+            Layout[15][15] = 1;
+            Layout[15][16] = 1;
+            Layout[16][15] = 1;
+            Layout[17][16] = 1;
+            Layout[16][17] = 1;
+            Layout[17][17] = 1;
+            Layout[15][17] = 1;
+            Layout[17][15] = 1;
+            Layout[16][16] = 2;
+            // GenerateDungeon();
 
             this.DungeonMap = DungeonMap;
 
@@ -49,7 +50,20 @@ namespace LayoutGeneration
 
         }
 
-        public int GenerateDungeon()
+        public static DungeonFloor InitDungeonLayout(int floorNumber, bool debug = false)
+        {
+            Chunk[,] DungeonMap = new Chunk[33, 33];
+            DungeonFloor dungeon = new DungeonFloor(DungeonMap, floorNumber);
+            if (debug) dungeon.PrintDungeon();
+            return dungeon;
+        }
+
+        public void Generate()
+        {
+            GenerateDungeonLayout();
+        }
+
+        public int GenerateDungeonLayout()
         {
             // First we are gonna generate number of rooms we want
             Random random = new Random();
@@ -139,7 +153,7 @@ namespace LayoutGeneration
         private void ConnectHallways(int x1, int y1, int x2, int y2)
         {
             // Lets first check if its Guardian room, we want only 1 hallway to it
-            // if (layout[y2][x2] != 5 && layout[y1][x1] != 5)
+            // if (Layout[y2][x2] != 5 && Layout[y1][x1] != 5)
             // {
             //     // Lets check if there is already a hallway to it
             //     if (CheckHallways(x2, y2) == false || CheckHallways(x1, y1) == false)
@@ -171,7 +185,7 @@ namespace LayoutGeneration
         //     {
         //         for (int j = y - 1; j < y + 1; j++)
         //         {
-        //             if (layout[i][j] == 7)
+        //             if (Layout[i][j] == 7)
         //             {
         //                 return false;
         //             }
@@ -249,16 +263,16 @@ namespace LayoutGeneration
                     // This takes care of the first entry point
                     if (identifierLast == 4 || identifierLast == 6 || identifierLast == 1)
                     {
-                        if (layout[y][startX] == 7) MarkLocation(xLast, yLast, 9, true);
+                        if (Layout[y][startX] == 7) MarkLocation(xLast, yLast, 9, true);
 
                     }
                     else if (identifierLast == 7)
                     {
-                        if (layout[y][startX] == 4 || layout[y][startX] == 6 || layout[y][startX] == 1) MarkLocation(startX, y, 9, true);
+                        if (Layout[y][startX] == 4 || Layout[y][startX] == 6 || Layout[y][startX] == 1) MarkLocation(startX, y, 9, true);
                     }
                     xLast = startX;
                     yLast = y;
-                    identifierLast = layout[y][startX];
+                    identifierLast = Layout[y][startX];
 
                     // You can perform grid-related operations at each position here
                 }
@@ -276,16 +290,16 @@ namespace LayoutGeneration
                     // This takes care of the first entry point
                     if (identifierLast == 4 || identifierLast == 6 || identifierLast == 1)
                     {
-                        if (layout[startY][x] == 7) MarkLocation(xLast, yLast, 9, true);
+                        if (Layout[startY][x] == 7) MarkLocation(xLast, yLast, 9, true);
 
                     }
                     else if (identifierLast == 7)
                     {
-                        if (layout[startY][x] == 4 || layout[startY][x] == 6 || layout[startY][x] == 1) MarkLocation(x, startY, 9, true);
+                        if (Layout[startY][x] == 4 || Layout[startY][x] == 6 || Layout[startY][x] == 1) MarkLocation(x, startY, 9, true);
                     }
                     xLast = x;
                     yLast = startY;
-                    identifierLast = layout[startY][x];
+                    identifierLast = Layout[startY][x];
 
                     // You can perform grid-related operations at each position here
                 }
@@ -321,13 +335,13 @@ namespace LayoutGeneration
         {
             // if its empty we just add it
 
-            if (layout[y][x] == 0)
+            if (Layout[y][x] == 0)
             {
-                layout[y][x] = layerIdentifier;
+                Layout[y][x] = layerIdentifier;
             }
             else if (overwrite == true)
             {
-                layout[y][x] = layerIdentifier;
+                Layout[y][x] = layerIdentifier;
             }
         }
 
@@ -365,11 +379,11 @@ namespace LayoutGeneration
                     {
                         return false;
                     }
-                    if (i > layout.Length - 1 || j > layout[0].Length - 1)
+                    if (i > Layout.Length - 1 || j > Layout[0].Length - 1)
                     {
                         return false;
                     }
-                    if (layout[j][i] != 0)
+                    if (Layout[j][i] != 0)
                     {
                         return false;
 
@@ -384,23 +398,23 @@ namespace LayoutGeneration
                 {
                     for (int j = y - roomHeight / 2; j < y + roomHeight / 2; j++)
                     {
-                        layout[j][i] = layerIdentifier;
+                        Layout[j][i] = layerIdentifier;
                     }
                 }
             }
-            layout[y][x] = roomIdentifier;
+            Layout[y][x] = roomIdentifier;
             return true;
         }
 
 
         public void PrintDungeon()
         {
-            for (int i = 0; i < layout.Length - 1; i++)
+            for (int i = 0; i < Layout.Length - 1; i++)
             {
-                for (int j = 0; j < layout[0].Length - 1; j++)
+                for (int j = 0; j < Layout[0].Length - 1; j++)
                 {
 
-                    switch (layout[i][j])
+                    switch (Layout[i][j])
                     {
                         case 0:
                             Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -433,55 +447,12 @@ namespace LayoutGeneration
                             Console.ForegroundColor = ConsoleColor.DarkYellow;
                             break;
                     }
-                    Console.Write(layout[i][j] + " ");
+                    Console.Write(Layout[i][j] + " ");
 
                 }
                 Console.WriteLine();
             }
         }
-
-
-        private void GenerateMap()
-        {
-
-        }
-
-        private void GenerateChunk(int identifier, int x, int y)
-        {
-            Chunk chunk = new Chunk();
-            switch (identifier)
-            {
-                case 0:
-                    // Empty
-                    break;
-                case 1:
-                    // Spawn Room 
-                    break;
-                case 2:
-                    // Spawn Room middle
-                    break;
-                case 3:
-                    // Dungeon Room middle
-                    break;
-                case 4:
-                    // Dungeon room
-                    break;
-                case 5:
-                    // Guardian room middle
-                    break;
-                case 6:
-                    // Dungeon Room 
-                    break;
-                case 7:
-                    // Hallway 
-                    break;
-                case 9:
-                    // Hallway entry/exit point
-                    break;
-            }
-
-        }
-
 
     }
 }
