@@ -222,7 +222,8 @@ GameObject:
   - component: {fileID: 306173914}
   - component: {fileID: 306173913}
   - component: {fileID: 306173912}
-  - component: {fileID: 306173911}
+  - component: {fileID: 306173916}
+  - component: {fileID: 306173915}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -230,23 +231,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &306173911
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 306173910}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35df2fac24f44da428ccb6b5573f063d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 10
-  rb: {fileID: 306173912}
-  dashSpeed: 15
-  dashDuration: 0.2
-  dashCooldown: 7
 --- !u!50 &306173912
 Rigidbody2D:
   serializedVersion: 4
@@ -335,6 +319,38 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &306173915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 306173910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35df2fac24f44da428ccb6b5573f063d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 10
+  rb: {fileID: 306173912}
+  dashSpeed: 10
+  dashDuration: 1
+  dashCooldown: 1
+--- !u!114 &306173916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 306173910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 970a14bb10eda704a9f6133e2bfcffb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 306173915}
+  speedBuff: 2
+  floornumber: 1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

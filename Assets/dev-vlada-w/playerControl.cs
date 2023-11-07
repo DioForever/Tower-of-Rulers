@@ -8,6 +8,12 @@ public class playerControl : MonoBehaviour
     public Rigidbody2D rb;
     private Vector2 moveDirection;
 
+    public SpeedModifier speedModifier;
+
+    public delegate void MoveSpeedChanged(); //ostatní skripty reagují na změnu moveSpeedu
+    public event MoveSpeedChanged OnMoveSpeedChanged; //event pro speed
+
+
     [Header("Dash Settings")]
     [SerializeField] float dashSpeed = 10f;
     [SerializeField] float dashDuration = 1f;
@@ -74,6 +80,12 @@ public class playerControl : MonoBehaviour
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
 
+    }
+
+     public void UpdateMoveSpeed(float newMoveSpeed) //funkce na updatnutí moveSpeedu
+    {
+       speedModifier.UpdateMoveSpeed(newMoveSpeed);
+        OnMoveSpeedChanged?.Invoke();
     }
 
 }
