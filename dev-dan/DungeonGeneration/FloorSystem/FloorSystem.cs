@@ -21,12 +21,12 @@ namespace FloorSystem
     }
     public class Chunk
     {
-        public int[,] mapLayout = new int[5, 5];
+        public int[,] map;
         public int[,] decorationLayout = new int[5, 5];
         // TODO: Add a way to store npc's and items in the chunk
-        public Chunk(int[,] mapLayout)
+        public Chunk(int[,] map)
         {
-            this.mapLayout = mapLayout;
+            this.map = map;
         }
     }
 }

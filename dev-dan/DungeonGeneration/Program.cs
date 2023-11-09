@@ -13,8 +13,11 @@ namespace DungeonGeneration
         public static void Main(string[] args)
         {
 
-            DungeonFloor dungeon = DungeonFloor.InitDungeonLayout(1, true);
-            dungeon.Generate();
+            DungeonFloor dungeon = new DungeonFloor(1);
+            dungeon.GenerateDungeonLayout();
+            dungeon.PrintDungeon();
+            dungeon.GenerateMap();
+            // dungeon.GenerateMap();
 
             // TODO: Generate chunks from layout
         }

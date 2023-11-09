@@ -21,14 +21,14 @@ namespace DungeonGeneration
     public partial class DungeonFloor : Floor
     {
         public Chunk[,] DungeonMap = new Chunk[33, 33];
-        public static int[][] Layout = new int[33][];
-        public static int[,] MapLayout = new int[5 * 33, 5 * 33];
+        private static int[][] _Layout = new int[33][];
+        public static Chunk[,] _DungeonMap = new Chunk[33, 33];
         // private int[][] roomLocations;
 
 
-        public DungeonFloor(Chunk[,] DungeonMap, int floorNumber) : base(DungeonMap, Layout, floorNumber)
+        public DungeonFloor(int floorNumber) : base(_DungeonMap, _Layout, floorNumber)
         {
-
+            _DungeonMap = new Chunk[33, 33];
             for (int i = 0; i < 33; i++)
             {
                 Layout[i] = new int[33];
@@ -44,16 +44,13 @@ namespace DungeonGeneration
             Layout[16][16] = 2;
             // GenerateDungeon();
 
-            this.DungeonMap = DungeonMap;
-
 
 
         }
 
-        public static DungeonFloor InitDungeonLayout(int floorNumber, bool debug = false)
+        public static DungeonFloor GenerateLayout(int floorNumber, bool debug = false)
         {
-            Chunk[,] DungeonMap = new Chunk[33, 33];
-            DungeonFloor dungeon = new DungeonFloor(DungeonMap, floorNumber);
+            DungeonFloor dungeon = new DungeonFloor(floorNumber);
             if (debug) dungeon.PrintDungeon();
             return dungeon;
         }
@@ -62,7 +59,6 @@ namespace DungeonGeneration
         {
             GenerateDungeonLayout();
         }
-
         public int GenerateDungeonLayout()
         {
             // First we are gonna generate number of rooms we want
@@ -453,7 +449,6 @@ namespace DungeonGeneration
                 Console.WriteLine();
             }
         }
-
     }
 }
 
