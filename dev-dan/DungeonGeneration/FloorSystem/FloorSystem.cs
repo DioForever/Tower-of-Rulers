@@ -12,13 +12,13 @@ namespace FloorSystem
     public class Floor
     {
         public int floorNumber;
-        public Chunk[,] map;
+        public Chunk[,] floorMap;
 
-        public Floor(int SizeX, int SizeY, int floorNumber, Chunk[,]? map = null)
+        public Floor(int SizeX, int SizeY, int floorNumber, Chunk[,]? floorMap = null)
         {
             this.floorNumber = floorNumber;
-            if (map != null) this.map = map;
-            else this.map = new Chunk[SizeY, SizeX];
+            if (floorMap != null) this.floorMap = floorMap;
+            else this.floorMap = new Chunk[SizeY, SizeX];
         }
 
     }
@@ -27,29 +27,15 @@ namespace FloorSystem
     /// </summary>
     public class Chunk
     {
-        public int[,] map
-        {
-            get
-            {
-                return map;
-            }
-            set
-            {
-                if (value.GetLength(0) == 5 && value.GetLength(1) == 5)
-                {
-                    map = value;
-                }
-                else throw new Exception("Chunk must be 5x5");
-            }
-        }
+        public int[,] map;
         public int[,] decorationLayout;
         // TODO: Add a way to store npc's and items in the chunk
-        public Chunk(int[,] map, int[,]? decorationLayout = null)
+        public Chunk(int[,] map = null, int[,]? decorationLayout = null)
         {
-            this.map = map;
+            if (map != null) this.map = map;
+            else this.map = new int[3, 3];
             if (decorationLayout != null) this.decorationLayout = decorationLayout;
-            else this.decorationLayout = new int[map.GetLength(0), map.GetLength(1)];
-
+            else this.decorationLayout = new int[3, 3];
         }
     }
 }

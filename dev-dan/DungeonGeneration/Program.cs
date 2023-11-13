@@ -13,8 +13,11 @@ namespace DungeonGeneration
         public static void Main(string[] args)
         {
 
-            DungeonFloor dungeon = new DungeonFloor(1, 25, 25);
+            DungeonFloor dungeon = new DungeonFloor(1, 15, 15);
             dungeon.GenerateLayout(true);
+            dungeon.GenerateMap();
+            System.Console.WriteLine($"Dungeon size: {dungeon.floorMap.GetLength(0) * 5} {dungeon.floorMap.GetLength(1) * 5} = {dungeon.floorMap.GetLength(0) * 5 * dungeon.floorMap.GetLength(1) * 5}");
+            // dungeon.PrintMap();
             // dungeon.GenerateDungeonLayout();
             // dungeon.PrintDungeon();
             // dungeon.GenerateMap();

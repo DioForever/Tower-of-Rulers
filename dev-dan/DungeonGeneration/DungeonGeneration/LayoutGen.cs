@@ -23,7 +23,7 @@ namespace DungeonGeneration
             // GenerateDungeon();
         }
 
-        enum RoomIdentifiers
+        public enum RoomIdentifiers
         {
             WALL = 0,
             SPAWNMIDDLE = 4,
@@ -32,7 +32,8 @@ namespace DungeonGeneration
             ROOM = 1,
             GUARDIANROOM = 5,
             GUARDIANROOMMIDDLE = 6,
-            HALLWAY = 7
+            HALLWAY = 7,
+            ENTRY = 8
         }
 
         public void GenerateLayout(bool debug = false)
@@ -42,18 +43,18 @@ namespace DungeonGeneration
             if (debug) PrintLayout();
 
         }
-        public void GenerateRooms()
+        private void GenerateRooms()
         {
-            Random rand = new Random();
             if (Layout == null) throw new Exception("Layout is null");
+            Random rand = new Random();
 
             // Generating the middle points of the rooms
             int roomCount = rand.Next(7, 10);
             Rooms = new Room[roomCount + 2];
             // Generate spawn room
             int[] spawnRoomLocation = new int[2];
-            spawnRoomLocation[0] = rand.Next(1, map.GetLength(0) - 1);
-            spawnRoomLocation[1] = rand.Next(1, map.GetLength(1) - 1);
+            spawnRoomLocation[0] = rand.Next(1, floorMap.GetLength(0) - 1);
+            spawnRoomLocation[1] = rand.Next(1, floorMap.GetLength(1) - 1);
             GenerateRoom(spawnRoomLocation, rand, 0, (int)RoomIdentifiers.SPAWNROOM, 3, 3);
             // Generate guardian room
             int[] guardianRoomLocation = new int[2];
@@ -64,10 +65,10 @@ namespace DungeonGeneration
                 while (distanceNotReached)
                 {
                     tries++;
-                    guardianRoomLocation[0] = rand.Next(1, map.GetLength(0) - 1);
-                    guardianRoomLocation[1] = rand.Next(1, map.GetLength(1) - 1);
+                    guardianRoomLocation[0] = rand.Next(1, floorMap.GetLength(0) - 1);
+                    guardianRoomLocation[1] = rand.Next(1, floorMap.GetLength(1) - 1);
                     double distance = Math.Sqrt(Math.Pow(guardianRoomLocation[0] - Rooms[0].location[0], 2) + Math.Pow(guardianRoomLocation[1] - Rooms[0].location[1], 2));
-                    if (distance >= map.GetLength(0) / 2 && distance <= Math.Sqrt(Math.Pow(guardianRoomLocation[0] + 12 - Rooms[0].location[0], 2) + Math.Pow(guardianRoomLocation[1] + 12 - Rooms[0].location[1], 2)))
+                    if (distance >= floorMap.GetLength(0) / 2 && distance <= Math.Sqrt(Math.Pow(guardianRoomLocation[0] + 12 - Rooms[0].location[0], 2) + Math.Pow(guardianRoomLocation[1] + 12 - Rooms[0].location[1], 2)))
                     {
                         distanceNotReached = false;
                     }
@@ -77,22 +78,30 @@ namespace DungeonGeneration
                         System.Console.WriteLine("Tries exceeded");
                     }
                 }
-                i = GenerateRoom(guardianRoomLocation, rand, 1, (int)RoomIdentifiers.GUARDIANROOM, 5, 5);
+                i = GenerateRoom(guardianRoomLocation, rand, 1, (int)RoomIdentifiers.GUARDIANROOM, 4, 4);
             }
 
 
+            int totalTries = 0;
             // Generate other rooms
-            for (int i = 2; i < roomCount + 2;)
+            for (int i = 2; i < Rooms.Length;)
             {
+                totalTries += 1;
+                if (totalTries > 500)
+                {
+                    System.Console.WriteLine("Tries exceeded");
+                    break;
+                }
                 int[] roomLocation = new int[2];
-                roomLocation[0] = rand.Next(1, map.GetLength(0) - 1);
-                roomLocation[1] = rand.Next(1, map.GetLength(1) - 1);
+                roomLocation[0] = rand.Next(1, floorMap.GetLength(0) - 1);
+                roomLocation[1] = rand.Next(1, floorMap.GetLength(1) - 1);
                 i = GenerateRoom(roomLocation, rand, i);
             }
+            Rooms = Rooms.Where(x => x != null).ToArray();
 
         }
 
-        public int GenerateRoom(int[] roomLocation, Random rand, int i, int identifier = (int)RoomIdentifiers.ROOM, int sizeX = -1, int sizeY = -1)
+        private int GenerateRoom(int[] roomLocation, Random rand, int i, int identifier = (int)RoomIdentifiers.ROOM, int sizeX = -1, int sizeY = -1)
         {
             if (Layout == null) throw new Exception("Layout is null");
             if (Layout[roomLocation[0], roomLocation[1]] == 0)
@@ -101,7 +110,7 @@ namespace DungeonGeneration
                 if (sizeX <= 0 && sizeY <= 0)
                 {
                     sizeX = rand.Next(3, 4);
-                    sizeY = rand.Next(3, 5);
+                    sizeY = rand.Next(3, 4);
                 }
                 Room room = new Room(roomLocation, sizeX, sizeY);
 
@@ -113,7 +122,7 @@ namespace DungeonGeneration
             return i;
         }
 
-        public void GenerateHallways(int ammount = 1)
+        private void GenerateHallways(int ammount = 1)
         {
             // Dictionary of connected rooms, key is the index and value is an array of the closest room indexes
             Dictionary<int, List<int>> connectedRooms = new Dictionary<int, List<int>>();
@@ -162,15 +171,17 @@ namespace DungeonGeneration
             }
         }
 
-        public void GenerateHallway(int[] firstLoc, int[] secondLoc)
+        private void GenerateHallway(int[] firstLoc, int[] secondLoc)
         {
             if (Layout == null) throw new Exception("Layout is null");
             int[] corner = new int[2] { firstLoc[0], secondLoc[1] };
-            ConnectStraight(firstLoc, corner);
-            ConnectStraight(corner, secondLoc);
+            List<int[]> visited = new List<int[]>();
+            ConnectStraight(firstLoc, corner, visited);
+            ConnectStraight(corner, secondLoc, visited);
+            visited = new List<int[]>();
         }
 
-        public void ConnectStraight(int[] firstLoc, int[] secondLoc)
+        private void ConnectStraight(int[] firstLoc, int[] secondLoc, List<int[]> visited)
         {
             if (Layout == null) throw new Exception("Layout is null");
             int startX = firstLoc[1];
@@ -186,8 +197,21 @@ namespace DungeonGeneration
 
                 for (int y = minY; y <= maxY; y++)
                 {
-                    MarkMap(startX, y, 7);
-                    setEntryPoint(startX, y, 'u', identifierLast);
+                    // System.Console.WriteLine($"{GetSides(Layout, startX, y, visited)[0]} {(int)RoomIdentifiers.HALLWAY} - {(GetSides(Layout, startX, y, visited)[0] != (int)RoomIdentifiers.HALLWAY)}");
+                    System.Console.WriteLine(string.Join(", ", GetSides(Layout, startX, y, visited)));
+                    if (GetSides(Layout, startX, y, visited)[1] != (int)RoomIdentifiers.HALLWAY &&
+                     GetSides(Layout, startX, y, visited)[3] != (int)RoomIdentifiers.HALLWAY)
+                    {
+                        MarkMap(startX, y, (int)RoomIdentifiers.HALLWAY);
+                        setEntryPoint(startX, y, 'u', identifierLast);
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("Skipped Hallway");
+                        // MarkMap(startX, y, 9, null, true);
+                    }
+                    visited.Add(new int[] { y, startX });
+
                     identifierLast = Layout[y, startX];
                 }
             }
@@ -199,8 +223,22 @@ namespace DungeonGeneration
 
                 for (int x = minX; x <= maxX; x++)
                 {
-                    MarkMap(x, startY, 7);
-                    setEntryPoint(x, startY, 'r', identifierLast);
+                    // System.Console.WriteLine($"{GetSides(Layout, x, startY, visited)[1]} {(int)RoomIdentifiers.HALLWAY} - {(GetSides(Layout, x, startY, visited)[1] != (int)RoomIdentifiers.HALLWAY)}");
+                    // System.Console.WriteLine($"{GetSides(Layout, x, startY, visited)[3]} 7 - {(GetSides(Layout, x, startY, visited)[3] != (int)RoomIdentifiers.HALLWAY)}");
+                    System.Console.WriteLine(string.Join(", ", GetSides(Layout, x, startY, visited)));
+                    if ((GetSides(Layout, x, startY, visited)[0] != (int)RoomIdentifiers.HALLWAY) && (GetSides(Layout, x, startY, visited)[2] != (int)RoomIdentifiers.HALLWAY))
+                    {
+                        MarkMap(x, startY, (int)RoomIdentifiers.HALLWAY);
+                        setEntryPoint(x, startY, 'r', identifierLast);
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("Skipped Hallway");
+                        // MarkMap(x, startY, 9, null, true);
+
+                    }
+                    visited.Add(new int[] { startY, x });
+
                     identifierLast = Layout[startY, x];
                 }
             }
@@ -216,11 +254,11 @@ namespace DungeonGeneration
                     if (y <= 0) return;
                     if (identifierLastValues.Contains(identifierLast))
                     {
-                        if (Layout[y, x] == (int)RoomIdentifiers.HALLWAY) MarkMap(x, y - 1, 8, null, true);
+                        if (Layout[y, x] == (int)RoomIdentifiers.HALLWAY) MarkMap(x, y - 1, (int)RoomIdentifiers.ENTRY, null, true);
                     }
                     else if (identifierLast == 7)
                     {
-                        if (identifierLastValues.Contains(Layout[y, x])) MarkMap(x, y, 8, null, true);
+                        if (identifierLastValues.Contains(Layout[y, x])) MarkMap(x, y, (int)RoomIdentifiers.ENTRY, null, true);
                     }
 
                     break;
@@ -228,17 +266,17 @@ namespace DungeonGeneration
                     if (x <= 0) return;
                     if (identifierLastValues.Contains(identifierLast))
                     {
-                        if (Layout[y, x] == (int)RoomIdentifiers.HALLWAY) MarkMap(x - 1, y, 8, null, true);
+                        if (Layout[y, x] == (int)RoomIdentifiers.HALLWAY) MarkMap(x - 1, y, (int)RoomIdentifiers.ENTRY, null, true);
                     }
                     else if (identifierLast == 7)
                     {
-                        if (identifierLastValues.Contains(Layout[y, x])) MarkMap(x, y, 8, null, true);
+                        if (identifierLastValues.Contains(Layout[y, x])) MarkMap(x, y, (int)RoomIdentifiers.ENTRY, null, true);
                     }
                     break;
             }
         }
 
-        public void MarkMap(int x, int y, int identifier, int[]? overwriteSpecific = null, bool overwrite = false)
+        private void MarkMap(int x, int y, int identifier, int[]? overwriteSpecific = null, bool overwrite = false)
         {
             if (Layout == null) throw new Exception("Layout is null");
             if (overwriteSpecific != null && overwriteSpecific.Contains(Layout[y, x]))
@@ -256,7 +294,7 @@ namespace DungeonGeneration
         }
 
 
-        public void PrintLayout()
+        private void PrintLayout()
         {
             if (Layout == null) throw new Exception("Layout is null");
             for (int i = 0; i < Layout.GetLength(0); i++)
@@ -289,8 +327,11 @@ namespace DungeonGeneration
                         case (int)RoomIdentifiers.HALLWAY:
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             break;
-                        case 8:
+                        case (int)RoomIdentifiers.ENTRY:
                             Console.ForegroundColor = ConsoleColor.DarkRed;
+                            break;
+                        case 9:
+                            Console.ForegroundColor = ConsoleColor.DarkGreen;
                             break;
                     }
                     Console.Write(Layout[i, j] + " ");
@@ -301,7 +342,7 @@ namespace DungeonGeneration
 
         }
 
-        public bool FillRoom(int x, int y, int sizeX, int sizeY, int identifier)
+        private bool FillRoom(int x, int y, int sizeX, int sizeY, int identifier)
         {
             if (Layout == null) throw new Exception("Layout is null");
             int cols = Layout.GetLength(0);
