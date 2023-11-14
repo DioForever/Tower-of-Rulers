@@ -30,7 +30,7 @@ namespace FloorSystem
         public int[,] map;
         public int[,] decorationLayout;
         // TODO: Add a way to store npc's and items in the chunk
-        public Chunk(int[,] map = null, int[,]? decorationLayout = null)
+        public Chunk(int[,]? map = null, int[,]? decorationLayout = null)
         {
             if (map != null) this.map = map;
             else this.map = new int[3, 3];

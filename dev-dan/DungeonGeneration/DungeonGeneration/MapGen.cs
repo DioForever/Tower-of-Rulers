@@ -31,18 +31,6 @@ namespace DungeonGeneration
                     floorMap[chunkY, chunkX] = chunk;
                 }
             }
-            // PrintMap();
-            // for (int chunkY = 0; chunkY < Layout.GetLength(0); chunkY++)
-            // {
-            //     for (int chunkX = 0; chunkX < Layout.GetLength(1); chunkX++)
-            //     {
-            //         Chunk chunk = ChunkTilesSetter(floorMap[chunkY, chunkX], chunkX, chunkY);
-            //         // Chunk chunk = new Chunk();
-            //         // chunk.map = new int[5, 5];
-            //         // System.Console.WriteLine($"Chunk: {chunkX} {chunkY}");
-            //         floorMap[chunkY, chunkX] = chunk;
-            //     }
-            // }
 
 
 
@@ -73,11 +61,6 @@ namespace DungeonGeneration
                     }
                 }
             }
-
-            // First we make everything ground
-
-            // First we there are walls or not
-
             HashSet<int> identifiersRooms = new HashSet<int> { (int)RoomIdentifiers.ROOM,(int)RoomIdentifiers.ROOMMIDDLE,
              (int)RoomIdentifiers.GUARDIANROOM, (int)RoomIdentifiers.GUARDIANROOMMIDDLE,(int)RoomIdentifiers.SPAWNROOM, (int)RoomIdentifiers.SPAWNMIDDLE };
             HashSet<int> identifiersIgnore = new HashSet<int> { (int)RoomIdentifiers.WALL, (int)RoomIdentifiers.HALLWAY, -1 };
@@ -630,9 +613,6 @@ namespace DungeonGeneration
                 case 25:
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     break;
-
-
-
             }
             if (identifier.ToString().Length == 1) Console.Write(identifier + "  ");
             else Console.Write(identifier + " ");
