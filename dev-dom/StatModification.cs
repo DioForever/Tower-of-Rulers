@@ -5,28 +5,26 @@ using UnityEngine;
 public class SpeedModifier : MonoBehaviour
 {
     public playerControl playerController; 
+
+
     private float[] speedDebuffValues = {2.0f,0.5f};
-    private float[] healthDebuffValues = {0.8f, 0.5f}
-    private float[] strengthDebuffValues = {0.8f,0.5f}
-    private float[] manaDebuffValues = {0.2f,4.0f}
-    public float floornumber = 1;
     private float originalMoveSpeed;
+    private float[] healthDebuffValues = {0.8f, 0.5f}
     private float originalHealth;
+    private float[] strengthDebuffValues = {0.8f,0.5f}
     private float originalStrenght;
+    private float[] manaDebuffValues = {0.2f,4.0f}
     private float originalMana;
+
+
+    public float floornumber = 1;
     public bool BossIsDead = false;
 
     
     void Start()
     {
-        originalStrenght = playerController.strenght;
-        originalMana = playerController.mana; 
-        originalHealth = playerController.health;
-        originalMoveSpeed = playerController.moveSpeed;
+        OriginalValues();
     }
-
-   
-
     void Update()
     {
         float horizontal = Input.GetAxis("Horizontal");
@@ -93,10 +91,7 @@ public class SpeedModifier : MonoBehaviour
        
         else
         {
-            RevertToOriginalSpeed();
-            RevertToOriginalHealth();
-            RevertToOriginalMana();
-            RevertToOriginalStrength();
+           RevertAllToOriginal();
         }
 
         Vector2 move = new Vector2(horizontal, vertical);
@@ -221,5 +216,22 @@ public class SpeedModifier : MonoBehaviour
         RevertToOriginalMana();
         originalMana = newMana;
         ApplyManaDebuff();
+    }
+
+
+    void OriginalValues()
+    {
+        originalStrenght = playerController.strenght;
+        originalMana = playerController.mana; 
+        originalHealth = playerController.health;
+        originalMoveSpeed = playerController.moveSpeed;
+    }
+
+    void RevertAllToOriginal()
+    {
+        playerController.moveSpeed = originalMoveSpeed;
+        playerController.mana = originalMana;
+        playerController.strength = originalStrength;
+        playerController.health = originalHealth;
     }
 }
