@@ -198,18 +198,13 @@ namespace DungeonGeneration
                 for (int y = minY; y <= maxY; y++)
                 {
                     // System.Console.WriteLine($"{GetSides(Layout, startX, y, visited)[0]} {(int)RoomIdentifiers.HALLWAY} - {(GetSides(Layout, startX, y, visited)[0] != (int)RoomIdentifiers.HALLWAY)}");
-                    System.Console.WriteLine(string.Join(", ", GetSides(Layout, startX, y, visited)));
+                    // System.Console.WriteLine(string.Join(", ", GetSides(Layout, startX, y, visited)));
                     if (GetSides(Layout, startX, y, visited)[1] != (int)RoomIdentifiers.HALLWAY &&
                      GetSides(Layout, startX, y, visited)[3] != (int)RoomIdentifiers.HALLWAY)
                     {
-                        MarkMap(startX, y, (int)RoomIdentifiers.HALLWAY);
-                        setEntryPoint(startX, y, 'u', identifierLast);
+                        Layout = MarkMap(Layout, startX, y, (int)RoomIdentifiers.HALLWAY);
                     }
-                    else
-                    {
-                        System.Console.WriteLine("Skipped Hallway");
-                        // MarkMap(startX, y, 9, null, true);
-                    }
+                    setEntryPoint(startX, y, 'u', identifierLast);
                     visited.Add(new int[] { y, startX });
 
                     identifierLast = Layout[y, startX];
@@ -225,18 +220,12 @@ namespace DungeonGeneration
                 {
                     // System.Console.WriteLine($"{GetSides(Layout, x, startY, visited)[1]} {(int)RoomIdentifiers.HALLWAY} - {(GetSides(Layout, x, startY, visited)[1] != (int)RoomIdentifiers.HALLWAY)}");
                     // System.Console.WriteLine($"{GetSides(Layout, x, startY, visited)[3]} 7 - {(GetSides(Layout, x, startY, visited)[3] != (int)RoomIdentifiers.HALLWAY)}");
-                    System.Console.WriteLine(string.Join(", ", GetSides(Layout, x, startY, visited)));
+                    // System.Console.WriteLine(string.Join(", ", GetSides(Layout, x, startY, visited)));
                     if ((GetSides(Layout, x, startY, visited)[0] != (int)RoomIdentifiers.HALLWAY) && (GetSides(Layout, x, startY, visited)[2] != (int)RoomIdentifiers.HALLWAY))
                     {
-                        MarkMap(x, startY, (int)RoomIdentifiers.HALLWAY);
-                        setEntryPoint(x, startY, 'r', identifierLast);
+                        Layout = MarkMap(Layout, x, startY, (int)RoomIdentifiers.HALLWAY);
                     }
-                    else
-                    {
-                        System.Console.WriteLine("Skipped Hallway");
-                        // MarkMap(x, startY, 9, null, true);
-
-                    }
+                    setEntryPoint(x, startY, 'r', identifierLast);
                     visited.Add(new int[] { startY, x });
 
                     identifierLast = Layout[startY, x];
@@ -254,11 +243,11 @@ namespace DungeonGeneration
                     if (y <= 0) return;
                     if (identifierLastValues.Contains(identifierLast))
                     {
-                        if (Layout[y, x] == (int)RoomIdentifiers.HALLWAY) MarkMap(x, y - 1, (int)RoomIdentifiers.ENTRY, null, true);
+                        if (Layout[y, x] == (int)RoomIdentifiers.HALLWAY) Layout = MarkMap(Layout, x, y - 1, (int)RoomIdentifiers.ENTRY, null, true);
                     }
                     else if (identifierLast == 7)
                     {
-                        if (identifierLastValues.Contains(Layout[y, x])) MarkMap(x, y, (int)RoomIdentifiers.ENTRY, null, true);
+                        if (identifierLastValues.Contains(Layout[y, x])) Layout = MarkMap(Layout, x, y, (int)RoomIdentifiers.ENTRY, null, true);
                     }
 
                     break;
@@ -266,31 +255,32 @@ namespace DungeonGeneration
                     if (x <= 0) return;
                     if (identifierLastValues.Contains(identifierLast))
                     {
-                        if (Layout[y, x] == (int)RoomIdentifiers.HALLWAY) MarkMap(x - 1, y, (int)RoomIdentifiers.ENTRY, null, true);
+                        if (Layout[y, x] == (int)RoomIdentifiers.HALLWAY) Layout = MarkMap(Layout, x - 1, y, (int)RoomIdentifiers.ENTRY, null, true);
                     }
                     else if (identifierLast == 7)
                     {
-                        if (identifierLastValues.Contains(Layout[y, x])) MarkMap(x, y, (int)RoomIdentifiers.ENTRY, null, true);
+                        if (identifierLastValues.Contains(Layout[y, x])) Layout = MarkMap(Layout, x, y, (int)RoomIdentifiers.ENTRY, null, true);
                     }
                     break;
             }
         }
 
-        private void MarkMap(int x, int y, int identifier, int[]? overwriteSpecific = null, bool overwrite = false)
+        private int[,] MarkMap(int[,] map, int x, int y, int identifier, int[]? overwriteSpecific = null, bool overwrite = false)
         {
-            if (Layout == null) throw new Exception("Layout is null");
-            if (overwriteSpecific != null && overwriteSpecific.Contains(Layout[y, x]))
+            if (map == null) throw new Exception("Layout is null");
+            if (overwriteSpecific != null && overwriteSpecific.Contains(map[y, x]))
             {
-                Layout[y, x] = identifier;
+                map[y, x] = identifier;
             }
             else if (overwrite)
             {
-                Layout[y, x] = identifier;
+                map[y, x] = identifier;
             }
-            else if (Layout[y, x] == 0)
+            else if (map[y, x] == 0)
             {
-                Layout[y, x] = identifier;
+                map[y, x] = identifier;
             }
+            return map;
         }
 
 
