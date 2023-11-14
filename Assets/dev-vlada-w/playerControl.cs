@@ -13,11 +13,16 @@ public class playerControl : MonoBehaviour
     public delegate void MoveSpeedChanged(); //ostatní skripty reagují na změnu moveSpeedu
     public event MoveSpeedChanged OnMoveSpeedChanged; //event pro speed
 
+    [Header("Hp Settings")]
+    [SerializeField] float Hp = 100f;
+
+    [Header("Mana Settings")]
+    [SerializeField] float Mana = 100f;
 
     [Header("Dash Settings")]
-    [SerializeField] float dashSpeed = 10f;
-    [SerializeField] float dashDuration = 1f;
-    [SerializeField] float dashCooldown = 1f;
+    [SerializeField] float dashSpeed = 5f;
+    [SerializeField] float dashDuration = 0.25f;
+    [SerializeField] float dashCooldown = 3f;
     bool isDashing;
     bool canDash = true;
 

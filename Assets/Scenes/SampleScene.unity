@@ -333,9 +333,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 10
   rb: {fileID: 306173912}
-  dashSpeed: 10
-  dashDuration: 1
-  dashCooldown: 1
+  speedModifier: {fileID: 0}
+  Hp: 100
+  dashSpeed: 5
+  dashDuration: 0.25
+  dashCooldown: 3
 --- !u!114 &306173916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -349,7 +351,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 306173915}
-  speedBuff: 2
+  speedDebuff: 2
   floornumber: 1
 --- !u!1 &519420028
 GameObject:
