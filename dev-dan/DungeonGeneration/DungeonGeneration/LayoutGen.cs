@@ -233,10 +233,10 @@ namespace DungeonGeneration
 
                 for (int y = minY; y <= maxY; y++)
                 {
-                    if (GetSides(Layout, startX, y, visited)[1] != (int)RoomIdentifiers.HALLWAY &&
-                     GetSides(Layout, startX, y, visited)[3] != (int)RoomIdentifiers.HALLWAY)
+                    if (Utils.GetSides(Layout, startX, y, visited)[1] != (int)RoomIdentifiers.HALLWAY &&
+                     Utils.GetSides(Layout, startX, y, visited)[3] != (int)RoomIdentifiers.HALLWAY)
                     {
-                        Layout = MarkMap(Layout, startX, y, (int)RoomIdentifiers.HALLWAY);
+                        Layout = Utils.MarkMap(Layout, startX, y, (int)RoomIdentifiers.HALLWAY);
                     }
                     setEntryPoint(startX, y, true, identifierLast);
                     visited.Add(new int[] { y, startX });
@@ -252,9 +252,9 @@ namespace DungeonGeneration
 
                 for (int x = minX; x <= maxX; x++)
                 {
-                    if ((GetSides(Layout, x, startY, visited)[0] != (int)RoomIdentifiers.HALLWAY) && (GetSides(Layout, x, startY, visited)[2] != (int)RoomIdentifiers.HALLWAY))
+                    if ((Utils.GetSides(Layout, x, startY, visited)[0] != (int)RoomIdentifiers.HALLWAY) && (Utils.GetSides(Layout, x, startY, visited)[2] != (int)RoomIdentifiers.HALLWAY))
                     {
-                        Layout = MarkMap(Layout, x, startY, (int)RoomIdentifiers.HALLWAY);
+                        Layout = Utils.MarkMap(Layout, x, startY, (int)RoomIdentifiers.HALLWAY);
                     }
                     setEntryPoint(x, startY, false, identifierLast);
                     visited.Add(new int[] { startY, x });
@@ -280,11 +280,11 @@ namespace DungeonGeneration
                     if (y <= 0) return;
                     if (identifierLastValues.Contains(identifierLast))
                     {
-                        if (Layout[y, x] == (int)RoomIdentifiers.HALLWAY) Layout = MarkMap(Layout, x, y - 1, (int)RoomIdentifiers.ENTRY, null, true);
+                        if (Layout[y, x] == (int)RoomIdentifiers.HALLWAY) Layout = Utils.MarkMap(Layout, x, y - 1, (int)RoomIdentifiers.ENTRY, null, true);
                     }
                     else if (identifierLast == 7)
                     {
-                        if (identifierLastValues.Contains(Layout[y, x])) Layout = MarkMap(Layout, x, y, (int)RoomIdentifiers.ENTRY, null, true);
+                        if (identifierLastValues.Contains(Layout[y, x])) Layout = Utils.MarkMap(Layout, x, y, (int)RoomIdentifiers.ENTRY, null, true);
                     }
 
                     break;
@@ -292,42 +292,14 @@ namespace DungeonGeneration
                     if (x <= 0) return;
                     if (identifierLastValues.Contains(identifierLast))
                     {
-                        if (Layout[y, x] == (int)RoomIdentifiers.HALLWAY) Layout = MarkMap(Layout, x - 1, y, (int)RoomIdentifiers.ENTRY, null, true);
+                        if (Layout[y, x] == (int)RoomIdentifiers.HALLWAY) Layout = Utils.MarkMap(Layout, x - 1, y, (int)RoomIdentifiers.ENTRY, null, true);
                     }
                     else if (identifierLast == 7)
                     {
-                        if (identifierLastValues.Contains(Layout[y, x])) Layout = MarkMap(Layout, x, y, (int)RoomIdentifiers.ENTRY, null, true);
+                        if (identifierLastValues.Contains(Layout[y, x])) Layout = Utils.MarkMap(Layout, x, y, (int)RoomIdentifiers.ENTRY, null, true);
                     }
                     break;
             }
-        }
-
-        /// <summary>
-        /// Marks location on given map, if identifier of the location is 0 or if overwrite is true.
-        /// </summary>
-        /// <param name="map">2d int array where changes are made.</param>
-        /// <param name="x">Location on x-axis where change is to be made.</param>
-        /// <param name="y">Location on y-axis where change is to be made.</param>
-        /// <param name="identifier">Int identifier that is written in specified location.</param>
-        /// <param name="overwriteSpecific">Int array of identifiers that can be overwriten.</param>
-        /// <param name="overwrite">Boolean that decides if everything can be overwriten or not.</param>
-        /// <returns>Return updated map (2d array)</returns>
-        private static int[,] MarkMap(int[,] map, int x, int y, int identifier, int[]? overwriteSpecific = null, bool overwrite = false)
-        {
-            if (map == null) throw new Exception("Layout is null");
-            if (overwriteSpecific != null && overwriteSpecific.Contains(map[y, x]))
-            {
-                map[y, x] = identifier;
-            }
-            else if (overwrite)
-            {
-                map[y, x] = identifier;
-            }
-            else if (map[y, x] == 0)
-            {
-                map[y, x] = identifier;
-            }
-            return map;
         }
 
         private void PrintLayout()

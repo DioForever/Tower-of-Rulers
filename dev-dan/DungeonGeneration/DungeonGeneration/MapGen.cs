@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-
 using FloorSystem;
+
 
 namespace DungeonGeneration
 {
@@ -65,7 +59,7 @@ namespace DungeonGeneration
              (int)RoomIdentifiers.GUARDIANROOM, (int)RoomIdentifiers.GUARDIANROOMMIDDLE,(int)RoomIdentifiers.SPAWNROOM, (int)RoomIdentifiers.SPAWNMIDDLE };
             HashSet<int> identifiersIgnore = new HashSet<int> { (int)RoomIdentifiers.WALL, (int)RoomIdentifiers.HALLWAY, -1 };
 
-            int[] wallSides = GetSides(Layout, x, y);
+            int[] wallSides = Utils.GetSides(Layout, x, y);
             if (identifiersRooms.Contains(Layout[y, x]))
             {
                 // We draw the walls
@@ -117,38 +111,26 @@ namespace DungeonGeneration
                 // RIGHT
                 if (wallSides[1] == (int)RoomIdentifiers.HALLWAY)
                 {
-                    // chunk.map[0, 4] = (int)TilesGroupIdentifiers.TOPWALL;
-                    // chunk.map[4, 4] = (int)TilesGroupIdentifiers.BOTTOMWALL;
-
-                    chunk.map = MarkMap(chunk.map, 4, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
-                    chunk.map = MarkMap(chunk.map, 4, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 4, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 4, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
                 }
                 // LEFT
                 if (wallSides[3] == (int)RoomIdentifiers.HALLWAY)
                 {
-                    // chunk.map[0, 0] = (int)TilesGroupIdentifiers.TOPWALL;
-                    // chunk.map[4, 0] = (int)TilesGroupIdentifiers.BOTTOMWALL;
-
-                    chunk.map = MarkMap(chunk.map, 0, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
-                    chunk.map = MarkMap(chunk.map, 0, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 0, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 0, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
                 }
                 // TOP 
                 if (wallSides[0] == (int)RoomIdentifiers.HALLWAY)
                 {
-                    // chunk.map[0, 0] = (int)TilesGroupIdentifiers.TOPWALL;
-                    // chunk.map[0, 4] = (int)TilesGroupIdentifiers.TOPWALL;
-
-                    chunk.map = MarkMap(chunk.map, 0, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
-                    chunk.map = MarkMap(chunk.map, 4, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 0, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 4, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
                 }
                 // BOTTOM
                 if (wallSides[2] == (int)RoomIdentifiers.HALLWAY)
                 {
-                    // chunk.map[4, 0] = (int)TilesGroupIdentifiers.BOTTOMWALL;
-                    // chunk.map[4, 4] = (int)TilesGroupIdentifiers.BOTTOMWALL;
-
-                    chunk.map = MarkMap(chunk.map, 0, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
-                    chunk.map = MarkMap(chunk.map, 4, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 0, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 4, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
                 }
 
             }
@@ -159,27 +141,27 @@ namespace DungeonGeneration
                 // RIGHT
                 if (wallSides[1] == (int)RoomIdentifiers.ENTRY || wallSides[1] == (int)RoomIdentifiers.HALLWAY)
                 {
-                    chunk.map = MarkMap(chunk.map, 4, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
-                    chunk.map = MarkMap(chunk.map, 4, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 4, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 4, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
                 }
                 // LEFT
                 if (wallSides[3] == (int)RoomIdentifiers.ENTRY || wallSides[3] == (int)RoomIdentifiers.HALLWAY)
                 {
-                    chunk.map = MarkMap(chunk.map, 0, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
-                    chunk.map = MarkMap(chunk.map, 0, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 0, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 0, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
                 }
                 // TOP 
                 if (wallSides[0] == (int)RoomIdentifiers.ENTRY || wallSides[0] == (int)RoomIdentifiers.HALLWAY)
                 {
 
-                    chunk.map = MarkMap(chunk.map, 0, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
-                    chunk.map = MarkMap(chunk.map, 4, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 0, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 4, 0, (int)TilesGroupIdentifiers.TOPWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
                 }
                 // BOTTOM
                 if (wallSides[2] == (int)RoomIdentifiers.ENTRY || wallSides[2] == (int)RoomIdentifiers.HALLWAY)
                 {
-                    chunk.map = MarkMap(chunk.map, 0, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
-                    chunk.map = MarkMap(chunk.map, 4, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 0, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
+                    chunk.map = Utils.MarkMap(chunk.map, 4, 4, (int)TilesGroupIdentifiers.BOTTOMWALL, new int[1] { (int)TilesGroupIdentifiers.FLOOR });
                 }
                 // We draw the walls
                 if (wallSides[0] == (int)RoomIdentifiers.WALL || wallSides[0] == (int)RoomIdentifiers.ROOM ||
@@ -302,15 +284,15 @@ namespace DungeonGeneration
             switch (map[y, x])
             {
                 case (int)TilesGroupIdentifiers.TOPWALL:
-                    return GetTOPWALIdentifier(GetSides(map, x, y));
+                    return GetTOPWALIdentifier(Utils.GetSides(map, x, y));
                 case (int)TilesGroupIdentifiers.RIGHTWALL:
                     return GetRIGHTWALLIdentifier();
                 case (int)TilesGroupIdentifiers.BOTTOMWALL:
-                    return GetBOTTOMWALLIdentifier(GetSides(map, x, y));
+                    return GetBOTTOMWALLIdentifier(Utils.GetSides(map, x, y));
                 case (int)TilesGroupIdentifiers.LEFTWALL:
                     return GetLEFTWALLIdentifier();
                 case (int)TilesGroupIdentifiers.FLOOR:
-                    return GetFLOORIdentifier(GetSides(map, x, y));
+                    return GetFLOORIdentifier(Utils.GetSides(map, x, y));
 
             }
             return 0;
@@ -454,85 +436,6 @@ namespace DungeonGeneration
             else if (sides[3] != (int)TilesGroupIdentifiers.FLOOR && sides[3] != -1) { return (int)TilesIdentifiers.MIDDLEFLOORLEFT; }
             return (int)TilesIdentifiers.MIDDLEFLOORMIDDLE;
 
-        }
-        public static bool ArrayEquals(int[] a, int[] b)
-        {
-            if (a == null || b == null) return false;
-            if (a.Length != b.Length) return false;
-            return !a.Where((t, i) => t != b[i]).Any();
-        }
-        /// <summary>
-        /// Checks if List of visited locations have been already visited.
-        /// </summary>
-        /// <param name="current_location">Int array with [y,x] coordinates.</param>
-        /// <param name="visitedList"></param>
-        /// <returns>True/False if location has been already visited.</returns>
-        public static bool HaveVisited(int[] current_location, List<int[]> visitedList)
-        {
-            return visitedList.Any(visitedArray => ArrayEquals(current_location, visitedArray));
-        }
-
-        /// <summary>
-        /// Takes location and 2d array to get neigbours in four main directions, top, right, bottom, left.
-        /// </summary>
-        /// <param name="map">2d int array, in which the sides are checked.</param>
-        /// <param name="x">Location of which sides are checked on X-axis.</param>
-        /// <param name="y">Location of which sides are checked on X-axis.</param>
-        /// <param name="locationsIgnore">List of int[] (y,x) that are ignored, return -1</param>
-        /// <returns>int[] of 4 directions, top, right, bottom, left, with int identifiers as value. Returns -1 if neigbour is outside of 2d array or location is ignored.</returns>
-        public static int[] GetSides(int[,] map, int x, int y, List<int[]>? locationsIgnore = null)
-        {
-            if (map == null) throw new Exception("Given map is null");
-
-            // We create an array of 4 ints, each int represents a side of the wall {top, right, bottom, left}
-            int[] wallSidesRooms = new int[4] { 0, 0, 0, 0 };
-            // First, lets check if we can even check for walls
-            if (locationsIgnore != null)
-            {
-                if (HaveVisited(new int[2] { y, x - 1 }, locationsIgnore))
-                {
-                    wallSidesRooms[3] = -1;
-                }
-                if (HaveVisited(new int[2] { y, x + 1 }, locationsIgnore))
-                {
-                    wallSidesRooms[1] = -1;
-                }
-                if (HaveVisited(new int[2] { y - 1, x }, locationsIgnore))
-                {
-                    wallSidesRooms[0] = -1;
-                }
-                if (HaveVisited(new int[2] { y - 1, x }, locationsIgnore))
-                {
-                    wallSidesRooms[2] = -1; ;
-                }
-            }
-            if (x - 1 < 0)
-            {
-                wallSidesRooms[3] = -1;
-            }
-            if (x + 1 > map.GetLength(0) - 1)
-            {
-                wallSidesRooms[1] = -1;
-            }
-            if (y - 1 < 0)
-            {
-                wallSidesRooms[0] = -1;
-            }
-            if (y + 1 > map.GetLength(1) - 1)
-            {
-                wallSidesRooms[2] = -1;
-            }
-            int top = y - 1;
-            int right = x + 1;
-            int bottom = y + 1;
-            int left = x - 1;
-            // Now we save the identifiers of the rooms
-            if (wallSidesRooms[0] != -1) { wallSidesRooms[0] = map[top, x]; }
-            if (wallSidesRooms[1] != -1) { wallSidesRooms[1] = map[y, right]; }
-            if (wallSidesRooms[2] != -1) { wallSidesRooms[2] = map[bottom, x]; }
-            if (wallSidesRooms[3] != -1) { wallSidesRooms[3] = map[y, left]; }
-
-            return wallSidesRooms;
         }
         /// <summary>
         /// Testing method to print map.
