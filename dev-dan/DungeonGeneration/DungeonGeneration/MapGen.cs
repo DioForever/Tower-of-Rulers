@@ -11,11 +11,11 @@ namespace DungeonGeneration
 {
     public partial class DungeonFloor
     {
+        int chunkSize = 5;
         /// <summary>
         /// Generates Dungeon Map from Layout, Layout is required to be already generated.
         /// Layout generation: GenerateLayout(); 
         /// </summary>
-        int chunkSize = 5;
         public void GenerateMap()
         {
             if (Layout == null) throw new Exception("Layout is null");
@@ -292,6 +292,11 @@ namespace DungeonGeneration
             BOTTOMFLOORMIDDLE = 24,
             BOTTOMFLOORRIGHT = 25,
         }
+        /// <summary>
+        /// Returns specific identifier of a Tile of Wall (Tile group), by checking Tile group identifiers of the main four sides.
+        /// </summary>
+        /// <param name="sides">Int[] with identifiers of top, right, bottom, left side from a certain position</param>
+        /// <returns>int - Identifier of a tile</returns>
         private int GetWallIdentifier(int[,] map, int x, int y)
         {
             switch (map[y, x])
@@ -310,7 +315,11 @@ namespace DungeonGeneration
             }
             return 0;
         }
-
+        /// <summary>
+        /// Returns specific identifier of a Tile of Top-Wall (Tile group), by checking Tile group identifiers of the main four sides.
+        /// </summary>
+        /// <param name="sides">Int[] with identifiers of top, right, bottom, left side from a certain position</param>
+        /// <returns>int - Identifier of a tile</returns>
         private int GetTOPWALIdentifier(int[] sides)
         {
             // Its a LEFTTOP corner
@@ -342,6 +351,11 @@ namespace DungeonGeneration
                 else return (int)TilesIdentifiers.TOPWALLMIDDLE;
             }
         }
+        /// <summary>
+        /// Returns specific identifier of a Tile ofRight-Wall (Tile group), by checking Tile group identifiers of the main four sides.
+        /// </summary>
+        /// <param name="sides">Int[] with identifiers of top, right, bottom, left side from a certain position</param>
+        /// <returns>int - Identifier of a tile</returns>
         private int GetRIGHTWALLIdentifier()
         {
             Random rand = new Random();
@@ -350,6 +364,11 @@ namespace DungeonGeneration
             else if (random == 1) return (int)TilesIdentifiers.RIGHTWALLBOTTOM;
             else return (int)TilesIdentifiers.RIGHTWALLMIDDLE;
         }
+        /// <summary>
+        /// Returns specific identifier of a Tile of Bottom-Wall (Tile group), by checking Tile group identifiers of the main four sides.
+        /// </summary>
+        /// <param name="sides">Int[] with identifiers of top, right, bottom, left side from a certain position</param>
+        /// <returns>int - Identifier of a tile</returns>
         private int GetBOTTOMWALLIdentifier(int[] sides)
         {
             // Its a LEFTTOP corner
@@ -365,11 +384,11 @@ namespace DungeonGeneration
             // These are the corners with the hallways
             else if (sides[2] == -1 && sides[1] == -1 && sides[3] != (int)TilesGroupIdentifiers.BOTTOMWALL)
             {
-                return (int)TilesIdentifiers.TOPCORNERRIGHT;
+                return (int)TilesIdentifiers.TOPCORNERLEFT;
             }
             else if (sides[2] == -1 && sides[3] == -1 && sides[1] != (int)TilesGroupIdentifiers.BOTTOMWALL)
             {
-                return (int)TilesIdentifiers.TOPCORNERLEFT;
+                return (int)TilesIdentifiers.TOPCORNERRIGHT;
             }
             // Its a middle wall, so we randomly pick one of the top wall tiles
             else
@@ -381,6 +400,11 @@ namespace DungeonGeneration
                 else return (int)TilesIdentifiers.BOTTOMFLOORMIDDLE;
             }
         }
+        /// <summary>
+        /// Returns specific identifier of a Tile of Left-Wall (Tile group), by checking Tile group identifiers of the main four sides.
+        /// </summary>
+        /// <param name="sides">Int[] with identifiers of top, right, bottom, left side from a certain position</param>
+        /// <returns>int - Identifier of a tile</returns>
         private int GetLEFTWALLIdentifier()
         {
             Random rand = new Random();
@@ -389,6 +413,11 @@ namespace DungeonGeneration
             else if (random == 1) return (int)TilesIdentifiers.LEFTWALLBOTTOM;
             else return (int)TilesIdentifiers.LEFTWALLMIDDLE;
         }
+        /// <summary>
+        /// Returns specific identifier of a Tile of Floor (Tile group), by checking Tile group identifiers of the main four sides.
+        /// </summary>
+        /// <param name="sides">Int[] with identifiers of top, right, bottom, left side from a certain position</param>
+        /// <returns>int - Identifier of a tile</returns>
         private int GetFLOORIdentifier(int[] sides)
         {
             // We gonna first check if it doesnt need to be replaced with a corner
@@ -432,13 +461,26 @@ namespace DungeonGeneration
             if (a.Length != b.Length) return false;
             return !a.Where((t, i) => t != b[i]).Any();
         }
-
-        public static bool HaveVisited(int[] array, List<int[]> visitedList)
+        /// <summary>
+        /// Checks if List of visited locations have been already visited.
+        /// </summary>
+        /// <param name="current_location">Int array with [y,x] coordinates.</param>
+        /// <param name="visitedList"></param>
+        /// <returns>True/False if location has been already visited.</returns>
+        public static bool HaveVisited(int[] current_location, List<int[]> visitedList)
         {
-            return visitedList.Any(visitedArray => ArrayEquals(array, visitedArray));
+            return visitedList.Any(visitedArray => ArrayEquals(current_location, visitedArray));
         }
 
-        public int[] GetSides(int[,] map, int x, int y, List<int[]>? locationsIgnore = null)
+        /// <summary>
+        /// Takes location and 2d array to get neigbours in four main directions, top, right, bottom, left.
+        /// </summary>
+        /// <param name="map">2d int array, in which the sides are checked.</param>
+        /// <param name="x">Location of which sides are checked on X-axis.</param>
+        /// <param name="y">Location of which sides are checked on X-axis.</param>
+        /// <param name="locationsIgnore">List of int[] (y,x) that are ignored, return -1</param>
+        /// <returns>int[] of 4 directions, top, right, bottom, left, with int identifiers as value. Returns -1 if neigbour is outside of 2d array or location is ignored.</returns>
+        public static int[] GetSides(int[,] map, int x, int y, List<int[]>? locationsIgnore = null)
         {
             if (map == null) throw new Exception("Given map is null");
 
@@ -492,7 +534,11 @@ namespace DungeonGeneration
 
             return wallSidesRooms;
         }
-
+        /// <summary>
+        /// Testing method to print map.
+        /// </summary>
+        /// <param name="mapLayout">2d array of chunks.</param>
+        /// <param name="mode">False => Prints map with Tile group color schemes. True => Prints map with Tiles color schemes.</param>
         public void PrintMap(Chunk[,]? mapLayout = null, bool mode = false)
         {
             if (mapLayout == null) mapLayout = floorMap;
