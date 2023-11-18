@@ -4,7 +4,6 @@ using System.Linq;
 
 using FloorSystem;
 
-
 namespace DungeonGeneration
 {
     public partial class DungeonFloor
@@ -18,37 +17,41 @@ namespace DungeonGeneration
         {
             if (Layout == null) throw new Exception("Layout is null");
 
-
             for (int chunkY = 0; chunkY < Layout.GetLength(0); chunkY++)
             {
                 for (int chunkX = 0; chunkX < Layout.GetLength(1); chunkX++)
                 {
+                    // We have three phases of creating chunks, first we generate chunk, then we set tiles, then we decorate
                     Chunk chunk = GenerateChunk(chunkX, chunkY);
                     chunk = ChunkTilesSetter(chunk, chunkX, chunkY);
-
+                    chunk = DecorateChunk(chunk, chunkX, chunkY);
+                    // We save the chunk to the floorMap
                     floorMap[chunkY, chunkX] = chunk;
                 }
             }
 
-
-
-
+        }
+        private Chunk DecorateChunk(Chunk chunk, int x, int y){
+            // If its a spawn room or guardian room, we put a teleport in the middle 
+            if(Layout[y,x] == (int)RoomIdentifiers.GUARDIANROOMMIDDLE || Layout[y,x] == (int)RoomIdentifiers.SPAWNMIDDLE){
+                chunk = DecorateTeleport(chunk, x, y);}
+            
+            return chunk;
         }
 
+        private Chunk DecorateTeleport(Chunk chunk, int x, int y){
+            // We put teleport in the middle of the chunk
+            chunk.decorationMap[2,2] = (int)TilesDecoration.TELEPORT;
+            return chunk;
+        }        
         private Chunk GenerateChunk(int x, int y)
         {
             if (Layout == null) throw new Exception("Layout is null");
 
             Chunk chunk = new Chunk();
-            chunk.map = new int[5, 5] {
-                {0,0,0,0,0},
-                {0,0,0,0,0},
-                {0,0,0,0,0},
-                {0,0,0,0,0},
-                {0,0,0,0,0}
-            };
             // If its empty chunk, we dont need to continue
             if (Layout[y, x] == 0) return chunk;
+            // Its not an empty chunk, we put floor everywhere
             else
             {
                 for (int i = 0; i < chunk.map.GetLength(0); i++)
@@ -199,6 +202,7 @@ namespace DungeonGeneration
         }
         private Chunk ChunkTilesSetter(Chunk chunk, int x, int y)
         {
+            // We create a temp chunk, so we dont modify the original chunk and get correct sides
             Chunk tempChunk = new Chunk();
             tempChunk.map = new int[5, 5];
             for (int i = 0; i < chunk.map.GetLength(0); i++)
@@ -206,6 +210,7 @@ namespace DungeonGeneration
                 for (int j = 0; j < chunk.map.GetLength(1); j++)
                 {
                     if (chunk.map[i, j] == 0) continue;
+                    // We call GetWallidentifier to get the correct identifier of the tile
                     tempChunk.map[i, j] = GetWallIdentifier(chunk.map, j, i);
                 }
             }
@@ -215,24 +220,15 @@ namespace DungeonGeneration
 
         private int[,] DrawVerticalLine(int[,] map, int groupIdentifier, int xOffset = 0, int yOffset = 0)
         {
-            for (int y = 0; y < map.GetLength(0); y++)
-            {
-                map[y + yOffset, xOffset] = groupIdentifier;
-                // System.Console.WriteLine($"{y + yOffset} {xOffset}");
-                // map[y + yOffset, xOffset] = getIdentifierByGroup(groupIdentifier, map, xOffset, y + yOffset);
-            }
+            for (int y = 0; y < map.GetLength(0); y++){map[y + yOffset, xOffset] = groupIdentifier;}
             return map;
         }
         private int[,] DrawHorizontalLine(int[,] map, int groupIdentifier, int xOffset = 0, int yOffset = 0)
         {
-            for (int x = 0; x < map.GetLength(1) - xOffset; x++)
-            {
-                // System.Console.WriteLine($"{yOffset} {x + xOffset}");
-                map[yOffset, x + xOffset] = groupIdentifier;
-                // map[yOffset, x + xOffset] = getIdentifierByGroup(groupIdentifier, map, x + xOffset, yOffset);
-            }
+            for (int x = 0; x < map.GetLength(1) - xOffset; x++){map[yOffset, x + xOffset] = groupIdentifier;}
             return map;
         }
+        // TilesGroupIdentifiers are identifiers of a group of tiles, for example: TOPWALL, RIGHTWALL, BOTTOMWALL, LEFTWALL, FLOOR
         private enum TilesGroupIdentifiers
         {
             TOPWALL = 1,
@@ -241,6 +237,7 @@ namespace DungeonGeneration
             LEFTWALL,
             FLOOR
         }
+        // TilesIdentifiers are the final identifiers that are saved and then rendered in the game
         private enum TilesIdentifiers
         {
             WALL = 0,
@@ -287,6 +284,12 @@ namespace DungeonGeneration
             // BOTTOMFLOORMIDDLE = 23,
             // BOTTOMFLOORRIGHT = 24,
         }
+        // TilesDecoration are identifiers of a decoration of a tile, for example: RUNEPILLAR, RUNEPILLARBROKEN, TELEPORT
+        private enum TilesDecoration{
+            RUNEPILLAR = 1,
+            RUNEPILLARBROKEN = 2,
+            TELEPORT = 3,
+        }
         /// <summary>
         /// Returns specific identifier of a Tile of Wall (Tile group), by checking Tile group identifiers of the main four sides.
         /// </summary>
@@ -294,6 +297,7 @@ namespace DungeonGeneration
         /// <returns>int - Identifier of a tile</returns>
         private int GetWallIdentifier(int[,] map, int x, int y)
         {
+            // According to the tile group identifier, we call a specific method to get the identifier of the tile
             switch (map[y, x])
             {
                 case (int)TilesGroupIdentifiers.TOPWALL:
@@ -471,6 +475,8 @@ namespace DungeonGeneration
             return (int)TilesIdentifiers.MIDDLEFLOORMIDDLE;
 
         }
+
+        #if UNITY_EDITOR
         /// <summary>
         /// Testing method to print map.
         /// </summary>
@@ -504,6 +510,35 @@ namespace DungeonGeneration
                 {
                     if (mode == false) PrintChunkOnMap(mapMerged[y, x]);
                     else PrintChunkOnMapWithTiles(mapMerged[y, x]);
+                }
+                System.Console.WriteLine();
+            }
+            System.Console.WriteLine("\n\n");
+            int[,] mapDecMerged = new int[mapLayout.GetLength(0) * chunkSize, mapLayout.GetLength(1) * chunkSize];
+            for (int i = 0; i < mapLayout.GetLength(0); i++)
+            {
+                for (int j = 0; j < mapLayout.GetLength(1); j++)
+                {
+                    // Now we go one deeper, inside the chunks
+                    Chunk chunk = mapLayout[i, j];
+                    for (int y = 0; y < chunk.decorationMap.GetLength(0); y++)
+                    {
+                        for (int x = 0; x < chunk.decorationMap.GetLength(1); x++)
+                        {
+                            int indexY = i * chunkSize + y;
+                            int indexX = j * chunkSize + x;
+                            mapDecMerged[indexY, indexX] = chunk.decorationMap[y, x];
+                        }
+                    }
+                }
+            }
+
+            for (int y = 0; y < mapDecMerged.GetLength(0); y++)
+            {
+                for (int x = 0; x < mapDecMerged.GetLength(1); x++)
+                {
+                    if (mode == false) PrintChunkOnMap(mapDecMerged[y, x]);
+                    else PrintChunkOnMapWithTiles(mapDecMerged[y, x]);
                 }
                 System.Console.WriteLine();
             }
@@ -601,5 +636,6 @@ namespace DungeonGeneration
             else Console.Write(identifier + " ");
         }
     }
+    #endif
 
 }

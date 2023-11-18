@@ -12,9 +12,9 @@ TagManager:
   - Water
   - UI
   - Basic
-  - Decoration
-  - 
-  - 
+  - DecorationTile
+  - DecorationChunk
+  - Player
   - 
   - 
   - 
@@ -38,6 +38,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 4074735289
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

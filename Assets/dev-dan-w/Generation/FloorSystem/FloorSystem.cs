@@ -13,6 +13,10 @@ namespace FloorSystem
     {
         public int floorNumber;
         public Chunk[,] floorMap;
+        public int spawnX;
+        public int spawnY;
+        public int exitX;
+        public int exitY;
 
         public Floor(int SizeX, int SizeY, int floorNumber, Chunk[,] floorMap = null)
         {
@@ -28,14 +32,26 @@ namespace FloorSystem
     public class Chunk
     {
         public int[,] map;
-        public int[,] decorationLayout;
-        // TODO: Add a way to store npc's and items in the chunk
-        public Chunk(int[,] map = null, int[,] decorationLayout = null)
+        public int[,] decorationMap;
+        // TODO: Add a way to store npc's and items in the chunk (Require Monsters to be created first, and then I can store them)
+        public Chunk(int[,] map = null, int[,] decorationMap = null)
         {
             if (map != null) this.map = map;
-            else this.map = new int[3, 3];
-            if (decorationLayout != null) this.decorationLayout = decorationLayout;
-            else this.decorationLayout = new int[3, 3];
+            else this.map = new int[5, 5]{
+                {0,0,0,0,0},
+                {0,0,0,0,0},
+                {0,0,0,0,0},
+                {0,0,0,0,0},
+                {0,0,0,0,0}
+            };
+            if (decorationMap != null) this.decorationMap = decorationMap;
+            else this.decorationMap = new int[5, 5] {
+                {0,0,0,0,0},
+                {0,0,0,0,0},
+                {0,0,0,0,0},
+                {0,0,0,0,0},
+                {0,0,0,0,0}
+            };
         }
     }
 }

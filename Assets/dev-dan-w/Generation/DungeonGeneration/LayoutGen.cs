@@ -8,21 +8,21 @@ using FloorSystem;
 namespace DungeonGeneration
 {
     /// <summary>
-    /// A Dungeon floor (Floor) is a collection of chunks that make up a floor and a layout of the floor
+    /// Represents a Dungeon floor, consisting of chunks, rooms, and hallways.
     /// </summary>
     public partial class DungeonFloor : Floor
     {
         public Chunk[,] DungeonMap;
-        private static int[,]? Layout;
+        private static int[,] Layout;
         private Room[] Rooms;
         // private int[][] roomLocations;
 
         /// <summary>
-        /// A Dungeon floor (Floor) is a collection of chunks that make up a floor and a layout of the floor
+        /// Initializes a new instance of the DungeonFloor class.
         /// </summary>
         /// <param name="floorNumber">Number of the floor.</param>
-        /// <param name="SizeY">Size of the Layout in chunks, on y-axis.</param>
-        /// <param name="SizeX">Size of the Layout in chunks, on x-axis.</param>
+        /// <param name="SizeY">Size of the Layout in chunks on the y-axis.</param>
+        /// <param name="SizeX">Size of the Layout in chunks on the x-axis.</param>
         public DungeonFloor(int floorNumber, int SizeY, int SizeX) : base(SizeX, SizeY, floorNumber)
         {
             Layout = new int[SizeY, SizeX];
@@ -46,9 +46,9 @@ namespace DungeonGeneration
             ENTRY = 8
         }
         /// <summary>
-        /// Generates whole Layout, rooms and hallways.
+        /// Generates the entire Layout, including rooms and hallways.
         /// </summary>
-        /// <param name="debug">True/False, decides if the layout is printed.</param>
+        /// <param name="debug">True/False, decides if the layout is printed for debugging.</param>
         public void GenerateLayout(bool debug = false)
         {
             GenerateRooms();
@@ -74,12 +74,15 @@ namespace DungeonGeneration
             spawnRoomLocation[0] = rand.Next(1, floorMap.GetLength(0) - 1);
             spawnRoomLocation[1] = rand.Next(1, floorMap.GetLength(1) - 1);
             GenerateRoom(spawnRoomLocation, rand, 0, (int)RoomIdentifiers.SPAWNROOM, 3, 3);
+            spawnY = spawnRoomLocation[0];
+            spawnX = spawnRoomLocation[1];
             // Generate guardian room
             int[] guardianRoomLocation = new int[2];
             for (int i = 0; i < 1;)
             {
                 int tries = 0;
                 bool distanceNotReached = true;
+                // We intend to reach the distance of half of the map, so the spawn and guardian isnt so close
                 while (distanceNotReached)
                 {
                     tries++;
@@ -90,20 +93,25 @@ namespace DungeonGeneration
                     {
                         distanceNotReached = false;
                     }
+                    // If we cant find a location in 500 tries, we just place it somewhere
                     if (tries > 500)
                     {
                         distanceNotReached = false;
                         System.Console.WriteLine("Tries exceeded");
                     }
                 }
+                // We try to generate a room, if it fails, we try again
                 i = GenerateRoom(guardianRoomLocation, rand, 1, (int)RoomIdentifiers.GUARDIANROOM, 4, 4);
             }
+            exitY = guardianRoomLocation[0];
+            exitX = guardianRoomLocation[1];
 
 
             int totalTries = 0;
             // Generate other rooms
             for (int i = 2; i < Rooms.Length;)
             {
+                // We try to generate a room, if it fails, we try again, but after 500 tries we just stop
                 totalTries += 1;
                 if (totalTries > 500)
                 {
@@ -115,6 +123,7 @@ namespace DungeonGeneration
                 roomLocation[1] = rand.Next(1, floorMap.GetLength(1) - 1);
                 i = GenerateRoom(roomLocation, rand, i);
             }
+            // Remove nulls from rooms
             Rooms = Rooms.Where(x => x != null).ToArray();
 
         }
@@ -131,16 +140,19 @@ namespace DungeonGeneration
         private int GenerateRoom(int[] roomLocation, Random rand, int i, int identifier = (int)RoomIdentifiers.ROOM, int sizeX = -1, int sizeY = -1)
         {
             if (Layout == null) throw new Exception("Layout is null");
+            // Check if we can place a room there (0 represents empty space)
             if (Layout[roomLocation[0], roomLocation[1]] == 0)
             {
+                // We place the room in the Layout and set the identifier+1 (representing the middle of the room)
                 Layout[roomLocation[0], roomLocation[1]] = identifier + 1;
                 if (sizeX <= 0 && sizeY <= 0)
                 {
                     sizeX = rand.Next(3, 4);
                     sizeY = rand.Next(3, 4);
                 }
+                // We create a new room object and add it to the array
                 Room room = new Room(roomLocation, sizeY, sizeX);
-
+                // We fill the room with the identifier
                 if (FillRoom(roomLocation[1], roomLocation[0], room.sizeX, room.sizeY, identifier))
                 {
                     Rooms[i] = room; i++;
@@ -151,11 +163,12 @@ namespace DungeonGeneration
         /// <summary>
         /// Generates hallways for the whole Layout.
         /// </summary>
-        /// <param name="ammount">Ammount of hallways coming out from each room.</param>
+        /// <param name="ammount">Amount of hallways coming out from each room.</param>
         private void GenerateHallways(int ammount = 1)
         {
             // Dictionary of connected rooms, key is the index and value is an array of the closest room indexes
             Dictionary<int, int> connectedRooms = new Dictionary<int, int>();
+            // We keep track of the unconnected rooms and remove them from the list if they were connected
             List<int> unconnectedRooms = new List<int>();
             for(int i = 0; i < Rooms.Length; i++){
                 unconnectedRooms.Add(i);
@@ -165,11 +178,13 @@ namespace DungeonGeneration
                 Room room = Rooms[i];
                 Random rand = new();
                 if(i == 1){
+                    // We cant connect the spawn room to the guardian room, so we dont
                     int connectTo = rand.Next(2, unconnectedRooms.Count);
                     connectedRooms.Add(i, connectTo);
                     unconnectedRooms.Remove(connectTo);
                     continue;
                 }
+                // We connect the room to another random room and then remove it from unconnected list
                 bool connected= false;
                 while(!connected){
                     int connectTo = rand.Next(0, unconnectedRooms.Count);
@@ -200,11 +215,9 @@ namespace DungeonGeneration
         {
             if (Layout == null) throw new Exception("Layout is null");
             int[] corner = new int[2] { firstLoc[0], secondLoc[1] };
-            List<int[]> visited = new List<int[]>();
-            // System.Console.WriteLine($"Generating hallway between {string.Join(",", firstLoc)} and {string.Join(",", corner)}");
-            ConnectStraight(firstLoc, corner, visited);
-            // System.Console.WriteLine($"Generating hallway between {string.Join(",", corner)} and {string.Join(",", secondLoc)}");
-            ConnectStraight(corner, secondLoc, visited);
+            List<int[]> visited = new List<int[]>(); // List of already visited locations
+            ConnectStraight(firstLoc, corner, visited); // Connects firstLoc and corner
+            ConnectStraight(corner, secondLoc, visited); // Connects corner and secondLoc
             visited = new List<int[]>();
         }
         /// <summary>
@@ -220,7 +233,6 @@ namespace DungeonGeneration
             int startY = firstLoc[0];
             int endX = secondLoc[1];
             int endY = secondLoc[0];
-            // System.Console.WriteLine($"Connecting {string.Join(",", firstLoc)} and {string.Join(",", secondLoc)}");
             int identifierLast = 0;
             if (startX == endX)
             {
@@ -230,12 +242,13 @@ namespace DungeonGeneration
 
                 for (int y = minY; y <= maxY; y++)
                 {
-                    // Layout[y,startX] = 9;
+                    // We make sure that if there are HALLWAYS around, we dont spawn another one, to keep it clean
                     if (Utils.GetSides(Layout, startX, y, visited)[1] != (int)RoomIdentifiers.HALLWAY &&
                      Utils.GetSides(Layout, startX, y, visited)[3] != (int)RoomIdentifiers.HALLWAY)
                     {
                         Layout = Utils.MarkMap(Layout, startX, y, (int)RoomIdentifiers.HALLWAY);
                     }
+                    // We set the entry point for the room, so we know where to not place walls
                     setEntryPoint(startX, y, true, identifierLast);
                     visited.Add(new int[] { y, startX });
 
@@ -250,11 +263,12 @@ namespace DungeonGeneration
 
                 for (int x = minX; x <= maxX; x++)
                 {
-                    // Layout[startY,x ] = 9;
+                    // We make sure that if there are HALLWAYS around, we dont spawn another one, to keep it clean
                     if ((Utils.GetSides(Layout, x, startY, visited)[0] != (int)RoomIdentifiers.HALLWAY) && (Utils.GetSides(Layout, x, startY, visited)[2] != (int)RoomIdentifiers.HALLWAY))
                     {
                         Layout = Utils.MarkMap(Layout, x, startY, (int)RoomIdentifiers.HALLWAY);
                     }
+                    // We set the entry point for the room, so we know where to not place walls
                     setEntryPoint(x, startY, false, identifierLast);
                     visited.Add(new int[] { startY, x });
 
@@ -273,6 +287,7 @@ namespace DungeonGeneration
         {
             if (Layout == null) throw new Exception("Layout is null");
             HashSet<int> identifierLastValues = new HashSet<int> { (int)RoomIdentifiers.ROOM, (int)RoomIdentifiers.GUARDIANROOM, (int)RoomIdentifiers.SPAWNROOM };
+            // According to direction, we check the positions differently
             switch (direction)
             {
                 case true:
@@ -301,6 +316,7 @@ namespace DungeonGeneration
             }
         }
 
+        #if UNITY_EDITOR
         private void PrintLayout()
         {
             if (Layout == null) throw new Exception("Layout is null");
@@ -357,12 +373,13 @@ namespace DungeonGeneration
         /// <param name="sizeY">Y size of the room.</param>
         /// <param name="identifier">Int identifier of RoomIdentifier.</param>
         /// <returns>True/False if room was constructed and doesn't collide with other room.</returns>
+        #endif
         private bool FillRoom(int x, int y, int sizeX, int sizeY, int identifier)
         {
             if (Layout == null) throw new Exception("Layout is null");
             int cols = Layout.GetLength(0);
             int rows = Layout.GetLength(1);
-            int[,]? tempLayout = Layout.Clone() as int[,];
+            int[,] tempLayout = Layout.Clone() as int[,];
             if (tempLayout == null) throw new Exception("tempLayout is null");
 
             // Lets check if its not right next to another room
