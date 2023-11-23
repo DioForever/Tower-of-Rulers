@@ -6,7 +6,7 @@ public class playerControl : MonoBehaviour
     public float moveSpeed;
     public Rigidbody2D rb;
     private Vector2 moveDirection;
-    public StatModification speedModifier;
+    public StatModifier speedModifier;
     
 //speed
     public delegate void MoveSpeedChanged(); //ostatní skripty reagují na změnu moveSpeedu
@@ -80,7 +80,7 @@ public class playerControl : MonoBehaviour
     }
     public void UpdateHp(float newHp)
     {
-       SpeedModifier.UpdateHp(newHp);
+       speedModifier.UpdateHp(newHp);
         OnHpChanged?.Invoke();
     }
     public void UpdateMana(float newMana) //funkce na updatnutí moveSpeedu
