@@ -9,11 +9,11 @@ public class StatModifier : MonoBehaviour
 
     private float[] speedDebuffValues = {2.0f,0.5f};
     private float originalMoveSpeed;
-    private float[] healthDebuffValues = {0.8f, 0.5f};
+    private float[] healthDebuffValues = {1.25f, 2.0f,0.5f};
     private float originalHealth;
-    private float[] strengthDebuffValues = {0.8f,0.5f};
-    private float originalStrenght;
-    private float[] manaDebuffValues = {0.2f,4.0f};
+    private float[] strengthDebuffValues = {0.8f,0.5f,0.2f};
+    private float originalStrength;
+    private float[] manaDebuffValues = {5.0f,0.25f,0.2f};
     private float originalMana;
 
     public float floornumber = 1;
@@ -30,20 +30,20 @@ public class StatModifier : MonoBehaviour
 
         if(BossIsDead == false && floornumber >= 1 && floornumber <= 10)
         {
-            
-            ApplySpeedDebuff(speedDebuffValues[0]);
+            ApplySpeedDebuff(speedDebuffValues[0]); // 50% rychlosti
+            ApplyHealthDebuff(healthDebuffValues[2]); // 2x života
         }
 
         else if(BossIsDead == false && floornumber >= 11 && floornumber <= 20)
-        {
-            
-            ApplyHealthDebuff(healthDebuffValues[0]);
+        {    
+            ApplyHealthDebuff(healthDebuffValues[0]); // 80% života
+            ApplyStrengthDebuff(strengthDebuffValues[2]) // 5x síly
         }
 
         else if(BossIsDead == false && floornumber >= 21 && floornumber <= 30)
         {
-            
-            ApplyStrengthDebuff(strengthDebuffValues[0]);
+            ApplyStrengthDebuff(strengthDebuffValues[0]); //125% síly
+            ApplyManaDebuff(manaDebuffValues[2]); //5x many
         }
 
         else if(BossIsDead == false && floornumber >= 31 && floornumber <= 40)
@@ -51,39 +51,46 @@ public class StatModifier : MonoBehaviour
             horizontal = -horizontal;
             vertical = -vertical;
 
-            ApplyHealthDebuff(healthDebuffValues[0]);
+            ApplyHealthDebuff(healthDebuffValues[0]); //80% života
         }
 
         else if(BossIsDead == false && floornumber >= 41 && floornumber <= 50)
         {
-            ApplySpeedDebuff(speedDebuffValues[1]);
+            ApplySpeedDebuff(speedDebuffValues[1]);// 2x rychlosti
+
+            //unbind skill
         }
 
         else if(BossIsDead == false && floornumber >= 51 && floornumber <= 60)
         {
-            ApplyManaDebuff(manaDebuffValues[0]);
+            ApplyManaDebuff(manaDebuffValues[0]); // 20% many
+            ApplyStrengthDebuff(strengthDebuffValues[2]) // 5x síly
         }
 
         else if(BossIsDead == false && floornumber >= 61 && floornumber <=70)
         {
-            ApplyHealthDebuff(healthDebuffValues[1]);
+            ApplyHealthDebuff(healthDebuffValues[1]); // 50% života
+            
+
+            //unbind spell
         }
 
         else if(BossIsDead == false && floornumber >= 71 && floornumber <= 80)
         {
-            ApplyStrengthDebuff(strengthDebuffValues[1]);
+            ApplyStrengthDebuff(strengthDebuffValues[1]); //2x síly
+            ApplyManaDebuff(manaDebuffValues[2]); // 5x many
         }
 
         else if(BossIsDead == false && floornumber >= 81 && floornumber <= 90)
         {
-            ApplyManaDebuff(manaDebuffValues[1]);
+            ApplyManaDebuff(manaDebuffValues[1]); //4x many
         }
 
         else if(BossIsDead == false && floornumber >= 91 && floornumber <= 100)
         {
-            ApplySpeedDebuff(speedDebuffValues[0]);
-            ApplyHealthDebuff(healthDebuffValues[0]);
-            ApplyManaDebuff(manaDebuffValues[0]);
+            ApplySpeedDebuff(speedDebuffValues[0]); // 50% ryhclosti
+            ApplyHealthDebuff(healthDebuffValues[0]); // 80% života
+            ApplyManaDebuff(manaDebuffValues[0]); // 20% many
         }
         else
         {
@@ -152,7 +159,7 @@ public class StatModifier : MonoBehaviour
 
     void ApplyHealthDebuff(float healthDebuffValue)
     {
-        playerController.health = originalHealth * healthDebuffValue;
+        playerController.health = originalHealth / healthDebuffValue;
     }
 
     // strenght debuffy
@@ -193,7 +200,7 @@ public class StatModifier : MonoBehaviour
 
     void ApplyManaDebuff(float manaDebuffValue)
     {
-        playerController.mana = originalMana * manaDebuffValue;
+        playerController.mana = originalMana / manaDebuffValue;
     }
 
      private void OnEnable()
