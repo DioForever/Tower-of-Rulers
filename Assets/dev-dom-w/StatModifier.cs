@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class StatModifier : MonoBehaviour
 {
-    public playerControl playerController; 
+    private playerControl playerController; 
+    private monsterStats monsterStats;
 
 
     private float[] speedDebuffValues = {2.0f,0.5f};
@@ -21,6 +22,8 @@ public class StatModifier : MonoBehaviour
 
     void Start()
     {
+        
+
         OriginalValues();
     }
     void Update()
@@ -37,7 +40,7 @@ public class StatModifier : MonoBehaviour
         else if(BossIsDead == false && floornumber >= 11 && floornumber <= 20)
         {    
             ApplyHealthDebuff(healthDebuffValues[0]); // 80% života
-            ApplyStrengthDebuff(strengthDebuffValues[2]) // 5x síly
+            ApplyStrengthDebuff(strengthDebuffValues[2]); // 5x síly
         }
 
         else if(BossIsDead == false && floornumber >= 21 && floornumber <= 30)
@@ -52,33 +55,36 @@ public class StatModifier : MonoBehaviour
             vertical = -vertical;
 
             ApplyHealthDebuff(healthDebuffValues[0]); //80% života
+            DisableMana(); //disable Mana usage
         }
 
         else if(BossIsDead == false && floornumber >= 41 && floornumber <= 50)
         {
             ApplySpeedDebuff(speedDebuffValues[1]);// 2x rychlosti
 
-            //unbind skill
+             playerController.isCasting = false;//unbind skill
         }
 
         else if(BossIsDead == false && floornumber >= 51 && floornumber <= 60)
         {
             ApplyManaDebuff(manaDebuffValues[0]); // 20% many
-            ApplyStrengthDebuff(strengthDebuffValues[2]) // 5x síly
+            ApplyStrengthDebuff(strengthDebuffValues[2]); // 5x síly
         }
 
         else if(BossIsDead == false && floornumber >= 61 && floornumber <=70)
         {
             ApplyHealthDebuff(healthDebuffValues[1]); // 50% života
             
-
-            //unbind spell
+            playerController.isDashing = false; //unbind dash
         }
 
         else if(BossIsDead == false && floornumber >= 71 && floornumber <= 80)
         {
             ApplyStrengthDebuff(strengthDebuffValues[1]); //2x síly
             ApplyManaDebuff(manaDebuffValues[2]); // 5x many
+
+            horizontal = -horizontal;
+            vertical = -vertical;
         }
 
         else if(BossIsDead == false && floornumber >= 81 && floornumber <= 90)
@@ -97,12 +103,7 @@ public class StatModifier : MonoBehaviour
            RevertAllToOriginal();
         }
 
-        Vector2 move = new Vector2(horizontal, vertical);
-        rb.velocity = move * playerController.moveSpeed; 
-        Vector2 moveDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        moveDirection.Normalize();
-        Vector2 movement = moveDirection * playerController.moveSpeed * Time.deltaTime;
-        transform.Translate(movement);
+       
     }
 
     // move speed debuffy
@@ -111,26 +112,18 @@ public class StatModifier : MonoBehaviour
         playerController.moveSpeed = originalMoveSpeed;
     }
 
-    private void OnEnable()
-    {
-        playerController.OnMoveSpeedChanged += ApplySpeedDebuff;
-    }
-
-    private void OnDisable()
-    {
-        playerController.OnMoveSpeedChanged -= ApplySpeedDebuff;
-    }
+    
 
     public void UpdateMoveSpeed(float newMoveSpeed) //event na změnění debuffu u změny moveSpeedu
     {
         RevertToOriginalSpeed();
-        originalMoveSpeed = newMoveSpeed;
-        ApplySpeedDebuff();
+        originalMoveSpeed = newMoveSpeed;   
     }
 
     void ApplySpeedDebuff(float speedDebuffValue)
     {
         playerController.moveSpeed = originalMoveSpeed / speedDebuffValue;
+        monsterStats.moveSpeed = monsterStats.moveSpeed / speedDebuffValue;
     }
 
    
@@ -140,26 +133,16 @@ public class StatModifier : MonoBehaviour
         playerController.health = originalHealth;
     }
 
-    private void OnEnable()
-    {
-        playerController.OnHealthChanged += ApplyHealthDebuff;
-    }
-
-    private void OnDisable()
-    {
-        playerController.OnHealthChanged -= ApplyHealthDebuff;
-    }
-
     public void UpdateHp(float newHp) //event na změnění debuffu u změny života
     {
         RevertToOriginalHealth();
         originalHealth = newHp;
-        ApplyHealthDebuff();
     }
 
     void ApplyHealthDebuff(float healthDebuffValue)
     {
         playerController.health = originalHealth / healthDebuffValue;
+        monsterStats.health = monsterStats.health / healthDebuffValue;
     }
 
     // strenght debuffy
@@ -172,23 +155,13 @@ public class StatModifier : MonoBehaviour
     void ApplyStrengthDebuff(float strengthDebuffValue)
     {
         playerController.strength = originalStrength / strengthDebuffValue;
-    }
-
-     private void OnEnable()
-    {
-        playerController.OnStrengthChanged += ApplyStrengthDebuff;
-    }
-
-    private void OnDisable()
-    {
-        playerController.OnStrengthChanged -= ApplyStrengthDebuff;
+        monsterStats.strength = monsterStats.strength / strengthDebuffValue;
     }
 
     public void UpdateStrength(float newStrength) //event na změnění debuffu u změny Síly
     {
         RevertToOriginalStrength();
-        originalStrenght = newStrength;
-        ApplyStrengthDebuff();
+        originalStrength = newStrength;   
     }
 
     // mana debuffy
@@ -201,29 +174,24 @@ public class StatModifier : MonoBehaviour
     void ApplyManaDebuff(float manaDebuffValue)
     {
         playerController.mana = originalMana / manaDebuffValue;
+        monsterStats.mana = monsterStats.mana / manaDebuffValue;
     }
 
-     private void OnEnable()
+    void DisableMana()
     {
-        playerController.OnManaChanged += ApplyManaDebuff;
-    }
-
-    private void OnDisable()
-    {
-        playerController.OnManaChanged -= ApplyManaDebuff;
+        playerController.mana = 0;
+        monsterStats.mana = 0;
     }
 
     public void UpdateMana(float newMana) //event na změnění debuffu u změny Síly
     {
         RevertToOriginalMana();
         originalMana = newMana;
-        ApplyManaDebuff();
     }
-
 
     void OriginalValues()
     {
-        originalStrenght = playerController.strenght;
+        originalStrength = playerController.strenght;
         originalMana = playerController.mana; 
         originalHealth = playerController.health;
         originalMoveSpeed = playerController.moveSpeed;
