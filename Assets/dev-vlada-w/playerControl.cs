@@ -26,7 +26,7 @@ public class playerControl : MonoBehaviour
     [SerializeField] float dashSpeed = 5f;
     [SerializeField] float dashDuration = 0.25f;
     [SerializeField] float dashCooldown = 3f;
-    public isDashing;
+    bool isDashing;
     bool canDash = true;
     private void Start()
     {
