@@ -1,239 +1,91 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class StatModifier : MonoBehaviour
+public class playerControl : MonoBehaviour
 {
-    public playerControl playerController; 
+    public float moveSpeed;
+    public Rigidbody2D rb;
+    private Vector2 moveDirection;
+    public StatModifier speedModifier;
+    
+//speed
+    public delegate void MoveSpeedChanged(); //ostatní skripty reagují na změnu moveSpeedu
+    public event MoveSpeedChanged OnMoveSpeedChanged; //event pro speed
+//Hp
+    public delegate void HpChanged();
+    public event HpChanged OnHpChanged; 
+//mana
+    public delegate void ManaChanged(); 
+    public event ManaChanged OnManaChanged; 
 
-
-    private float[] speedDebuffValues = {2.0f,0.5f};
-    private float originalMoveSpeed;
-    private float[] healthDebuffValues = {1.25f, 2.0f,0.5f};
-    private float originalHealth;
-    private float[] strengthDebuffValues = {0.8f,0.5f,0.2f};
-    private float originalStrength;
-    private float[] manaDebuffValues = {5.0f,0.25f,0.2f};
-    private float originalMana;
-
-    public float floornumber = 1;
-    public bool BossIsDead = false;
-
-    void Start()
+    [Header("Hp Settings")]
+    [SerializeField] float Hp = 100f;
+    [Header("Mana Settings")]
+    [SerializeField] float Mana = 100f;
+    [Header("Dash Settings")]
+    [SerializeField] float dashSpeed = 5f;
+    [SerializeField] float dashDuration = 0.25f;
+    [SerializeField] float dashCooldown = 3f;
+    bool isDashing;
+    bool canDash = true;
+    private void Start()
     {
-        OriginalValues();
+        canDash = true;
     }
     void Update()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-
-        if(BossIsDead == false && floornumber >= 1 && floornumber <= 10)
+        if(isDashing)
         {
-            ApplySpeedDebuff(speedDebuffValues[0]); // 50% rychlosti
-            ApplyHealthDebuff(healthDebuffValues[2]); // 2x života
+            return;            
         }
-
-        else if(BossIsDead == false && floornumber >= 11 && floornumber <= 20)
-        {    
-            ApplyHealthDebuff(healthDebuffValues[0]); // 80% života
-            ApplyStrengthDebuff(strengthDebuffValues[2]) // 5x síly
-        }
-
-        else if(BossIsDead == false && floornumber >= 21 && floornumber <= 30)
+        ProcessInputs();
+        if(Input.GetKeyDown(KeyCode.Space) && canDash)
         {
-            ApplyStrengthDebuff(strengthDebuffValues[0]); //125% síly
-            ApplyManaDebuff(manaDebuffValues[2]); //5x many
+            StartCoroutine(Dash());
         }
-
-        else if(BossIsDead == false && floornumber >= 31 && floornumber <= 40)
+    }
+    void FixedUpdate()
+    {
+        if(isDashing)
         {
-            horizontal = -horizontal;
-            vertical = -vertical;
-
-            ApplyHealthDebuff(healthDebuffValues[0]); //80% života
+            return;            
         }
 
-        else if(BossIsDead == false && floornumber >= 41 && floornumber <= 50)
-        {
-            ApplySpeedDebuff(speedDebuffValues[1]);// 2x rychlosti
-
-            //unbind skill
-        }
-
-        else if(BossIsDead == false && floornumber >= 51 && floornumber <= 60)
-        {
-            ApplyManaDebuff(manaDebuffValues[0]); // 20% many
-            ApplyStrengthDebuff(strengthDebuffValues[2]) // 5x síly
-        }
-
-        else if(BossIsDead == false && floornumber >= 61 && floornumber <=70)
-        {
-            ApplyHealthDebuff(healthDebuffValues[1]); // 50% života
-            
-
-            //unbind spell
-        }
-
-        else if(BossIsDead == false && floornumber >= 71 && floornumber <= 80)
-        {
-            ApplyStrengthDebuff(strengthDebuffValues[1]); //2x síly
-            ApplyManaDebuff(manaDebuffValues[2]); // 5x many
-        }
-
-        else if(BossIsDead == false && floornumber >= 81 && floornumber <= 90)
-        {
-            ApplyManaDebuff(manaDebuffValues[1]); //4x many
-        }
-
-        else if(BossIsDead == false && floornumber >= 91 && floornumber <= 100)
-        {
-            ApplySpeedDebuff(speedDebuffValues[0]); // 50% ryhclosti
-            ApplyHealthDebuff(healthDebuffValues[0]); // 80% života
-            ApplyManaDebuff(manaDebuffValues[0]); // 20% many
-        }
-        else
-        {
-           RevertAllToOriginal();
-        }
-
-        Vector2 move = new Vector2(horizontal, vertical);
-        rb.velocity = move * playerController.moveSpeed; 
-        Vector2 moveDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        moveDirection.Normalize();
-        Vector2 movement = moveDirection * playerController.moveSpeed * Time.deltaTime;
-        transform.Translate(movement);
+        Move();
     }
-
-    // move speed debuffy
-    void RevertToOriginalSpeed()
+    void ProcessInputs()
     {
-        playerController.moveSpeed = originalMoveSpeed;
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveY = Input.GetAxisRaw("Vertical");
+        moveDirection = new Vector2(moveX, moveY).normalized;
     }
-
-    private void OnEnable()
+    void Move()
     {
-        playerController.OnMoveSpeedChanged += ApplySpeedDebuff;
+        rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
     }
-
-    private void OnDisable()
+    private IEnumerator Dash()
     {
-        playerController.OnMoveSpeedChanged -= ApplySpeedDebuff;
+        canDash = false;
+        isDashing = true;
+        rb.velocity = new Vector2(moveDirection.x * dashSpeed, moveDirection.y * dashSpeed);
+        yield return new WaitForSeconds(dashDuration);
+        isDashing = false;
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
     }
-
-    public void UpdateMoveSpeed(float newMoveSpeed) //event na změnění debuffu u změny moveSpeedu
+     public void UpdateMoveSpeed(float newMoveSpeed) //funkce na updatnutí moveSpeedu
     {
-        RevertToOriginalSpeed();
-        originalMoveSpeed = newMoveSpeed;
-        ApplySpeedDebuff();
+       speedModifier.UpdateMoveSpeed(newMoveSpeed);
+        OnMoveSpeedChanged?.Invoke();
     }
-
-    void ApplySpeedDebuff(float speedDebuffValue)
+    public void UpdateHp(float newHp)
     {
-        playerController.moveSpeed = originalMoveSpeed / speedDebuffValue;
+       speedModifier.UpdateHp(newHp);
+        OnHpChanged?.Invoke();
     }
-
-   
-    // health debuffy
-    void RevertToOriginalHealth()
+    public void UpdateMana(float newMana) //funkce na updatnutí moveSpeedu
     {
-        playerController.health = originalHealth;
-    }
-
-    private void OnEnable()
-    {
-        playerController.OnHealthChanged += ApplyHealthDebuff;
-    }
-
-    private void OnDisable()
-    {
-        playerController.OnHealthChanged -= ApplyHealthDebuff;
-    }
-
-    public void UpdateHp(float newHp) //event na změnění debuffu u změny života
-    {
-        RevertToOriginalHealth();
-        originalHealth = newHp;
-        ApplyHealthDebuff();
-    }
-
-    void ApplyHealthDebuff(float healthDebuffValue)
-    {
-        playerController.health = originalHealth / healthDebuffValue;
-    }
-
-    // strenght debuffy
-
-    void RevertToOriginalStrength()
-    {
-        playerController.strength = originalStrength;
-    }
-
-    void ApplyStrengthDebuff(float strengthDebuffValue)
-    {
-        playerController.strength = originalStrength / strengthDebuffValue;
-    }
-
-     private void OnEnable()
-    {
-        playerController.OnStrengthChanged += ApplyStrengthDebuff;
-    }
-
-    private void OnDisable()
-    {
-        playerController.OnStrengthChanged -= ApplyStrengthDebuff;
-    }
-
-    public void UpdateStrength(float newStrength) //event na změnění debuffu u změny Síly
-    {
-        RevertToOriginalStrength();
-        originalStrenght = newStrength;
-        ApplyStrengthDebuff();
-    }
-
-    // mana debuffy
-
-    void RevertToOriginalMana()
-    {
-        playerController.mana = originalMana;
-    }
-
-    void ApplyManaDebuff(float manaDebuffValue)
-    {
-        playerController.mana = originalMana / manaDebuffValue;
-    }
-
-     private void OnEnable()
-    {
-        playerController.OnManaChanged += ApplyManaDebuff;
-    }
-
-    private void OnDisable()
-    {
-        playerController.OnManaChanged -= ApplyManaDebuff;
-    }
-
-    public void UpdateMana(float newMana) //event na změnění debuffu u změny Síly
-    {
-        RevertToOriginalMana();
-        originalMana = newMana;
-        ApplyManaDebuff();
-    }
-
-
-    void OriginalValues()
-    {
-        originalStrenght = playerController.strenght;
-        originalMana = playerController.mana; 
-        originalHealth = playerController.health;
-        originalMoveSpeed = playerController.moveSpeed;
-    }
-
-    void RevertAllToOriginal()
-    {
-        playerController.moveSpeed = originalMoveSpeed;
-        playerController.mana = originalMana;
-        playerController.strength = originalStrength;
-        playerController.health = originalHealth;
+       speedModifier.UpdateMana(newMana);
+        OnManaChanged?.Invoke();
     }
 }
