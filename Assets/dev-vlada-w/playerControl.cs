@@ -24,9 +24,9 @@ public class PlayerControl : MonoBehaviour
     [Header("Mana Settings")]
     [SerializeField] public float mana = 100f;
     [Header("Dash Settings")]
-    [SerializeField] float dashSpeed = 5f;
-    [SerializeField] float dashDuration = 0.25f;
-    [SerializeField] float dashCooldown = 3f;
+    [SerializeField] public float dashSpeed = 5f;
+    [SerializeField] public float dashDuration = 0.25f;
+    [SerializeField] public float dashCooldown = 3f;
     bool isDashing;
     bool canDash = true;
     private void Start()
