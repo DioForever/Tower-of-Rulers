@@ -6,10 +6,8 @@ public class playerControl : MonoBehaviour
     public float moveSpeed;
     public Rigidbody2D rb;
     private Vector2 moveDirection;
-    public SpeedModifier speedModifier;
-    public HpModifier hpModifier;
-    public ManaModifier manaModifier;
-    public Weapon weapon;
+    public StatModifier speedModifier;
+    
 //speed
     public delegate void MoveSpeedChanged(); //ostatní skripty reagují na změnu moveSpeedu
     public event MoveSpeedChanged OnMoveSpeedChanged; //event pro speed
@@ -65,6 +63,16 @@ public class playerControl : MonoBehaviour
     {
         rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
     }
+
+    void Start()
+    {
+        GameObject gunObject = Instantiate(Resources.Load("GunPrefab") as GameObject, transform.position, Quaternion.identity);
+        currentWeapon = gunObject.GetComponent<Weapon>();
+        currentWeapon.isPickedUp = true;
+        availableWeapons.Add(currentWeapon);
+    }
+
+
     private IEnumerator Dash()
     {
         canDash = false;
@@ -82,12 +90,14 @@ public class playerControl : MonoBehaviour
     }
     public void UpdateHp(float newHp)
     {
-       hpModifier.UpdateHp(newHp);
+       speedModifier.UpdateHp(newHp);
         OnHpChanged?.Invoke();
     }
     public void UpdateMana(float newMana) //funkce na updatnutí moveSpeedu
     {
-       manaModifier.UpdateMana(newMana);
+       speedModifier.UpdateMana(newMana);
         OnManaChanged?.Invoke();
     }
 }
+
+
