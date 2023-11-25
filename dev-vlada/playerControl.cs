@@ -5,34 +5,37 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour
 {
     public float moveSpeed;
-    public Rigidbody2D rb;
+    public Rigidbody2D rigidbody2D;
     private Vector2 moveDirection;
+    public SpeedModifier speedModifier;
     public Bow bun;
     private Weapon currentWeapon;
     public List<Weapon> availableWeapons = new List<Weapon>();
 
     //speed
-    public delegate void MoveSpeedChanged();
-    public event MoveSpeedChanged OnMoveSpeedChanged;
-
+    public delegate void MoveSpeedChanged(); //ostatní skripty reagují na změnu moveSpeedu
+    public event MoveSpeedChanged OnMoveSpeedChanged; //event pro speed
     //Hp
     public delegate void HpChanged();
-    public event HpChanged OnHpChanged;
-
+    public event HpChanged OnHpChanged; 
     //mana
-    public delegate void ManaChanged();
-    public event ManaChanged OnManaChanged;
+    public delegate void ManaChanged(); 
+    public event ManaChanged OnManaChanged; 
 
     [Header("Hp Settings")]
-    [SerializeField] float hp = 100f;
+    [SerializeField] public float health = 100f;
     [Header("Mana Settings")]
-    [SerializeField] float mana = 100f;
+    [SerializeField] public float mana = 100f;
     [Header("Dash Settings")]
-    [SerializeField] float dashSpeed = 5f;
-    [SerializeField] float dashDuration = 0.25f;
-    [SerializeField] float dashCooldown = 3f;
+    [SerializeField] public float dashSpeed = 5f;
+    [SerializeField] public float dashDuration = 0.25f;
+    [SerializeField] public float dashCooldown = 3f;
     bool isDashing;
     bool canDash = true;
+    private void Start()
+    {
+        canDash = true;
+    }
 
     void Start()
     {
@@ -46,11 +49,19 @@ public class PlayerControl : MonoBehaviour
 
     void Update()
     {
-        if (isDashing)
+        if(isDashing)
         {
-            return;
+            return;            
         }
+        ProcessInputs();
+        if(Input.GetKeyDown(KeyCode.Space) && canDash)
+        {
+            StartCoroutine(Dash());
+        }
+    }
 
+    void Update()
+    {
         ProcessInputs();
 
         // Weapon pickup
@@ -89,8 +100,35 @@ public class PlayerControl : MonoBehaviour
 
     void Move()
     {
-        rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
+        rigidbody2D.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
     }
+
+    private IEnumerator Dash()
+    {
+        canDash = false;
+        isDashing = true;
+        rigidbody2D.velocity = new Vector2(moveDirection.x * dashSpeed, moveDirection.y * dashSpeed);
+        yield return new WaitForSeconds(dashDuration);
+        isDashing = false;
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
+    }
+    public void UpdateMoveSpeed(float newMoveSpeed) //funkce na updatnutí moveSpeedu
+    {
+       speedModifier.UpdateMoveSpeed(newMoveSpeed);
+        OnMoveSpeedChanged?.Invoke();
+    }
+    public void UpdateHp(float newHp)
+    {
+       //speedModifier.UpdateHp(newHp);
+        OnHpChanged?.Invoke();
+    }
+    public void UpdateMana(float newMana)
+    {
+       speedModifier.UpdateMana(newMana);
+        OnManaChanged?.Invoke();
+    }
+
 
     void PickUpWeapon()
     {
