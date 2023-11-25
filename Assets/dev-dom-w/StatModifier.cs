@@ -1,91 +1,237 @@
-// using System.Collections;
-// using System.Collections.Generic;
-// using UnityEngine;
-// public class playerControl : MonoBehaviour
-// {
-//     public float moveSpeed;
-//     public Rigidbody2D rb;
-//     private Vector2 moveDirection;
-//     public StatModifier speedModifier;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SpeedModifier : MonoBehaviour
+{
+    public PlayerControl playerController; 
+
+
+    private float[] speedDebuffValues = {2.0f,0.5f};
+    private float originalMoveSpeed;
+    private float[] healthDebuffValues = {0.8f, 0.5f};
+    private float originalHealth;
+    private float[] strengthDebuffValues = {0.8f,0.5f};
+    private float originalStrenght;
+    private float[] manaDebuffValues = {0.2f,4.0f};
+    private float originalMana;
+
+
+    public float floornumber = 1;
+    public bool BossIsDead = false;
+
     
-// //speed
-//     public delegate void MoveSpeedChanged(); //ostatní skripty reagují na změnu moveSpeedu
-//     public event MoveSpeedChanged OnMoveSpeedChanged; //event pro speed
-// //Hp
-//     public delegate void HpChanged();
-//     public event HpChanged OnHpChanged; 
-// //mana
-//     public delegate void ManaChanged(); 
-//     public event ManaChanged OnManaChanged; 
+    void Start()
+    {
+        OriginalValues();
+    }
+    void Update()
+    {
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
 
-//     [Header("Hp Settings")]
-//     [SerializeField] float Hp = 100f;
-//     [Header("Mana Settings")]
-//     [SerializeField] float Mana = 100f;
-//     [Header("Dash Settings")]
-//     [SerializeField] float dashSpeed = 5f;
-//     [SerializeField] float dashDuration = 0.25f;
-//     [SerializeField] float dashCooldown = 3f;
-//     bool isDashing;
-//     bool canDash = true;
-//     private void Start()
-//     {
-//         canDash = true;
-//     }
-//     void Update()
-//     {
-//         if(isDashing)
-//         {
-//             return;            
-//         }
-//         ProcessInputs();
-//         if(Input.GetKeyDown(KeyCode.Space) && canDash)
-//         {
-//             StartCoroutine(Dash());
-//         }
-//     }
-//     void FixedUpdate()
-//     {
-//         if(isDashing)
-//         {
-//             return;            
-//         }
 
-//         Move();
-//     }
-//     void ProcessInputs()
-//     {
-//         float moveX = Input.GetAxisRaw("Horizontal");
-//         float moveY = Input.GetAxisRaw("Vertical");
-//         moveDirection = new Vector2(moveX, moveY).normalized;
-//     }
-//     void Move()
-//     {
-//         rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
-//     }
-//     // private IEnumerator Dash()
-//     // {
-//     //     canDash = false;
-//     //     isDashing = true;
-//     //     rb.velocity = new Vector2(moveDirection.x * dashSpeed, moveDirection.y * dashSpeed);
-//     //     yield return new WaitForSeconds(dashDuration);
-//     //     isDashing = false;
-//     //     yield return new WaitForSeconds(dashCooldown);
-//     //     canDash = true;
-//     // }
-//      public void UpdateMoveSpeed(float newMoveSpeed) //funkce na updatnutí moveSpeedu
-//     {
-//        speedModifier.UpdateMoveSpeed(newMoveSpeed);
-//         OnMoveSpeedChanged?.Invoke();
-//     }
-//     public void UpdateHp(float newHp)
-//     {
-//        speedModifier.UpdateHp(newHp);
-//         OnHpChanged?.Invoke();
-//     }
-//     public void UpdateMana(float newMana) //funkce na updatnutí moveSpeedu
-//     {
-//        speedModifier.UpdateMana(newMana);
-//         OnManaChanged?.Invoke();
-//     }
-// }
+        if(BossIsDead == false && floornumber >= 1 && floornumber <= 10)
+        {
+            
+            ApplySpeedDebuff(speedDebuffValues[0]);
+        }
+
+        else if(BossIsDead == false && floornumber >= 11 && floornumber <= 20)
+        {
+            
+            ApplyHealthDebuff(healthDebuffValues[0]);
+        }
+
+        else if(BossIsDead == false && floornumber >= 21 && floornumber <= 30)
+        {
+            
+            ApplyStrengthDebuff(strengthDebuffValues[0]);
+        }
+
+        else if(BossIsDead == false && floornumber >= 31 && floornumber <= 40)
+        {
+            horizontal = -horizontal;
+            vertical = -vertical;
+
+            ApplyHealthDebuff(healthDebuffValues[0]);
+        }
+
+        else if(BossIsDead == false && floornumber >= 41 && floornumber <= 50)
+        {
+            ApplySpeedDebuff(speedDebuffValues[1]);
+        }
+
+        else if(BossIsDead == false && floornumber >= 51 && floornumber <= 60)
+        {
+            ApplyManaDebuff(manaDebuffValues[0]);
+        }
+
+        else if(BossIsDead == false && floornumber >= 61 && floornumber <=70)
+        {
+            ApplyHealthDebuff(healthDebuffValues[1]);
+        }
+
+        else if(BossIsDead == false && floornumber >= 71 && floornumber <= 80)
+        {
+            ApplyStrengthDebuff(strengthDebuffValues[1]);
+        }
+
+        else if(BossIsDead == false && floornumber >= 81 && floornumber <= 90)
+        {
+            ApplyManaDebuff(manaDebuffValues[1]);
+        }
+
+        else if(BossIsDead == false && floornumber >= 91 && floornumber <= 100)
+        {
+            ApplySpeedDebuff(speedDebuffValues[0]);
+            ApplyHealthDebuff(healthDebuffValues[0]);
+            ApplyManaDebuff(manaDebuffValues[0]);
+        }
+       
+        else
+        {
+           RevertAllToOriginal();
+        }
+
+        Vector2 move = new Vector2(horizontal, vertical);
+        GetComponent<Rigidbody2D>().velocity = move * playerController.moveSpeed; 
+        Vector2 moveDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        moveDirection.Normalize();
+        Vector2 movement = moveDirection * playerController.moveSpeed * Time.deltaTime;
+        transform.Translate(movement);
+    }
+
+    // move speed debuffy
+    void RevertToOriginalSpeed()
+    {
+        playerController.moveSpeed = originalMoveSpeed;
+    }
+
+    private void OnMoveSpeedEnable()
+    {
+        //playerController.OnMoveSpeedChanged += ApplySpeedDebuff;
+    }
+
+    private void OnMoveSpeedDisable()
+    {
+        //playerController.OnMoveSpeedChanged -= ApplySpeedDebuff;
+    }
+
+    public void UpdateMoveSpeed(float newMoveSpeed) //event na změnění debuffu u změny moveSpeedu
+    {
+        RevertToOriginalSpeed();
+        originalMoveSpeed = newMoveSpeed;
+        //ApplySpeedDebuff();
+    }
+
+    void ApplySpeedDebuff(float speedDebuffValue)
+    {
+        playerController.moveSpeed = originalMoveSpeed / speedDebuffValue;
+    }
+
+   
+    // health debuffy
+    void RevertToOriginalHealth()
+    {
+        
+        //playerController.health = originalHealth;
+    }
+
+    private void OnHealthEnable()
+    {
+        //playerController.OnHealthChanged += ApplyHealthDebuff;
+    }
+
+    private void OnHealthDisable()
+    {
+        //playerController.OnHealthChanged -= ApplyHealthDebuff;
+    }
+
+    public void UpdateHealth(float newHealth) //event na změnění debuffu u změny života
+    {
+        RevertToOriginalHealth();
+        originalHealth = newHealth;
+        //ApplyHealthDebuff();
+    }
+
+    void ApplyHealthDebuff(float healthDebuffValue)
+    {
+        //playerController.health = originalHealth * healthDebuffValue;
+    }
+
+    // strenght debuffy
+
+    void RevertToOriginalStrength()
+    {
+        //playerController.strength = originalStrength;
+    }
+
+    void ApplyStrengthDebuff(float strengthDebuffValue)
+    {
+        //playerController.strength = originalStrength / strengthDebuffValue;
+    }
+
+     private void OnStrengthEnable()
+    {
+        //playerController.OnStrengthChanged += ApplyStrengthDebuff;
+    }
+
+    private void OnStrengthDisable()
+    {
+        //playerController.OnStrengthChanged -= ApplyStrengthDebuff;
+    }
+
+    public void UpdateStrength(float newStrength) //event na změnění debuffu u změny Síly
+    {
+        RevertToOriginalStrength();
+        originalStrenght = newStrength;
+        //ApplyStrengthDebuff();
+    }
+
+    // mana debuffy
+
+    void RevertToOriginalMana()
+    {
+        //playerController.mana = originalMana;
+    }
+
+    void ApplyManaDebuff(float manaDebuffValue)
+    {
+        //playerController.mana = originalMana * manaDebuffValue;
+    }
+
+     private void OnManaEnable()
+    {
+        //playerController.OnManaChanged += ApplyManaDebuff;
+    }
+
+    private void OnManaDisable()
+    {
+        //playerController.OnManaChanged -= ApplyManaDebuff;
+    }
+
+    public void UpdateMana(float newMana) //event na změnění debuffu u změny Síly
+    {
+        RevertToOriginalMana();
+        originalMana = newMana;
+        //ApplyManaDebuff();
+    }
+
+
+    void OriginalValues()
+    {
+        //originalStrenght = playerController.strenght;
+        originalMana = playerController.mana; 
+        originalHealth = playerController.health;
+        originalMoveSpeed = playerController.moveSpeed;
+    }
+
+    void RevertAllToOriginal()
+    {
+        playerController.moveSpeed = originalMoveSpeed;
+        playerController.mana = originalMana;
+        //playerController.strength = originalStrength;
+        playerController.health = originalHealth;
+    }
+}
