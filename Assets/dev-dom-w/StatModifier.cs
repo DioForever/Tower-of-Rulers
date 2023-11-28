@@ -7,19 +7,21 @@ public class StatModifier : MonoBehaviour
 {
     private PlayerControl playerController; 
 
+    private FloorSetting FloorSetting;
+
     //private monsterStats monsterStats;
 
 
-    private float[] speedDebuffValues = {2.0f,0.5f};
+    
     private float originalMoveSpeed;
-    private float[] healthDebuffValues = {1.25f, 2.0f,0.5f};
+    
     private float originalHealth;
-    private float[] strengthDebuffValues = {0.8f,0.5f,0.2f};
+    
     private float originalStrength;
-    private float[] manaDebuffValues = {5.0f,0.25f,0.2f};
+    
     private float originalMana;
 
-    public int floornumber = 1;
+    
     public bool BossIsDead = false;
 
     void Start()
@@ -36,26 +38,26 @@ public class StatModifier : MonoBehaviour
         }
         else
         {
-            switch (floornumber)
+            switch (FloorSetting.Floornumber)
             {
                 case int n when n >= 1 && n <= 10:
 
-                ApplySpeedDebuff(speedDebuffValues[0]); // 50% rychlosti
-                ApplyHealthDebuff(healthDebuffValues[2]); // 2x života
+                ApplySpeedDebuff(FloorSetting.SpeedDebuffValues[0]); // 50% rychlosti
+                ApplyHealthDebuff(FloorSetting.HealthDebuffValues[2]); // 2x života
 
                 break;
 
                 case int n when n >= 11 && n <= 20:
 
-                ApplyHealthDebuff(healthDebuffValues[0]); // 80% života
-                ApplyStrengthDebuff(strengthDebuffValues[2]); // 5x síly
+                ApplyHealthDebuff(FloorSetting.HealthDebuffValues[0]); // 80% života
+                ApplyStrengthDebuff(FloorSetting.StrengthDebuffValues[2]); // 5x síly
 
                 break;
 
                 case int n when n >= 21 && n <= 30:
 
-                ApplyStrengthDebuff(strengthDebuffValues[0]); //125% síly
-                ApplyManaDebuff(manaDebuffValues[2]); //5x many
+                ApplyStrengthDebuff(FloorSetting.StrengthDebuffValues[0]); //125% síly
+                ApplyManaDebuff(FloorSetting.ManaDebuffValues[2]); //5x many
 
                 break;
 
@@ -64,14 +66,14 @@ public class StatModifier : MonoBehaviour
                 horizontal = -horizontal;
                 vertical = -vertical;
 
-                ApplyHealthDebuff(healthDebuffValues[0]); //80% života
+                ApplyHealthDebuff(FloorSetting.HealthDebuffValues[0]); //80% života
                 DisableMana(); //disable Mana usage
 
                 break;
 
                 case int n when n >= 41 && n <= 50:
 
-                ApplySpeedDebuff(speedDebuffValues[1]);// 2x rychlosti
+                ApplySpeedDebuff(FloorSetting.SpeedDebuffValues[1]);// 2x rychlosti
 
                 playerController.isCasting = false;//unbind skill
 
@@ -79,14 +81,14 @@ public class StatModifier : MonoBehaviour
 
                 case int n when n >= 51 && n <= 60:
 
-                ApplyManaDebuff(manaDebuffValues[0]); // 20% many
-                ApplyStrengthDebuff(strengthDebuffValues[2]); // 5x síly
+                ApplyManaDebuff(FloorSetting.ManaDebuffValues[0]); // 20% many
+                ApplyStrengthDebuff(FloorSetting.StrengthDebuffValues[2]); // 5x síly
 
                 break;
 
                 case int n when n >= 61 && n <= 70:
 
-                ApplyHealthDebuff(healthDebuffValues[1]); // 50% života
+                ApplyHealthDebuff(FloorSetting.HealthDebuffValues[1]); // 50% života
                 
                 playerController.isDashing = false; //unbind dash
 
@@ -94,8 +96,8 @@ public class StatModifier : MonoBehaviour
 
                 case int n when n >= 71 && n <= 80:
 
-                ApplyStrengthDebuff(strengthDebuffValues[1]); //2x síly
-                ApplyManaDebuff(manaDebuffValues[2]); // 5x many
+                ApplyStrengthDebuff(FloorSetting.StrengthDebuffValues[1]); //2x síly
+                ApplyManaDebuff(FloorSetting.ManaDebuffValues[2]); // 5x many
 
                 horizontal = -horizontal;
                 vertical = -vertical;
@@ -104,15 +106,15 @@ public class StatModifier : MonoBehaviour
 
                 case int n when n >= 81 && n <= 90:
 
-                ApplyManaDebuff(manaDebuffValues[1]); //4x many
+                ApplyManaDebuff(FloorSetting.ManaDebuffValues[1]); //4x many
 
                 break;
 
                 case int n when n >= 91 && n <= 100:
 
-                ApplySpeedDebuff(speedDebuffValues[0]); // 50% ryhclosti
-                ApplyHealthDebuff(healthDebuffValues[0]); // 80% života
-                ApplyManaDebuff(manaDebuffValues[0]); // 20% many
+                ApplySpeedDebuff(FloorSetting.SpeedDebuffValues[0]); // 50% ryhclosti
+                ApplyHealthDebuff(FloorSetting.HealthDebuffValues[0]); // 80% života
+                ApplyManaDebuff(FloorSetting.ManaDebuffValues[0]); // 20% many
 
                 break;
             }
