@@ -10,9 +10,6 @@ public class StatModifier : MonoBehaviour
     private FloorSetting FloorSetting;
 
     //private monsterStats monsterStats;
-
-
-    
     private float originalMoveSpeed;
     
     private float originalHealth;
@@ -21,7 +18,6 @@ public class StatModifier : MonoBehaviour
     
     private float originalMana;
 
-    
     public bool BossIsDead = false;
 
     void Start()
