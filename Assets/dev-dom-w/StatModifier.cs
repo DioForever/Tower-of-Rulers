@@ -129,7 +129,8 @@ public class StatModifier : MonoBehaviour
     public void UpdateMoveSpeed(float newMoveSpeed) //event na změnění debuffu u změny moveSpeedu
     {
         RevertToOriginalSpeed();
-        originalMoveSpeed = newMoveSpeed;   
+        originalMoveSpeed = newMoveSpeed;
+        
     }
 
     void ApplySpeedDebuff(float speedDebuffValue)
