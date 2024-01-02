@@ -71,7 +71,7 @@ public class StatModifier : MonoBehaviour
 
                 ApplySpeedDebuff(FloorSetting.SpeedDebuffValues[1]);// 2x rychlosti
 
-                playerController.isCasting = false;//unbind skill
+                //playerController.isCasting = false;//unbind skill
 
                 break;
 
@@ -86,7 +86,7 @@ public class StatModifier : MonoBehaviour
 
                 ApplyHealthDebuff(FloorSetting.HealthDebuffValues[1]); // 50% života
                 
-                playerController.isDashing = false; //unbind dash
+                //playerController.canDash = false; //unbind dash
 
                 break;
 
@@ -135,7 +135,7 @@ public class StatModifier : MonoBehaviour
     void ApplySpeedDebuff(float speedDebuffValue)
     {
         playerController.moveSpeed = originalMoveSpeed / speedDebuffValue;
-        monsterStats.moveSpeed = monsterStats.moveSpeed / speedDebuffValue;
+        //monsterStats.moveSpeed = monsterStats.moveSpeed / speedDebuffValue;
     }
 
    
@@ -154,20 +154,20 @@ public class StatModifier : MonoBehaviour
     void ApplyHealthDebuff(float healthDebuffValue)
     {
         playerController.health = originalHealth / healthDebuffValue;
-        monsterStats.health = monsterStats.health / healthDebuffValue;
+        //monsterStats.health = monsterStats.health / healthDebuffValue;
     }
 
     // strenght debuffy
 
     void RevertToOriginalStrength()
     {
-        playerController.strength = originalStrength;
+       // playerController.strength = originalStrength;
     }
 
     void ApplyStrengthDebuff(float strengthDebuffValue)
     {
-        playerController.strength = originalStrength / strengthDebuffValue;
-        monsterStats.strength = monsterStats.strength / strengthDebuffValue;
+        //playerController.strength = originalStrength / strengthDebuffValue;
+        //monsterStats.strength = monsterStats.strength / strengthDebuffValue;
     }
 
     public void UpdateStrength(float newStrength) //event na změnění debuffu u změny Síly
@@ -186,13 +186,13 @@ public class StatModifier : MonoBehaviour
     void ApplyManaDebuff(float manaDebuffValue)
     {
         playerController.mana = originalMana / manaDebuffValue;
-        monsterStats.mana = monsterStats.mana / manaDebuffValue;
+        //monsterStats.mana = monsterStats.mana / manaDebuffValue;
     }
 
     void DisableMana()
     {
         playerController.mana = 0;
-        monsterStats.mana = 0;
+        //monsterStats.mana = 0;
     }
 
     public void UpdateMana(float newMana) //event na změnění debuffu u změny Síly
@@ -203,7 +203,7 @@ public class StatModifier : MonoBehaviour
 
     void OriginalValues()
     {
-        originalStrength = playerController.strenght;
+        //originalStrength = playerController.strenght;
         originalMana = playerController.mana; 
         originalHealth = playerController.health;
         originalMoveSpeed = playerController.moveSpeed;
@@ -213,7 +213,7 @@ public class StatModifier : MonoBehaviour
     {
         playerController.moveSpeed = originalMoveSpeed;
         playerController.mana = originalMana;
-        playerController.strength = originalStrength;
+        //playerController.strength = originalStrength;
         playerController.health = originalHealth;
     }
 }
