@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using Spells;
 
 public class SpellUser : MonoBehaviour
@@ -51,16 +52,12 @@ public class SpellUser : MonoBehaviour
         Debug.Log($"Casting {spell.spellName}!");
 
         // Instantiate the spell prefab at the player's position with the player's rotation
-        GameObject spellInstance = Instantiate(spell.prefab, transform.position, transform.rotation);
+        //GameObject spellInstance = Instantiate(spell.prefab, transform.position, transform.rotation);
 
         // Access the Spell component attached to the instantiated prefab
-        SpellInstance spellInstanceComponent = spellInstance.GetComponent<SpellInstance>();
+        
 
-        // Set the properties of the instantiated spell based on the Spell class
-        if (spellInstanceComponent != null)
-        {
-            spellInstanceComponent.SetSpellProperties(spell);
-        }
+        
 
         // Optionally, you can do more with the spellInstance, such as set its owner, apply effects, etc.
 

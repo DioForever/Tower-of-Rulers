@@ -1,7 +1,7 @@
 using UnityEngine;
 using Spells;
 
-public class FireballScript : MonoBehaviour
+public class FirelanceScript : MonoBehaviour
 {
     private float speed;
     private float distance;
@@ -15,11 +15,11 @@ public class FireballScript : MonoBehaviour
         
        
 
-      
+        
             // kde v listu je dany spell
-            FireSpell fireballSpell = spellManager.spells[0] as FireSpell;
+            FireSpell fireballSpell = spellManager.spells[1] as FireSpell;
 
-            // nastaveni rychlosti
+            // nastaveni values
             speed = fireballSpell.SpellSpeed;
             distance = fireballSpell.TravelDistance;
             damage = fireballSpell.damage;
@@ -39,7 +39,7 @@ public class FireballScript : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
            
-            FireSpell fireballSpell = spellManager.spells[0] as FireSpell;
+            FireSpell fireballSpell = spellManager.spells[1] as FireSpell;
 
             //nemam enemy health pool
 

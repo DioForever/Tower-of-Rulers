@@ -17,7 +17,7 @@ public class FireballScript : MonoBehaviour
 
       
             // kde v listu je dany spell
-            FireSpell fireballSpell = spellManager.spells[0] as FireSpell;
+            FireSpell fireballSpell = spellManager.spells[5] as FireSpell;
 
             // nastaveni rychlosti
             speed = fireballSpell.SpellSpeed;
@@ -39,7 +39,7 @@ public class FireballScript : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
            
-            FireSpell fireballSpell = spellManager.spells[0] as FireSpell;
+            FireSpell fireballSpell = spellManager.spells[5] as FireSpell;
 
             //nemam enemy health pool
 

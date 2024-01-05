@@ -73,13 +73,13 @@ namespace Skills
             set{statboostvalue = value;}
         }
 
-        public StatBoostSkill(string name, float cooldown, GameObject prefab, SkillType type, float manacost,float statBoost)
+        public StatBoostSkill(string name, float cooldown, GameObject prefab, float manacost,float statBoost)
         :base(name, cooldown, prefab, SkillType.StatBoost,manacost)
         {
             SkillName = name;
             Cooldown = cooldown;
             Prefab = prefab;
-            SkillType = type;
+            
             Manacost = manacost;
             StatBoost = statBoost;
         }
@@ -97,13 +97,13 @@ namespace Skills
         set{travelDistance = value;}
        }
 
-        public MovementSkill(string name, float cooldown, GameObject prefab, SkillType type, float manacost,float travelDistance)
+        public MovementSkill(string name, float cooldown, GameObject prefab, float manacost,float travelDistance)
         :base(name, cooldown, prefab, SkillType.Movement,manacost)
         {
             SkillName = name;
             Cooldown = cooldown;
             Prefab = prefab;
-            SkillType = type;
+            
             Manacost = manacost;
             TravelDistance = travelDistance;
         }
