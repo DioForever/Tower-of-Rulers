@@ -145,5 +145,8 @@ namespace Spells
             SlowDuration = slowDuration;
             FreezeDuration = freezeDuration;
         }
+
+
+        // udelat freeze a slow function
     }
 }

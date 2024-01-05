@@ -6,16 +6,18 @@ public class IceFreezeScript : MonoBehaviour
     private float speed;
     private float distance;
     private float damage;
-    private float burnDuration;
+    private float freezeDuration;
+    private float slowDuration;
 
     private SpellManager spellManager;
 
     private void Start()
     {
-        IceSpell fireballSpell = spellManager.spells[3] as IceSpell;
+        IceSpell iceballSpell = spellManager.spells[8] as IceSpell;
 
-        speed = fireballSpell.SpellSpeed;
-        distance = fireballSpell.TravelDistance;
+        speed = iceballSpell.SpellSpeed;
+        distance = iceballSpell.TravelDistance;
+       
 
         // Instantiate 8 projectiles in a circular pattern
         SpawnProjectiles(8);
@@ -27,14 +29,15 @@ public class IceFreezeScript : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            FireSpell fireballSpell = spellManager.spells[3] as FireSpell;
+            IceSpell iceballSpell = spellManager.spells[8] as IceSpell;
 
-            damage = fireballSpell.damage;
-            burnDuration = fireballSpell.BurnDuration;
+            damage = iceballSpell.Damage;
+            freezeDuration = iceballSpell.FreezeDuration;
+            slowDuration = iceballSpell.SlowDuration;
 
             if (fireballSpell != null)
             {
-                fireballSpell.ApplyBurnEffect(other.gameObject, burnDuration);
+                //udělat function
             }
 
            

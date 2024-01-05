@@ -6,7 +6,9 @@ public class IceballScript : MonoBehaviour
     private float speed;
     private float distance;
     private float damage;
-    private float burnDuration;
+    private float freezeDuration;
+    private float slowDuration;
+    
 
     private SpellManager spellManager;
 
@@ -17,13 +19,13 @@ public class IceballScript : MonoBehaviour
 
       
             // kde v listu je dany spell
-            FireSpell fireballSpell = spellManager.spells[5] as FireSpell;
+            IceSpell iceballSpell = spellManager.spells[5] as IceSpell;
 
             // nastaveni rychlosti
-            speed = fireballSpell.SpellSpeed;
-            distance = fireballSpell.TravelDistance;
-            damage = fireballSpell.damage;
-            burnDuration = fireballSpell.BurnDuration;
+            speed = iceballSpell.SpellSpeed;
+            distance = iceballSpell.TravelDistance;
+           
+            
 
             // nastavit rychlost
             GetComponent<Rigidbody>().velocity = transform.forward * speed;
@@ -39,14 +41,19 @@ public class IceballScript : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
            
-            FireSpell fireballSpell = spellManager.spells[5] as FireSpell;
+            IceSpell iceballSpell = spellManager.spells[5] as IceSpell;
+
+            damage = iceballSpell.Damage;
+            freezeDuration = iceballSpell.FreezeDuration;
+            slowDuration = iceballSpell.SlowDuration;
 
             //nemam enemy health pool
+            //nemam debuffy
 
             
-            if (fireballSpell != null)
+            if (iceballSpell != null)
             {
-                fireballSpell.ApplyBurnEffect(other.gameObject, burnDuration);
+                //dat sem freeze a slow effect
             }
 
             // Destroy the Fireball on impact
