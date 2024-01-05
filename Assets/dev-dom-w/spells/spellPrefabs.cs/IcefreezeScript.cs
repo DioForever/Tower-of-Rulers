@@ -35,7 +35,7 @@ public class IceFreezeScript : MonoBehaviour
             freezeDuration = iceballSpell.FreezeDuration;
             slowDuration = iceballSpell.SlowDuration;
 
-            if (fireballSpell != null)
+            if (iceballSpell != null)
             {
                 //udělat function
             }

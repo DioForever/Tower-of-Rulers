@@ -7,7 +7,7 @@ public class PlayerControl : MonoBehaviour
     public float moveSpeed;
     public Rigidbody2D rigidbody2D;
     private Vector2 moveDirection;
-    public SpeedModifier speedModifier;
+    public StatModifier speedModifier;
     
 //speed
     public delegate void MoveSpeedChanged(); //ostatní skripty reagují na změnu moveSpeedu
