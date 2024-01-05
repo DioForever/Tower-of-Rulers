@@ -1,7 +1,7 @@
 using UnityEngine;
 using Spells;
 
-public class FireauraScript : MonoBehaviour
+public class IceFreezeScript : MonoBehaviour
 {
     private float speed;
     private float distance;
@@ -12,7 +12,7 @@ public class FireauraScript : MonoBehaviour
 
     private void Start()
     {
-        FireSpell fireballSpell = spellManager.spells[3] as FireSpell;
+        IceSpell fireballSpell = spellManager.spells[3] as IceSpell;
 
         speed = fireballSpell.SpellSpeed;
         distance = fireballSpell.TravelDistance;

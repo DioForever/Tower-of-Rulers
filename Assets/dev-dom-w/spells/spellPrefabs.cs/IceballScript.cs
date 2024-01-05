@@ -1,7 +1,7 @@
 using UnityEngine;
 using Spells;
 
-public class FireballScript : MonoBehaviour
+public class IceballScript : MonoBehaviour
 {
     private float speed;
     private float distance;

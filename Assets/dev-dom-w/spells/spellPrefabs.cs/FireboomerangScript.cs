@@ -27,11 +27,10 @@ public class FireboomerangScript : MonoBehaviour
 
             GetComponent<Rigidbody>().velocity = transform.forward * speed;
         
-        else
-        {
-            Debug.LogError("SpellManager or FireSpell not found!");
-            Destroy(gameObject);
-        }
+      
+            //zničit po určité vzdálenosti
+            Destroy(gameObject, distance / speed);
+        
     }
 
     private void OnTriggerEnter(Collider other)

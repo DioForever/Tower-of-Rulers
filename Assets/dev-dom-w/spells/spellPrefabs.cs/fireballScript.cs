@@ -3,12 +3,12 @@ using Spells;
 
 public class FireballScript : MonoBehaviour
 {
-    private float speed;
-    private float distance;
-    private float damage;
-    private float burnDuration;
+    private float speeds;
+    private float distances;
+    private float damages;
+    private float burnDurations;
 
-    private SpellManager spellManager;
+    private SpellManager mySpellManager;
 
     private void Start()
     {
@@ -16,20 +16,20 @@ public class FireballScript : MonoBehaviour
        
 
       
-            // kde v listu je dany spell
-            FireSpell fireballSpell = spellManager.spells[0] as FireSpell;
+        // kde v listu je dany spell
+        FireSpell fireballSpell = mySpellManager.spells[0] as FireSpell;
 
-            // nastaveni rychlosti
-            speed = fireballSpell.SpellSpeed;
-            distance = fireballSpell.TravelDistance;
-            damage = fireballSpell.damage;
-            burnDuration = fireballSpell.BurnDuration;
+        // nastaveni rychlosti
+        speeds = fireballSpell.SpellSpeed;
+        distances = fireballSpell.TravelDistance;
+        damages = fireballSpell.damage;
+        burnDurations = fireballSpell.BurnDuration;
 
-            // nastavit rychlost
-            GetComponent<Rigidbody>().velocity = transform.forward * speed;
+        // nastavit rychlost
+        GetComponent<Rigidbody>().velocity = transform.forward * speeds;
 
-            //zničit po určité vzdálenosti
-            Destroy(gameObject, distance / speed);
+        //zničit po určité vzdálenosti
+        Destroy(gameObject, distances / speeds);
         
     }
 
@@ -39,14 +39,14 @@ public class FireballScript : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
            
-            FireSpell fireballSpell = spellManager.spells[0] as FireSpell;
+            FireSpell fireballSpell = mySpellManager.spells[0] as FireSpell;
 
             //nemam enemy health pool
 
             
             if (fireballSpell != null)
             {
-                fireballSpell.ApplyBurnEffect(other.gameObject, burnDuration);
+                fireballSpell.ApplyBurnEffect(other.gameObject, burnDurations);
             }
 
             // Destroy the Fireball on impact

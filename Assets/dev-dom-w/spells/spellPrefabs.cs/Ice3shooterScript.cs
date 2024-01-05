@@ -1,7 +1,7 @@
 using UnityEngine;
 using Spells;
 
-public class Fire3shooterScript : MonoBehaviour
+public class Ice3shooterScript : MonoBehaviour
 {
     private float speed;
     private float distance;
@@ -41,7 +41,7 @@ public class Fire3shooterScript : MonoBehaviour
         damage = IceballSpell.damage;
         
 
-        if (fireballSpell != null)
+        if (IceballSpell != null)
         {
             //nastavit slow efekt
         }
@@ -59,7 +59,7 @@ public class Fire3shooterScript : MonoBehaviour
        
         projectile.GetComponent<Rigidbody>().velocity = (transform.forward + direction).normalized * speed;
 
-        /
+        
         Destroy(projectile, distance / speed);
     }
 }
