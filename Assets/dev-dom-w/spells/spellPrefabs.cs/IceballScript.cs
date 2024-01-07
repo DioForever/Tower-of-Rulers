@@ -6,7 +6,6 @@ public class IceballScript : MonoBehaviour
     private float speed;
     private float distance;
     private float damage;
-    private float freezeDuration;
     private float slowDuration;
     private float mana;
     private SpellManager spellManager;
@@ -27,9 +26,7 @@ public class IceballScript : MonoBehaviour
             mana = iceballSpell.Manacost;
 
             playercontrol.mana = playercontrol.mana - mana;
-           
-            
-
+        
             // nastavit rychlost
             GetComponent<Rigidbody>().velocity = transform.forward * speed;
 
@@ -47,19 +44,14 @@ public class IceballScript : MonoBehaviour
             IceSpell iceballSpell = spellManager.spells[5] as IceSpell;
 
             damage = iceballSpell.Damage;
-            freezeDuration = iceballSpell.FreezeDuration;
             slowDuration = iceballSpell.SlowDuration;
 
             //nemam enemy health pool
-            //nemam debuffy
+          
 
             
-            if (iceballSpell != null)
-            {
-                //dat sem freeze a slow effect
-            }
-
-            // Destroy the Fireball on impact
+            iceballSpell.SlowTarget(other.gameObject, slowDuration);
+           
             Destroy(gameObject);
         }
 

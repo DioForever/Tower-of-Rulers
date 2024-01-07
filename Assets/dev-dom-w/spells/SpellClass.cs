@@ -146,7 +146,38 @@ namespace Spells
             FreezeDuration = freezeDuration;
         }
 
+        public void FreezeTarget(GameObject target, float freezeDuration)
+        {
+            StartCoroutine(FreezeCoroutine(target, freezeDuration));
+        }
 
-        // udelat freeze a slow function
+        // Coroutine for freezing the target for a specified duration
+        private IEnumerator FreezeCoroutine(GameObject target, float duration)
+        {
+           // tady se dá logika freezu
+           //tady partikly pro freeze
+
+            // Wait for the specified duration
+            yield return new WaitForSeconds(duration);
+
+           //tady revertnout changes
+        }
+
+        public void SlowTarget(GameObject target, float slowDuration)
+        {
+            StartCoroutine(SlowCoroutine(target, slowDuration));
+        }
+
+        // Coroutine for freezing the target for a specified duration
+        private IEnumerator SlowCoroutine(GameObject target, float duration)
+        {
+           // tady se dá logika slow
+           //tady partikly pro slow
+
+            // Wait for the specified duration
+            yield return new WaitForSeconds(duration);
+
+           //tady revertnout changes
+        }
     }
 }

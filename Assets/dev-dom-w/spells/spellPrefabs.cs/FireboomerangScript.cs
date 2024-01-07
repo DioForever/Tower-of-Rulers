@@ -8,30 +8,25 @@ public class FireboomerangScript : MonoBehaviour
     private float damage;
     private float burnDuration;
     private float mana;
-
     private SpellManager spellManager;
 
     private PlayerControl playercontrol;
     private Vector3 originPosition; // Store the original position
 
     private void Start()
-    {
-       
-
-        
+    {        
             FireSpell fireballSpell = spellManager.spells[2] as FireSpell;
 
             speed = fireballSpell.SpellSpeed;
             distance = fireballSpell.TravelDistance;
             mana = fireballSpell.Manacost;
+
             playercontrol.mana = playercontrol.mana - mana;
            
-
             originPosition = transform.position; // Store the original position
 
             GetComponent<Rigidbody>().velocity = transform.forward * speed;
         
-      
             //zničit po určité vzdálenosti
             Destroy(gameObject, distance / speed);
         
@@ -45,13 +40,9 @@ public class FireboomerangScript : MonoBehaviour
             damage = fireballSpell.damage;
             burnDuration = fireballSpell.BurnDuration;
 
-         
-
+        
             // tady damage pro enemy
             fireballSpell.ApplyBurnEffect(other.gameObject, burnDuration);
-            
-
-            
         }
     }
 

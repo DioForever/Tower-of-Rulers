@@ -7,6 +7,8 @@ public class Ice3shooterScript : MonoBehaviour
     private float distance;
     private float damage;
     private float mana;
+    private float freezeDuration;
+    private float slowDuration;
     private SpellManager spellManager;
 
     private PlayerControl playercontrol;
@@ -43,12 +45,12 @@ public class Ice3shooterScript : MonoBehaviour
         IceSpell IceballSpell = spellManager.spells[6] as IceSpell;
 
         damage = IceballSpell.damage;
+        freezeDuration = IceballSpell.FreezeDuration;
+        slowDuration = IceballSpell.SlowDuration;
         
 
-        if (IceballSpell != null)
-        {
-            //nastavit slow efekt
-        }
+        IceballSpell.FreezeTarget(other.gameObject, freezeDuration);
+        IceballSpell.SlowTarget(other.gameObject, slowDuration);
 
         // Destroy the projectile that collided with the enemy
         Destroy(gameObject);

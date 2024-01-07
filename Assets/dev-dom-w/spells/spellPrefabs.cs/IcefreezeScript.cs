@@ -7,7 +7,6 @@ public class IceFreezeScript : MonoBehaviour
     private float distance;
     private float damage;
     private float freezeDuration;
-    private float slowDuration;
     private float mana;
     private SpellManager spellManager;
     private PlayerControl playercontrol;
@@ -37,12 +36,10 @@ public class IceFreezeScript : MonoBehaviour
 
             damage = iceballSpell.Damage;
             freezeDuration = iceballSpell.FreezeDuration;
-            slowDuration = iceballSpell.SlowDuration;
+            
 
-            if (iceballSpell != null)
-            {
-                //udělat function
-            }
+
+            iceballSpell.FreezeTarget(other.gameObject, freezeDuration);
 
            
         }

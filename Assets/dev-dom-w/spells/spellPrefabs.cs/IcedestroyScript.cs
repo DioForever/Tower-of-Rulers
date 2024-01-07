@@ -41,7 +41,7 @@ public class IceFreezeScript : MonoBehaviour
 
             if (iceballSpell != null)
             {
-                //udělat function
+                //udělat function pro ničení projektilů
             }
 
            
