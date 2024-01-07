@@ -27,7 +27,7 @@ public class DashScript : MonoBehaviour
 
         float elapsedTime = 0f;
         Vector3 startPosition = transform.position;
-        Vector3 endPosition = startPosition + transform.right * distance; // Assuming dash direction is along the player's right
+        Vector3 endPosition = startPosition + transform.right * distance; // potrebuju aby vlada checkoval kam hrac jde 
 
         while (elapsedTime < distance / speed)
         {

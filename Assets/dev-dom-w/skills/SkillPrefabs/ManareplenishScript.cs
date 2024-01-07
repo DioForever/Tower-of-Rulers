@@ -4,7 +4,7 @@ using Skills;
 public class ManaReplenishScript : MonoBehaviour
 {
  
-    private float mana;
+    private float manaboost;
     private SkillManager mySkillManager;
     private PlayerControl playercontrol;
 

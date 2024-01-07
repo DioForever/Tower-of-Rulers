@@ -5,6 +5,7 @@ using Skills;
 public class SkillManager : MonoBehaviour
 {
     public List<Skill> skills = new List<Skill>();
+    
 
     private void Awake()
     {
