@@ -1,7 +1,7 @@
 using UnityEngine;
 using Spells;
 
-public class IceFreezeScript : MonoBehaviour
+public class IcedestroyScript : MonoBehaviour
 {
     private float speed;
     private float distance;

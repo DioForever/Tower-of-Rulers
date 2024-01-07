@@ -13,21 +13,14 @@ namespace Skills
 
     // Base class for skills
     [System.Serializable]
-    public abstract class Skill
+    public abstract class Skill : MonoBehaviour
     {
         private string skillName;
         private float cooldown;
-        private GameObject prefab;
-        private float manacost;
+        
 
         public SkillType skillType;
 
-        public float Manacost
-        {
-            get {return manacost; }
-            set{manacost = value; }
-
-        }
         public string SkillName
         {
             get { return skillName; }
@@ -40,12 +33,7 @@ namespace Skills
             set { cooldown = value; }
         }
 
-        public GameObject Prefab
-        {
-            get { return prefab; }
-            set { prefab = value; }
-        }
-
+        
          public SkillType SkillType
         {
             get { return skillType; }
@@ -53,13 +41,13 @@ namespace Skills
         }
 
 
-        public Skill(string name, float cooldown, GameObject prefab, SkillType type, float manacost)
+        public Skill(string name, float cooldown, SkillType type)
         {
             SkillName = name;
             Cooldown = cooldown;
-            Prefab = prefab;
+            
             SkillType = type;
-            Manacost = manacost;
+           
         }
     }
 
@@ -73,14 +61,14 @@ namespace Skills
             set{statboostvalue = value;}
         }
 
-        public StatBoostSkill(string name, float cooldown, GameObject prefab, float manacost,float statBoost)
-        :base(name, cooldown, prefab, SkillType.StatBoost,manacost)
+        public StatBoostSkill(string name, float cooldown, float statBoost)
+        :base(name, cooldown, SkillType.StatBoost)
         {
             SkillName = name;
             Cooldown = cooldown;
-            Prefab = prefab;
             
-            Manacost = manacost;
+            
+            
             StatBoost = statBoost;
         }
 
@@ -97,16 +85,25 @@ namespace Skills
         set{travelDistance = value;}
        }
 
-        public MovementSkill(string name, float cooldown, GameObject prefab, float manacost,float travelDistance)
-        :base(name, cooldown, prefab, SkillType.Movement,manacost)
+        private float travelSpeed;
+
+       public float TravelSpeed
+       {
+        get{return travelSpeed;}
+        set{travelSpeed = value;}
+       }
+
+        public MovementSkill(string name, float cooldown,float travelDistance, float travelSpeed)
+        :base(name, cooldown, SkillType.Movement)
         {
             SkillName = name;
             Cooldown = cooldown;
-            Prefab = prefab;
             
-            Manacost = manacost;
             TravelDistance = travelDistance;
+            TravelSpeed = travelSpeed;
         }
+
+       
 
     }
 }
