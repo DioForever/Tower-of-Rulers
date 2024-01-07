@@ -1,82 +1,125 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using System.Linq;
+using Spells;
 
 public class SpellUser : MonoBehaviour
 {
     private bool isTextInputActive = false;
-    private int userInput = 0;
-    private string selectedSkillName = "";
+    private int qInput = 0;
+    private int eInput = 0;
 
-    private Dictionary<int, string> skillDictionary = new Dictionary<int, string>
+    private string selectedQSpellName = "";
+    private string selectedESpellName = "";
+
+    private Dictionary<int, Spell> spellDictionary = new Dictionary<int, Spell>();
+
+    private Dictionary<string, float> spellCooldowns = new Dictionary<string, float>();
+
+    private SpellManager spellManager;
+
+    private void Start()
     {
-        { 1, "FireballScript" },
-        { 2, "FirelanceScript" },
-        { 3, "FireboomerangScript" },
-        { 4, "Fire3shooterScript" },
-        { 5, "FireauraScript" },
-        { 6, "IceballScript" },
-        { 7, "Ice3shooterScript" },
-        { 8, "IcedestroyScript" },
-        { 9, "IcefreezeScript" },
-        { 10, "IceslowScript" }
-    };
+        spellManager = GetComponent<SpellManager>();
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && userInput != 0)
+        foreach (Spell spell in spellManager.spells)
         {
-            CastSelectedSkill();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            isTextInputActive = !isTextInputActive;
-
-            if (isTextInputActive)
-            {
-                StartCoroutine(DisplayTextAndPrompt());
-            }
+            spellDictionary.Add(spellDictionary.Count + 1, spell);
         }
     }
 
-    private System.Collections.IEnumerator DisplayTextAndPrompt()
+    private void Update()
     {
-        // Display text on the screen
-        Debug.Log("Press Tab again to stop, and input a number from 1 to 5.");
+        // Q key input
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            isTextInputActive = true;
+            StartCoroutine(DisplayTextAndPrompt('Q'));
+        }
 
-        yield return null;
+        // E key input
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            isTextInputActive = true;
+            StartCoroutine(DisplayTextAndPrompt('E'));
+        }
+
+        // Check pokud je Q spell zakasten
+        if (Input.GetKeyDown(KeyCode.Space) && qInput != 0)
+        {
+            if (!IsOnCooldown(selectedQSpellName))
+            {
+                CastSelectedSpell(selectedQSpellName);
+                StartCooldown(selectedQSpellName);
+            }
+            else
+            {
+                Debug.Log("Spell is on cooldown. Wait for the cooldown to finish.");
+            }
+        }
+
+        // Check pokud je e spell zakasten
+        if (Input.GetKeyDown(KeyCode.Space) && eInput != 0)
+        {
+            if (!IsOnCooldown(selectedESpellName))
+            {
+                CastSelectedSpell(selectedESpellName);
+                StartCooldown(selectedESpellName);
+            }
+            else
+            {
+                Debug.Log("Spell is on cooldown. Wait for the cooldown to finish.");
+            }
+        }
+
+        
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            isTextInputActive = false;
+        }
+
+        // Update cooldowns
+        UpdateCooldowns();
+    }
+
+    private System.Collections.IEnumerator DisplayTextAndPrompt(char key)
+    {
+        Debug.Log($"Press Tab again to stop, and input a number from 1 to {spellDictionary.Count} for spell on key {key}.");
 
         while (isTextInputActive)
         {
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                isTextInputActive = false; // Stop the text input
+                isTextInputActive = false;
                 break;
             }
 
-            // Get input from the player
             int newInput;
             if (int.TryParse(Input.inputString, out newInput))
             {
-                if (newInput >= 1 && newInput <= 10)
+                if (newInput >= 1 && newInput <= spellDictionary.Count)
                 {
-                    // Save the player's input
-                    userInput = newInput;
-
-                    // Retrieve the script name from the dictionary
-                    if (skillDictionary.TryGetValue(userInput, out selectedSkillName))
+                    if (key == 'Q')
                     {
-                        Debug.Log("Player selected skill: " + selectedSkillName);
+                        qInput = newInput;
+                        selectedQSpellName = spellDictionary[qInput].SpellName;
+                        Debug.Log($"Player selected Q spell: {selectedQSpellName}");
+                    }
+                    else if (key == 'E')
+                    {
+                        eInput = newInput;
+                        selectedESpellName = spellDictionary[eInput].SpellName;
+                        Debug.Log($"Player selected E spell: {selectedESpellName}");
                     }
                     else
                     {
-                        Debug.LogError("Skill not found in the dictionary.");
+                        Debug.LogError("Invalid key selection.");
                     }
                 }
                 else
                 {
-                    Debug.Log("Please enter a number between 1 and 5.");
+                    Debug.Log($"Please enter a number between 1 and {spellDictionary.Count}.");
                 }
             }
 
@@ -84,25 +127,57 @@ public class SpellUser : MonoBehaviour
         }
     }
 
-    private void CastSelectedSkill()
+    private void CastSelectedSpell(string spellName)
     {
-        if (!string.IsNullOrEmpty(selectedSkillName))
+        if (!string.IsNullOrEmpty(spellName))
         {
-            // Use reflection to dynamically instantiate the script based on the dictionary value
-            Type scriptType = Type.GetType(selectedSkillName);
+            Type scriptType = Type.GetType(spellName);
             if (scriptType != null)
             {
-                // Add the component for casting the skill
                 Component newScriptInstance = gameObject.AddComponent(scriptType);
             }
             else
             {
-                Debug.LogError("Script type not found: " + selectedSkillName);
+                Debug.LogError($"Script type not found: {spellName}");
             }
         }
         else
         {
-            Debug.LogError("No skill selected to cast.");
+            Debug.LogError("No spell selected to cast.");
+        }
+    }
+
+    private bool IsOnCooldown(string spellName)
+    {
+        return spellCooldowns.ContainsKey(spellName) && spellCooldowns[spellName] > 0;
+    }
+
+    private void StartCooldown(string spellName)
+    {
+        float cooldown = spellDictionary.Values.First(spell => spell.SpellName == spellName).Cooldown;
+
+        if (spellCooldowns.ContainsKey(spellName))
+        {
+            spellCooldowns[spellName] = cooldown;
+        }
+        else
+        {
+            spellCooldowns.Add(spellName, cooldown);
+        }
+    }
+
+    private void UpdateCooldowns()
+    {
+        foreach (var spell in spellCooldowns.Keys.ToList())
+        {
+            if (spellCooldowns[spell] > 0)
+            {
+                spellCooldowns[spell] -= Time.deltaTime;
+            }
+            else
+            {
+                spellCooldowns[spell] = 0;
+            }
         }
     }
 }
