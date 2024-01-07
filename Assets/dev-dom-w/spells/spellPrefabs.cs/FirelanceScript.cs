@@ -7,8 +7,9 @@ public class FirelanceScript : MonoBehaviour
     private float distance;
     private float damage;
     private float burnDuration;
-
+    private float mana;
     private SpellManager spellManager;
+    private PlayerControl playercontrol;
 
     private void Start()
     {
@@ -22,8 +23,10 @@ public class FirelanceScript : MonoBehaviour
             // nastaveni values
             speed = fireballSpell.SpellSpeed;
             distance = fireballSpell.TravelDistance;
-            damage = fireballSpell.damage;
-            burnDuration = fireballSpell.BurnDuration;
+            mana = fireballSpell.Manacost;
+
+            playercontrol.mana = playercontrol.mana - mana;
+           
 
             // nastavit rychlost
             GetComponent<Rigidbody>().velocity = transform.forward * speed;
@@ -40,14 +43,16 @@ public class FirelanceScript : MonoBehaviour
         {
            
             FireSpell fireballSpell = spellManager.spells[1] as FireSpell;
+            damage = fireballSpell.damage;
+            burnDuration = fireballSpell.BurnDuration;
 
             //nemam enemy health pool
 
             
-            if (fireballSpell != null)
-            {
+          
+            
                 fireballSpell.ApplyBurnEffect(other.gameObject, burnDuration);
-            }
+            
 
             // Destroy the Fireball on impact
             Destroy(gameObject);

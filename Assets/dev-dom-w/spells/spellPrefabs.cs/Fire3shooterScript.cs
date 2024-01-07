@@ -7,8 +7,9 @@ public class Fire3shooterScript : MonoBehaviour
     private float distance;
     private float damage;
     private float burnDuration;
-
+    private float mana;
     private SpellManager spellManager;
+    private PlayerControl playercontrol;
 
     private void Start()
     {
@@ -19,6 +20,9 @@ public class Fire3shooterScript : MonoBehaviour
            
             speed = fireballSpell.SpellSpeed;
             distance = fireballSpell.TravelDistance;
+            mana = fireballSpell.Manacost;
+
+            playercontrol.mana = playercontrol.mana - mana;
 
             
             GetComponent<Rigidbody>().velocity = transform.forward * speed;

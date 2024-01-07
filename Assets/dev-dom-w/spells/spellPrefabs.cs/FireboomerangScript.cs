@@ -7,8 +7,11 @@ public class FireboomerangScript : MonoBehaviour
     private float distance;
     private float damage;
     private float burnDuration;
+    private float mana;
 
     private SpellManager spellManager;
+
+    private PlayerControl playercontrol;
     private Vector3 originPosition; // Store the original position
 
     private void Start()
@@ -20,8 +23,9 @@ public class FireboomerangScript : MonoBehaviour
 
             speed = fireballSpell.SpellSpeed;
             distance = fireballSpell.TravelDistance;
-            damage = fireballSpell.damage;
-            burnDuration = fireballSpell.BurnDuration;
+            mana = fireballSpell.Manacost;
+            playercontrol.mana = playercontrol.mana - mana;
+           
 
             originPosition = transform.position; // Store the original position
 
@@ -38,15 +42,16 @@ public class FireboomerangScript : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             FireSpell fireballSpell = spellManager.spells[2] as FireSpell;
+            damage = fireballSpell.damage;
+            burnDuration = fireballSpell.BurnDuration;
 
-            if (fireballSpell != null)
-            {
+         
 
-                // tady damage pro enemy
-                fireballSpell.ApplyBurnEffect(other.gameObject, burnDuration);
-            }
+            // tady damage pro enemy
+            fireballSpell.ApplyBurnEffect(other.gameObject, burnDuration);
+            
 
-            Destroy(gameObject);
+            
         }
     }
 

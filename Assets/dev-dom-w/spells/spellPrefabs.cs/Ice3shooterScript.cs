@@ -6,19 +6,23 @@ public class Ice3shooterScript : MonoBehaviour
     private float speed;
     private float distance;
     private float damage;
-    
-
+    private float mana;
     private SpellManager spellManager;
+
+    private PlayerControl playercontrol;
 
     private void Start()
     {
        
             
-            IceSpell IceballSpell = spellManager.spells[3] as IceSpell;
+            IceSpell IceballSpell = spellManager.spells[6] as IceSpell;
 
            
             speed = IceballSpell.SpellSpeed;
             distance = IceballSpell.TravelDistance;
+            mana = IceballSpell.Manacost;
+
+            playercontrol.mana = playercontrol.mana - mana;
 
             
             GetComponent<Rigidbody>().velocity = transform.forward * speed;
@@ -36,7 +40,7 @@ public class Ice3shooterScript : MonoBehaviour
 {
     if (other.CompareTag("Enemy"))
     {
-        IceSpell IceballSpell = spellManager.spells[3] as IceSpell;
+        IceSpell IceballSpell = spellManager.spells[6] as IceSpell;
 
         damage = IceballSpell.damage;
         

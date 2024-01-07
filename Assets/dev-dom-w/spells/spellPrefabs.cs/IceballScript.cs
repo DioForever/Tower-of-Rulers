@@ -8,9 +8,9 @@ public class IceballScript : MonoBehaviour
     private float damage;
     private float freezeDuration;
     private float slowDuration;
-    
-
+    private float mana;
     private SpellManager spellManager;
+    private PlayerControl playercontrol;
 
     private void Start()
     {
@@ -24,6 +24,9 @@ public class IceballScript : MonoBehaviour
             // nastaveni rychlosti
             speed = iceballSpell.SpellSpeed;
             distance = iceballSpell.TravelDistance;
+            mana = iceballSpell.Manacost;
+
+            playercontrol.mana = playercontrol.mana - mana;
            
             
 
