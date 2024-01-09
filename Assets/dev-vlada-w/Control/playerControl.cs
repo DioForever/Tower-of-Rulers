@@ -8,6 +8,7 @@ public class PlayerControl : MonoBehaviour
     public Rigidbody2D rigidbody2D;
     private Vector2 moveDirection;
     public StatModifier speedModifier;
+    private Inventory inventory;
     
 //speed
     public delegate void MoveSpeedChanged(); //ostatní skripty reagují na změnu moveSpeedu
@@ -90,4 +91,10 @@ public class PlayerControl : MonoBehaviour
        speedModifier.UpdateMana(newMana);
         OnManaChanged?.Invoke();
     }
+
+    private void Awake()
+    {
+        inventory = new Inventory();
+    }
+
 }
