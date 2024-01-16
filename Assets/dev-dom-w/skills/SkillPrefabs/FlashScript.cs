@@ -10,7 +10,7 @@ public class FlashScript : MonoBehaviour
     private float travelSpeed;
     private bool isDashing = false;
     private SkillManager mySkillManager;
-    private PlayerControl playercontrol;
+    
 
     private void Start()
     {
