@@ -7,16 +7,6 @@ public class GameButtons : MonoBehaviour
 {
     public GameObject playMenu;
     public GameObject EditGSMenu;
-    
-    public void OpenEditMenu(){
-        GameObject obj = SaveManager.Instance.selectedObject;
-        // we dont want to go to edit menu if we dont have anything selected
-        if(obj == null) return;
-
-        // obj isnt null, so we have something selected
-        playMenu.gameObject.SetActive(false);
-        EditGSMenu.SetActive(true);
-    }
 
     public void DeleteGameSave(){
         GameObject obj = SaveManager.Instance.selectedObject;
