@@ -6,7 +6,6 @@ using UnityEngine;
 public class GameButtons : MonoBehaviour
 {
     public GameObject playMenu;
-    public GameObject EditGSMenu;
 
     public void DeleteGameSave(){
         GameObject obj = SaveManager.Instance.selectedObject;

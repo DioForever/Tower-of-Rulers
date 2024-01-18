@@ -30,8 +30,12 @@ public class LoadGameSaves : MonoBehaviour
     private void SpawnGameSaves(){
         if(File.Exists("./GameSaves.save")){
         string[] gameSaves = File.ReadAllLines("./GameSaves.save");
+
         // If its less than 3, there isnt even 1 valid game save
+
         if(gameSaves.Length < 3) return;
+
+        // We parse input from the file and setup game save prefab for each one
         int gameSaveCount = 0;
         int.TryParse(gameSaves[0], out gameSaveCount);
 

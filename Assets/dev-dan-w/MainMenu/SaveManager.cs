@@ -18,8 +18,6 @@ public class SaveManager : MonoBehaviour
 
     public GameObject selectedObject;
 
-
-    
     private void Awake() {
         if(Instance == null) Instance = this;
         else Destroy(gameObject);
@@ -27,24 +25,18 @@ public class SaveManager : MonoBehaviour
 
     public void Spawn(int id, int floorNum, string gameName)
     {
+        // Spawn prefab of a game save
         GameObject spawnedPrefab = Instantiate(prefab, Vector2.zero, transform.rotation) as GameObject;
         spawnedPrefab.transform.SetParent(parent.transform);
         Save saveScript = spawnedPrefab.GetComponent<Save>();
         
+        // Setup the "Save.cs" script values
         saveScript.floorText = floorNum.ToString();
         saveScript.nameText = gameName;
         saveScript.id = id;
 
+        // Add object to the list of loaded game saves
         saveObjects.Add(spawnedPrefab);
-    }
-
-    public bool UpdateSpawnedObjects(){
-        if(lastCheckedSavedObjSize != saveObjects.Count){
-            lastCheckedSavedObjSize = saveObjects.Count;
-            ClearSpawnedObjects();
-            return true;
-        }
-        return false;
     }
 
     public void ClearSpawnedObjects(){
@@ -67,17 +59,11 @@ public class SaveManager : MonoBehaviour
 
         // Save reference to the newly selected object
         selectedObject = selectObj;
+
         // Set color for all children of the newly selected object
         Image[] selectedObjectChildImages = selectedObject.GetComponentsInChildren<Image>();
         foreach (Image childImage in selectedObjectChildImages) {
             childImage.color = myColor;
         }
-    }
-
-
-    public void ShowHideObjects()
-    {
-        objShow.gameObject.SetActive(true);
-        objHide.gameObject.SetActive(false);
     }
 }
