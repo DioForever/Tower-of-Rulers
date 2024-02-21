@@ -3,6 +3,7 @@ using UnityEngine.Tilemaps;
 
 using FloorSystem;
 using DungeonGeneration;
+using WorldGeneration;
 using System.Collections.Generic;
 
 public class GenerationteInitiator : MonoBehaviour
@@ -21,9 +22,15 @@ public class GenerationteInitiator : MonoBehaviour
 
     void Start()
     {
-        DungeonFloor dungeon = new DungeonFloor(1, 15, 15);
-        dungeon.GenerateLayout(true);
-        dungeon.GenerateMap();
+        bool worldType = true;
+        // true = Dungeon, false = Open World
+            DungeonFloor dungeon = new DungeonFloor(1, 15, 15);
+            dungeon.GenerateLayout(true);
+            dungeon.GenerateMap();
+        if(worldType){
+        } else {
+            // WorldFloor world = new WorldFloor()
+        }
 
         Debug.Log(dungeon.floorMap.GetLength(0));
         Debug.Log(dungeon.floorMap.GetLength(1));
@@ -56,9 +63,9 @@ public class GenerationteInitiator : MonoBehaviour
                 int chunkX = x * 5;
                 Chunk chunk = floor.floorMap[y,x];
                 if(true) {
-                    setupOpenWorldChunk(chunk, maxX, maxY, chunkX, chunkY);
-                }else {
                     setupDungeonChunk(chunk, maxX, maxY, chunkX, chunkY);
+                }else {
+                    setupOpenWorldChunk(chunk, maxX, maxY, chunkX, chunkY);
                 }
             }
         }

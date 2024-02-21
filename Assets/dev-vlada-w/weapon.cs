@@ -9,7 +9,7 @@ public class Bow : MonoBehaviour, IWeapon
     [SerializeField] private Transform firePoint;
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private float arrowSpeed = 10f;
-    [SerializeField] private float arrowDamage = 10f;
+    [SerializeField] private int arrowDamage = 10;
 
     public void Attack()
     {
@@ -50,7 +50,7 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
             IDamageable damageable = enemy.GetComponent<IDamageable>();
             if (damageable != null)
             {
-                damageable.TakeDamage(10); // You can adjust the damage amount
+                damageable.Damage(10); // You can adjust the damage amount
             }
         }
     }

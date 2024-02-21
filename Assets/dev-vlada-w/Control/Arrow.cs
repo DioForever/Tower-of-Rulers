@@ -1,11 +1,51 @@
 using UnityEngine;
-
-public class ArrowScript : MonoBehaviour
+public interface IDamageable
 {
-    private float damage;
+    // Property to get and set the health of the object.
+    int Health { get; set; }
+
+    // Method to apply damage to the object.
+    void Damage(int damageAmount);
+
+    // Optional: Method to heal the object.
+    void Heal(int healAmount);
+}
+
+
+public class ArrowScript : MonoBehaviour, IDamageable
+{
+    public int Health { get; set; }
+
+    public void Damage(int damageAmount)
+    {
+        Health -= damageAmount;
+
+        // Trigger the OnTakeDamage event.
+        // OnTakeDamage?.Invoke(damageAmount);
+
+        if (Health <= 0)
+        {
+            // Trigger the OnDeath event.
+            // OnDeath?.Invoke();
+        }
+    }
+
+    public void Heal(int healAmount)
+    {
+        if (Health <= 0)
+        {
+            // Trigger the OnDeath event.
+            // OnDeath?.Invoke();
+        }else {
+            Health += healAmount;
+        }
+    }
+
+
+    private int damage;
     private LayerMask enemyLayer;
 
-    public void SetDamage(float newDamage)
+    public void SetDamage(int newDamage)
     {
         damage = newDamage;
     }
@@ -25,7 +65,7 @@ public class ArrowScript : MonoBehaviour
             if (damageable != null)
             {
                 // Deal damage to the enemy
-                damageable.TakeDamage(damage);
+                damageable.Damage(damage);
             }
 
             // Destroy the arrow on hit

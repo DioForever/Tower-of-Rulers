@@ -406,6 +406,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35df2fac24f44da428ccb6b5573f063d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 0
+  speedModifier: {fileID: 0}
+  health: 100
+  mana: 100
+  dashSpeed: 5
+  dashDuration: 0.25
+  dashCooldown: 3
+  isDashing: 0
+  canDash: 1
 --- !u!1 &344607709
 GameObject:
   m_ObjectHideFlags: 0

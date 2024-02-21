@@ -5,22 +5,21 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour
 {
     public float moveSpeed;
-    public Rigidbody2D rigidbody2D;
     private Vector2 moveDirection;
 
     public StatModifier speedModifier;
 
-    private IWeapon meleeWeapon;
-    private IWeapon bow;
-    private IWeapon currentWeapon;
+    public IWeapon meleeWeapon;
+    public IWeapon bow;    
+    public IWeapon currentWeapon;
 
     public delegate void MoveSpeedChanged();
     public event MoveSpeedChanged OnMoveSpeedChanged;
 
-    public delegate void HpChanged();
+    public delegate void HpChanged(float newHp);
     public event HpChanged OnHpChanged;
 
-    public delegate void ManaChanged();
+    public delegate void ManaChanged(float newMana);
     public event ManaChanged OnManaChanged;
 
     [Header("Hp Settings")]
@@ -34,8 +33,8 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] public float dashDuration = 0.25f;
     [SerializeField] public float dashCooldown = 3f;
 
-    bool isDashing;
-    bool canDash = true;
+    public bool isDashing;
+    public bool canDash = true;
 
     private void Start()
     {
@@ -69,11 +68,11 @@ public class PlayerControl : MonoBehaviour
         {
             // Attack with current weapon
             currentWeapon.Attack();
-        }
 
-        if (Input.GetKeyDown(KeyCode.Space) && canDash)
-        {
-            StartCoroutine(Dash());
+            if (canDash)
+            {
+                StartCoroutine(Dash());
+            }
         }
     }
 
@@ -96,14 +95,14 @@ public class PlayerControl : MonoBehaviour
 
     void Move()
     {
-        rigidbody2D.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
+        GetComponent<Rigidbody2D>().velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
     }
 
     private IEnumerator Dash()
     {
         canDash = false;
         isDashing = true;
-        rigidbody2D.velocity = new Vector2(moveDirection.x * dashSpeed, moveDirection.y * dashSpeed);
+        GetComponent<Rigidbody2D>().velocity = moveDirection * dashSpeed;
         yield return new WaitForSeconds(dashDuration);
         isDashing = false;
         yield return new WaitForSeconds(dashCooldown);
@@ -112,25 +111,20 @@ public class PlayerControl : MonoBehaviour
 
     public void UpdateMoveSpeed(float newMoveSpeed)
     {
-        speedModifier.UpdateMoveSpeed(newMoveSpeed);
+        moveSpeed = newMoveSpeed;
         OnMoveSpeedChanged?.Invoke();
     }
 
     public void UpdateHp(float newHp)
     {
-        //speedModifier.UpdateHp(newHp);
-        OnHpChanged?.Invoke();
+        health = newHp;
+        OnHpChanged?.Invoke(newHp);
     }
 
     public void UpdateMana(float newMana)
     {
-        speedModifier.UpdateMana(newMana);
-        OnManaChanged?.Invoke();
+        mana = newMana;
+        OnManaChanged?.Invoke(newMana);
     }
-
-    // private void Awake()
-    // {
-    //     inventory = new Inventory();
-    // }
 
 }
