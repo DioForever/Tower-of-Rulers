@@ -9,14 +9,6 @@ public class PlayerControl : MonoBehaviour
     private Vector2 moveDirection;
 
     public StatModifier speedModifier;
-<<<<<<< HEAD
-    // private Inventory inventory;
-    
-//speed
-    public delegate void MoveSpeedChanged(); //ostatní skripty reagují na změnu moveSpeedu
-    public event MoveSpeedChanged OnMoveSpeedChanged; //event pro speed
-//Hp
-=======
 
     private IWeapon meleeWeapon;
     private IWeapon bow;
@@ -25,7 +17,6 @@ public class PlayerControl : MonoBehaviour
     public delegate void MoveSpeedChanged();
     public event MoveSpeedChanged OnMoveSpeedChanged;
 
->>>>>>> 323929e76ea700e29ecf7e5f3e9ce6a86f28a9e5
     public delegate void HpChanged();
     public event HpChanged OnHpChanged;
 
@@ -136,7 +127,6 @@ public class PlayerControl : MonoBehaviour
         speedModifier.UpdateMana(newMana);
         OnManaChanged?.Invoke();
     }
-<<<<<<< HEAD
 
     // private void Awake()
     // {
@@ -144,6 +134,3 @@ public class PlayerControl : MonoBehaviour
     // }
 
 }
-=======
-}
->>>>>>> 323929e76ea700e29ecf7e5f3e9ce6a86f28a9e5

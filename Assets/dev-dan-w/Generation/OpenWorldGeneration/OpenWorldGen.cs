@@ -32,7 +32,11 @@ namespace WorldGeneration
         }
 
         private void GenerateChunkGround(float offsetX, float offsetY, Chunk chunk){
-            for(int y = 0; y < )
+            // for(int y = 0; y < chunk.map.GetLength(1); y++){
+            //     for(int x = 0; x < chunk.map.GetLength(0); x++){
+                    
+            //     }
+            // }
         }
 
         // Generate 3x a 2D map of noise, for ground, ground features, forests/rocks
