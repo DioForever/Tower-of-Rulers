@@ -127,4 +127,10 @@ public class PlayerControl : MonoBehaviour
         speedModifier.UpdateMana(newMana);
         OnManaChanged?.Invoke();
     }
+
+    // private void Awake()
+    // {
+    //     inventory = new Inventory();
+    // }
+
 }

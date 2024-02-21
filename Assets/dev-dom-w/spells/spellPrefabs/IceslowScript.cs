@@ -1,19 +1,11 @@
 // using UnityEngine;
 // using Spells;
 
-<<<<<<< HEAD
-// public class IceFreezeScript : MonoBehaviour
+// public class IceSlowScript : MonoBehaviour
 // {
 //     private float speed;
 //     private float distance;
 //     private float damage;
-=======
-public class IceSlowScript : MonoBehaviour
-{
-    private float speed;
-    private float distance;
-    private float damage;
->>>>>>> 4f50c9d8316924dd13420f15c88421685eb233a9
     
 //     private float slowDuration;
 //     private float mana;

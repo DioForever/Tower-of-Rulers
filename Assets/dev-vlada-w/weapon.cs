@@ -31,8 +31,6 @@ public class Bow : MonoBehaviour, IWeapon
     }
 }
 
-using UnityEngine;
-
 public class MeleeWeapon : MonoBehaviour, IWeapon
 {
     [SerializeField] private float meleeRange = 1f;
