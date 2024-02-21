@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Item {
 
-    publick enum ItemType {
-        mec,
+    public enum ItemType {
+        
     }
 
     public ItemType itemType;
-    publick int amount;
+    public int amount;
 
 }

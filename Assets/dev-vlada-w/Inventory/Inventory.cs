@@ -7,7 +7,7 @@ public class Inventory
 
     private List<Item> itemList;
 
-    publick Inventory () 
+    public Inventory () 
     {
         itemList = new List<Item>();
 
