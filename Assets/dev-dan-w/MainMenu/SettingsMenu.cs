@@ -34,7 +34,7 @@ public class SettingsMenu : MonoBehaviour
         float savedVolume = PlayerPrefs.GetFloat(VolumeKey, 1f); 
         float savedSensitivity = PlayerPrefs.GetFloat(SensitivityKey, 0.5f); 
 
-        // Set sliders based on loaded values
+        // Set sliders
         sliderVolume.value = savedVolume;
         sliderSensitivity.value = savedSensitivity;
 
@@ -48,7 +48,7 @@ public class SettingsMenu : MonoBehaviour
         PlayerPrefs.SetFloat(VolumeKey, sliderVolume.value);
         PlayerPrefs.SetFloat(SensitivityKey, sliderSensitivity.value);
 
-        // This line is essential to persist the PlayerPrefs data between sessions
+        // Save PlayerPrefs
         PlayerPrefs.Save();
     }
 }

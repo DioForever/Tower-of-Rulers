@@ -6,15 +6,23 @@ using UnityEngine.UI;
 public class BackgroundAnimation : MonoBehaviour
 {
     public Sprite[] sprites;
-    private double counter;
-    // Start is called before the first frame update
+    public Image image;
+    [SerializeField] private float speed = 0.4f;
+    [SerializeField] private int spriteIndex = 0;
+
     void Start()
     {
-        
+        StartCoroutine(playAnimation());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    IEnumerator playAnimation(){
+        while(true){
+            yield return new WaitForSeconds(speed);
+
+            if(spriteIndex >= sprites.Length) spriteIndex = 0;
+
+            image.sprite = sprites[spriteIndex];
+            spriteIndex++;
+        }
     }
 }

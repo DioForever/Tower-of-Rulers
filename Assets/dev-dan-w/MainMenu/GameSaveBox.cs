@@ -11,17 +11,22 @@ public class GameSaveBox : MonoBehaviour
     public int floorAchieved;
     public string gameName;
     // Start is called before the first frame update
+    public void EditGameSave(string newName){
+        if(newName != "" || newName != null){
+            gameNameDisplay.text = newName;
+            gameName = newName;
+        }
+    }
     void Start()
     {
         floorNumDisplay.text = floorAchieved.ToString();
         gameNameDisplay.text = gameName;
-
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        floorNumDisplay.text = floorAchieved.ToString();
+        gameNameDisplay.text = gameName;
     }
 }
