@@ -5,15 +5,15 @@ using UnityEngine;
 
 public class CreateGameBtn : MonoBehaviour
 {
-    [SerializeField] private string name;
+    [SerializeField] private string BtnName;
 
 
     public void updateName(string nameArg){
-        name = nameArg;
+        BtnName = nameArg;
     }
     public void CreateGame(){
         // Provizorní načítání herních savů
-        if(name == "" || name.Length>40 || name == null) return;
+        if(BtnName == "" || BtnName.Length>40 || BtnName == null) return;
         string[] gameSaves = File.ReadAllLines("./GameSaves.save");
         int gameSavesCount = 1;
         List<string> gameSavesList = new List<string>(gameSaves);
@@ -25,7 +25,7 @@ public class CreateGameBtn : MonoBehaviour
         gameSavesList[0] = (gameSavesCount+1).ToString();
         gameSavesList.Add("id: "+ (gameSavesCount+1).ToString());
         gameSavesList.Add("floor: "+1.ToString());
-        gameSavesList.Add("name: "+name);
+        gameSavesList.Add("name: "+BtnName);
         
         
         File.WriteAllLines("./GameSaves.save", gameSavesList);

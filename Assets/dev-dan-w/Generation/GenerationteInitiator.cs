@@ -22,37 +22,43 @@ public class GenerationteInitiator : MonoBehaviour
 
     void Start()
     {
-        bool worldType = true;
+        bool worldType = false;
         // true = Dungeon, false = Open World
-            DungeonFloor dungeon = new DungeonFloor(1, 15, 15);
-            dungeon.GenerateLayout(true);
-            dungeon.GenerateMap();
+        // DungeonFloor dungeon = new DungeonFloor(1, 15, 15);
+        // dungeon.GenerateLayout(true);
+        // dungeon.GenerateMap();
+
         if(worldType){
+            // Its dungeon
+            DungeonFloor floor = new DungeonFloor(1, 15, 15);
+            floor.GenerateLayout(true);
+            floor.GenerateMap();
+
+            setPlayerLoc(floor);
+            initChunks(floor, worldType);
         } else {
-            // WorldFloor world = new WorldFloor()
+            // its open world
+            WorldFloor floor = new WorldFloor(10, 15, 15);
+            floor.GenerateMap();
+
+            setPlayerLoc(floor);
+            initChunks(floor, worldType);
         }
 
-        Debug.Log(dungeon.floorMap.GetLength(0));
-        Debug.Log(dungeon.floorMap.GetLength(1));
-
-        int maxX = dungeon.floorMap.GetLength(0)*5;
-        int maxY = dungeon.floorMap.GetLength(1)*5;
-
-
-    
-        // Set the player location to the spawn location
-        float playerX = dungeon.spawnX*5+2.5f;
-        float playerY = maxY - (float)(dungeon.spawnY)*5-2.5f;
-        Vector3 playerPosition = new Vector3(playerX, playerY, 0);
-        player.position = playerPosition;
-
-        if(true) initChunks(dungeon);
 
         floorMap.RefreshAllTiles();
         wallMap.RefreshAllTiles();
         tileDecorationMap.RefreshAllTiles();
     }
-    public void initChunks(Floor floor){
+
+    public void setPlayerLoc(Floor floor){
+        // Set the player location to the spawn location
+        float playerX = floor.spawnX*5+2.5f;
+        float playerY = floor.floorMap.GetLength(1)*5 - (float)(floor.spawnY)*5-2.5f;
+        Vector3 playerPosition = new Vector3(playerX, playerY, 0);
+        player.position = playerPosition;
+    }
+    public void initChunks(Floor floor, bool type){
 
         int maxX = floor.floorMap.GetLength(0)*5;
         int maxY = floor.floorMap.GetLength(1)*5;
@@ -62,7 +68,7 @@ public class GenerationteInitiator : MonoBehaviour
                 int chunkY = y * 5;
                 int chunkX = x * 5;
                 Chunk chunk = floor.floorMap[y,x];
-                if(true) {
+                if(type) {
                     setupDungeonChunk(chunk, maxX, maxY, chunkX, chunkY);
                 }else {
                     setupOpenWorldChunk(chunk, maxX, maxY, chunkX, chunkY);
@@ -72,7 +78,6 @@ public class GenerationteInitiator : MonoBehaviour
     }
 
     public void setupOpenWorldChunk(Chunk chunk, int maxX, int maxY, int chunkX, int chunkY){
-        HashSet<int> identifiersFloor = new HashSet<int> { 15, 16, 17, 20, 21, 22 };
 
         for(int y1 = 0; y1 < chunk.map.GetLength(0); y1++){
             for(int x1 = 0; x1 < chunk.map.GetLength(1); x1++){
@@ -85,15 +90,17 @@ public class GenerationteInitiator : MonoBehaviour
                 int identififerTile = chunk.map[y1,x1];
                 int identififerDecoration = chunk.decorationMap[y1,x1];
 
-                // if its floor we need to add it to the floor map, if its wall we need to add it to the wall map
-                if(identifiersFloor.Contains(identififerTile)) floorMap.SetTile(position, Tileset[identififerTile]);
+                if(identififerTile == 2) identififerTile = 53;
+
+                // if its ground we need to add it to the floor map
+                floorMap.SetTile(position, TilesetOW[identififerTile]);
                 // else wallMap.SetTile(position, Tileset[identififerTile]);
 
                 // if its 0 we dont need to do anything
-                // if(identififerDecoration != 0){
-                //     if(identififerDecoration == 3) tileChunkDecorationMap.SetTile(positionChunk, DecorationTilesetAnimated[(identififerDecoration-3)]);
-                //     else tileDecorationMap.SetTile(position, DecorationTileset[(identififerDecoration-1)]);
-                // } 
+                if(identififerDecoration != 0){
+                    if(identififerDecoration == 3) tileChunkDecorationMap.SetTile(positionChunk, DecorationTileset[(identififerDecoration-3)]);
+                    else tileDecorationMap.SetTile(position, DecorationTileset[(identififerDecoration-1)]);
+                } 
             }
         }
     }
@@ -124,5 +131,8 @@ public class GenerationteInitiator : MonoBehaviour
             }
         }
     }
+
+
+
 }
 

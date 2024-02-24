@@ -13,7 +13,7 @@ public class SaveManager : MonoBehaviour
     [SerializeField] private GameObject objHide;
     [SerializeField] private GameObject prefab;
     [SerializeField] private List<GameObject> saveObjects = new List<GameObject>();
-    [SerializeField] private int lastCheckedSavedObjSize = 0;
+    // [SerializeField] private int lastCheckedSavedObjSize = 0;
     public GameObject parent;
 
     public GameObject selectedObject;

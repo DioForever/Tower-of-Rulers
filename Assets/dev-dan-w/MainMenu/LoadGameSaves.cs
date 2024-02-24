@@ -48,7 +48,7 @@ public class LoadGameSaves : MonoBehaviour
             string gFloor = gameSaves[counter+gs*3+1].Split(" ")[1];
             int.TryParse(gId, out gameId);
             int.TryParse(gFloor, out floorNumber);
-            if(floorNumber <= 0 || gameId == null) continue;
+            if(floorNumber <= 0) continue;
 
             gameNameArray = gameSaves[counter+gs*3+2].Split(" ");
             gameNameArray[0] = "";
