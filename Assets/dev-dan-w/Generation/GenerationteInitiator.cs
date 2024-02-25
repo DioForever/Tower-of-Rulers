@@ -17,6 +17,7 @@ public class GenerationteInitiator : MonoBehaviour
     public Tile[] DecorationTileset;
 
     public Tile[] TilesetOW;
+    public RuleTile[] ruleTilesOW;
     public Tile[] DecorationTilesetOW; 
     public Transform player;
 
@@ -93,9 +94,8 @@ public class GenerationteInitiator : MonoBehaviour
                 if(identififerTile == 2) identififerTile = 53;
 
                 // if its ground we need to add it to the floor map
-                floorMap.SetTile(position, TilesetOW[identififerTile]);
-                // else wallMap.SetTile(position, Tileset[identififerTile]);
-
+                floorMap.SetTile(position, ruleTilesOW[identififerTile]);
+                
                 // if its 0 we dont need to do anything
                 if(identififerDecoration != 0){
                     if(identififerDecoration == 3) tileChunkDecorationMap.SetTile(positionChunk, DecorationTileset[(identififerDecoration-3)]);

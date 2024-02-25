@@ -6,7 +6,7 @@ using FloorSystem;
 namespace WorldGeneration
 {
     /// <summary>
-    /// Represents a World floor, consisting of chunks, forests, plains and villages.
+    /// Represents a World floor, consisting of chunks - forests, plains and villages.
     /// </summary>
     public class WorldFloor : Floor
     {
@@ -57,9 +57,6 @@ namespace WorldGeneration
             for(int y = 0; y < chunk.map.GetLength(1); y++){
                 for(int x = 0; x < chunk.map.GetLength(0); x++){
                     chunk.map[y,x] = GetIdUsingPerlinNM(x+chunkX*5, offsetX, y+chunkY*5, offsetY, groundTypes);
-                    int groundTypeId = GetIdUsingPerlinNM(x+chunkX*5, offsetX, y+chunkY*5, offsetY, groundTypes);
-                    int[] neighbours = GetNeighboursGroupIDs(x+chunkX*5, offsetX, y+chunkY*5, offsetY, groundTypes);
-                    neighbours = GetGroundIDs(neighbours, groundTypeId);
                 }
             }
         }
@@ -111,33 +108,6 @@ namespace WorldGeneration
             // if(scaled_perlin == 4) scaled_perlin = 3;
 
             return Mathf.FloorToInt(scaled_perlin);
-        }
-
-        /// <summary>
-        /// Gets group IDs for horizontal and vertical directions (TOP, RIGHT, BOTTOM, LEFT) in this specific order.
-        /// </summary>
-        /// <param name="x">X location on map</param>
-        /// <param name="x_offset"></param>
-        /// <param name="y">Y location on map</param>
-        /// <param name="y_offset"></param>
-        /// <returns>Array of 4 ints, each representing group ID of (TOP, RIGHT, BOTTOM, LEFT) neighbour</returns>
-        private int[] GetNeighboursGroupIDs(int x, float x_offset, int y, float y_offset, int groundTypes){
-            
-            int[] neighbours = new int[] {0,0,0,0};
-
-            neighbours[0] = GetIdUsingPerlinNM(x, x_offset, y + 1, y_offset, groundTypes);
-            neighbours[1] = GetIdUsingPerlinNM(x + 1, x_offset, y + 1, y_offset, groundTypes);
-            neighbours[2] = GetIdUsingPerlinNM(x, x_offset, y - 1, y_offset, groundTypes);
-            neighbours[3] = GetIdUsingPerlinNM(x - 1, x_offset, y, y_offset, groundTypes);
-            
-            return neighbours;
-        }
-    
-        private int[] GetGroundIDs(int[] neighbours, int groundTypeId){
-            for(int i = 0; i < neighbours.Length; i++){
-                // if()
-            }
-            return new int[] {0,0,0,0,0};
-        }
+        }   
     }
 }

@@ -949,6 +949,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2c08ddd860f39ab4bb2911bdd01bc479, type: 2}
   - {fileID: 11400000, guid: ec81b2848829aae4e9bab3aab377ce17, type: 2}
   - {fileID: 11400000, guid: 8e26d99c6edfa024b882849764ca84b6, type: 2}
+  ruleTilesOW:
+  - {fileID: 11400000, guid: 787561e45e8780a4cbf02c6b8020ea83, type: 2}
+  - {fileID: 11400000, guid: 1c35c1c64b33b3b4ea4a3db6a3f6b2c7, type: 2}
   DecorationTilesetOW: []
   player: {fileID: 907509417}
 --- !u!4 &1457882407
