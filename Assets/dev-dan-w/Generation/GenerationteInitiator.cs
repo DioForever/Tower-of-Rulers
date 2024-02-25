@@ -12,12 +12,15 @@ public class GenerationteInitiator : MonoBehaviour
     public Tilemap floorMap;
     public Tilemap tileChunkDecorationMap;
     public Tilemap tileDecorationMap;
+    public Tilemap tileLeafMap;
     public Tile[] Tileset;
     public AnimatedTile[] DecorationTilesetAnimated;
     public Tile[] DecorationTileset;
 
     public Tile[] TilesetOW;
     public RuleTile[] ruleTilesOW;
+    public Tile[] treeTileset;
+    public Tile[] leafsTileset;
     public Tile[] DecorationTilesetOW; 
     public Transform player;
 
@@ -79,11 +82,13 @@ public class GenerationteInitiator : MonoBehaviour
     }
 
     public void setupOpenWorldChunk(Chunk chunk, int maxX, int maxY, int chunkX, int chunkY){
-
+        
         for(int y1 = 0; y1 < chunk.map.GetLength(0); y1++){
             for(int x1 = 0; x1 < chunk.map.GetLength(1); x1++){
                 int totalY = maxY - chunkY - y1 -1;
                 int totalX = chunkX + x1;
+
+                // UtilsOW.LoadTree(tileDecorationMap, treeTileset, totalX, totalY, 0, 0);
                 
                 // We are gonna have 2 positions, one for the tilemap/smalldecoration map and one for the chunk size decoration map
                 Vector3Int position = new Vector3Int(totalX, totalY,0);
@@ -95,7 +100,7 @@ public class GenerationteInitiator : MonoBehaviour
 
                 // if its ground we need to add it to the floor map
                 floorMap.SetTile(position, ruleTilesOW[identififerTile]);
-                
+
                 // if its 0 we dont need to do anything
                 if(identififerDecoration != 0){
                     if(identififerDecoration == 3) tileChunkDecorationMap.SetTile(positionChunk, DecorationTileset[(identififerDecoration-3)]);
@@ -103,6 +108,11 @@ public class GenerationteInitiator : MonoBehaviour
                 } 
             }
         }
+
+        int totalYY = maxY - chunkY;
+        int totalXX = chunkX;
+        UtilsOW.LoadTree(tileDecorationMap, tileLeafMap, treeTileset, leafsTileset, totalXX, totalYY, 1, 0);
+
     }
 
     public void setupDungeonChunk(Chunk chunk, int maxX, int maxY, int chunkX, int chunkY){
