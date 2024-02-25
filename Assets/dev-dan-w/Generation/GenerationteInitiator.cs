@@ -111,7 +111,7 @@ public class GenerationteInitiator : MonoBehaviour
 
         int totalYY = maxY - chunkY;
         int totalXX = chunkX;
-        UtilsOW.LoadTree(tileDecorationMap, tileLeafMap, treeTileset, leafsTileset, totalXX, totalYY, 1, 0);
+        UtilsOW.LoadTree(tileDecorationMap, tileLeafMap, treeTileset, leafsTileset, totalXX, totalYY, 1, 2);
 
     }
 

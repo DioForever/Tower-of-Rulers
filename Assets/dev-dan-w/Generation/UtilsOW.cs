@@ -72,7 +72,7 @@ public class UtilsOW
         for(int y = 0; y < leaf_height; y++){
             for(int x = 0; x < leaf_width; x++){
                 int totalY = y_base - y + ammount/2 + 1;
-                int totalX = x_base + y_offset + x - leaf_x_offset - 2;
+                int totalX = x_base + y_offset + x + leaf_x_offset - 2;
 
                 Vector3Int position = new Vector3Int(totalX, totalY, 0); 
                 leafMap.SetTile(position, leafSet[y*6+x+leaf_offset]);
