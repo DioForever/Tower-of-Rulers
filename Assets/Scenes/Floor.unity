@@ -195,8 +195,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -220232007
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -528,7 +528,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!1 &1153227551
 GameObject:
   m_ObjectHideFlags: 0
@@ -541,7 +541,8 @@ GameObject:
   - component: {fileID: 1153227554}
   - component: {fileID: 1153227553}
   - component: {fileID: 1153227555}
-  m_Layer: 7
+  - component: {fileID: 1153227556}
+  m_Layer: 0
   m_Name: Tilemap_small_decoration
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -661,6 +662,22 @@ SortingGroup:
   m_SortingLayerID: -220232007
   m_SortingLayer: -1
   m_SortingOrder: 2
+--- !u!19719996 &1153227556
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1153227551}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0
 --- !u!1 &1204155401
 GameObject:
   m_ObjectHideFlags: 3
@@ -1107,7 +1124,7 @@ GameObject:
   - component: {fileID: 1474659280}
   - component: {fileID: 1474659282}
   - component: {fileID: 1474659281}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Tilemap_leafs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1373,7 +1390,7 @@ GameObject:
   - component: {fileID: 2055442492}
   - component: {fileID: 2055442493}
   - component: {fileID: 2055442494}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Tilemap_walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1542,7 +1559,7 @@ GameObject:
   - component: {fileID: 2133834066}
   - component: {fileID: 2133834065}
   - component: {fileID: 2133834067}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Tilemap_chunk_decoration
   m_TagString: Untagged
   m_Icon: {fileID: 0}
