@@ -517,7 +517,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -529,6 +529,126 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
+--- !u!1 &1097841511
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1097841512}
+  - component: {fileID: 1097841514}
+  - component: {fileID: 1097841513}
+  m_Layer: 0
+  m_Name: Tilemap_ground_dec
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1097841512
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097841511}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1765637565}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!483693784 &1097841513
+TilemapRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097841511}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_ChunkSize: {x: 32, y: 32, z: 32}
+  m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
+  m_MaxChunkCount: 16
+  m_MaxFrameAge: 16
+  m_SortOrder: 0
+  m_Mode: 0
+  m_DetectChunkCullingBounds: 0
+  m_MaskInteraction: 0
+--- !u!1839735485 &1097841514
+Tilemap:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097841511}
+  m_Enabled: 1
+  m_Tiles: {}
+  m_AnimatedTiles: {}
+  m_TileAssetArray: []
+  m_TileSpriteArray: []
+  m_TileMatrixArray: []
+  m_TileColorArray: []
+  m_TileObjectToInstantiateArray: []
+  m_AnimationFrameRate: 1
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Origin: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0, y: 0, z: 1}
+  m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
+  m_TileOrientation: 0
+  m_TileOrientationMatrix:
+    e00: 1
+    e01: 0
+    e02: 0
+    e03: 0
+    e10: 0
+    e11: 1
+    e12: 0
+    e13: 0
+    e20: 0
+    e21: 0
+    e22: 1
+    e23: 0
+    e30: 0
+    e31: 0
+    e32: 0
+    e33: 1
 --- !u!1 &1153227551
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,7 +781,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: -220232007
   m_SortingLayer: -1
-  m_SortingOrder: 2
+  m_SortingOrder: 1
 --- !u!19719996 &1153227556
 TilemapCollider2D:
   m_ObjectHideFlags: 0
@@ -871,6 +991,7 @@ MonoBehaviour:
   tileChunkDecorationMap: {fileID: 2133834066}
   tileDecorationMap: {fileID: 1153227554}
   tileLeafMap: {fileID: 1474659282}
+  tileGroundDecMap: {fileID: 1097841514}
   Tileset:
   - {fileID: 11400000, guid: cd9fc6561ad66724b89deaefdb5c32db, type: 2}
   - {fileID: 11400000, guid: fe05ffa2efd9de14886f17f95d56d19d, type: 2}
@@ -901,7 +1022,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ca5f6a70191d7134d9eeabae36d1b8ab, type: 2}
   - {fileID: 11400000, guid: 6dd9838343d79f44fbb5f4e0bbc68f4c, type: 2}
   - {fileID: 11400000, guid: 4f30390647db52d418e15833f5bf0678, type: 2}
-  DecorationTilesetAnimated: []
   DecorationTileset:
   - {fileID: 11400000, guid: 79f319d01094ee74c87798ec53e29d65, type: 2}
   TilesetOW:
@@ -970,6 +1090,12 @@ MonoBehaviour:
   ruleTilesOW:
   - {fileID: 11400000, guid: 787561e45e8780a4cbf02c6b8020ea83, type: 2}
   - {fileID: 11400000, guid: 1c35c1c64b33b3b4ea4a3db6a3f6b2c7, type: 2}
+  ruleTilesGroundDec:
+  - {fileID: 11400000, guid: c8f72cecf190898469316e8c7fa48d56, type: 2}
+  - {fileID: 11400000, guid: 1aa79278f68283147ad152b01dc312f8, type: 2}
+  - {fileID: 11400000, guid: ab4f8e90f34f4ff4ead0d27e4ea85ded, type: 2}
+  - {fileID: 11400000, guid: 605a606c9f388144c8ab091e9f6a409c, type: 2}
+  - {fileID: 11400000, guid: fc65b0b898b35a944a8e106979a5e24b, type: 2}
   treeTileset:
   - {fileID: 11400000, guid: d1354a529e2f9b640bbc21229b54fb67, type: 2}
   - {fileID: 11400000, guid: 153754a4d501a5a47964c2756a049d7f, type: 2}
@@ -1098,6 +1224,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f1f8b226500fc59418939eaa4c3b3731, type: 2}
   DecorationTilesetOW: []
   player: {fileID: 907509417}
+  DecorationTilesetAnimated: []
 --- !u!4 &1457882407
 Transform:
   m_ObjectHideFlags: 0
@@ -1186,7 +1313,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -1279,6 +1406,7 @@ Transform:
   - {fileID: 2133834064}
   - {fileID: 1153227552}
   - {fileID: 1474659280}
+  - {fileID: 1097841512}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

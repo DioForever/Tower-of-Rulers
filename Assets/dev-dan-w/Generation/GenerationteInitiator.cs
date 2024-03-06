@@ -8,21 +8,29 @@ using System.Collections.Generic;
 
 public class GenerationteInitiator : MonoBehaviour
 {
+    // Tilemaps
     public Tilemap wallMap;
     public Tilemap floorMap;
     public Tilemap tileChunkDecorationMap;
     public Tilemap tileDecorationMap;
     public Tilemap tileLeafMap;
+    public Tilemap tileGroundDecMap;
+
+    // Dungeon tiles
     public Tile[] Tileset;
-    public AnimatedTile[] DecorationTilesetAnimated;
     public Tile[] DecorationTileset;
 
+    // OpenWorld tiles
     public Tile[] TilesetOW;
     public RuleTile[] ruleTilesOW;
+    public RuleTile[] ruleTilesGroundDec;
     public Tile[] treeTileset;
     public Tile[] leafsTileset;
     public Tile[] DecorationTilesetOW;
+
+    // Shared
     public Transform player;
+    public AnimatedTile[] DecorationTilesetAnimated;
 
     void Start()
     {
@@ -69,8 +77,8 @@ public class GenerationteInitiator : MonoBehaviour
     public void initChunks(Floor floor, bool type)
     {
 
-        int maxX = floor.floorMap.GetLength(0) * 5;
-        int maxY = floor.floorMap.GetLength(1) * 5;
+        int maxX = floor.floorMap.GetLength(1) * 5;
+        int maxY = floor.floorMap.GetLength(0) * 5;
 
         for (int y = 0; y < floor.floorMap.GetLength(0); y++)
         {
@@ -117,22 +125,25 @@ public class GenerationteInitiator : MonoBehaviour
 
                 if (identififerDecoration > 10 && identififerDecoration <= 54)
                 {
+                    // Trees
                     string treeIds = identififerDecoration.ToString();
                     int baseId = int.Parse(treeIds[0].ToString());
                     int leafId = int.Parse(treeIds[1].ToString());
                     UtilsOW.LoadTree(tileDecorationMap, tileLeafMap, treeTileset, leafsTileset, totalX - 2, totalY - 2, baseId, leafId);
                 }
+                else if (identififerDecoration >= 1 && identififerDecoration <= 5)
+                {
+                    // Flowers, Grass
+                    tileGroundDecMap.SetTile(position, ruleTilesGroundDec[(identififerDecoration - 1)]);
+                }
                 else if (identififerDecoration != 0)
                 {
+                    // Special decoration
                     if (identififerDecoration == 3) tileChunkDecorationMap.SetTile(positionChunk, DecorationTileset[(identififerDecoration - 3)]);
                     else tileDecorationMap.SetTile(position, DecorationTileset[(identififerDecoration - 1)]);
                 }
             }
         }
-
-        // int totalYY = maxY - chunkY;
-        // int totalXX = chunkX;
-        // UtilsOW.LoadTree(tileDecorationMap, tileLeafMap, treeTileset, leafsTileset, totalXX, totalYY, 1, 2);
 
     }
 

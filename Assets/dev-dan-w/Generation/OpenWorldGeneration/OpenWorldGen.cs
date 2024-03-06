@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 using UnityEngine;
 using FloorSystem;
 
@@ -27,18 +31,37 @@ namespace WorldGeneration
         public void GenerateMap()
         {
 
-            (float[] offsetsX, float[] offsetsY) = GenOffsets();
+            // Generate offsets for the generations by the noise maps.
+            (float[] offsetsX, float[] offsetsY) = GenOffsets(3);
+
+
 
             for (int chunkX = 0; chunkX < floorMap.GetLength(1); chunkX++)
             {
                 for (int chunkY = 0; chunkY < floorMap.GetLength(0); chunkY++)
                 {
                     Chunk chunk = new Chunk();
+                    floorMap[chunkY, chunkX] = chunk;
+
+                    /*
+                        Chunk generate order:
+                        1. Ground
+                        2. Buildings
+                        3. Trees
+                        4. Grass
+                    */
 
                     GenerateChunkGround(offsetsX[0], offsetsY[0], chunk, chunkX, chunkY);
-                    GenerateTrees(offsetsX[1], offsetsY[1], chunk, chunkX, chunkY);
 
-                    floorMap[chunkY, chunkX] = chunk;
+                    // GenerateVillages()
+
+                    if ((int)floorMap.GetLength(1) / 2 != chunkX && (int)floorMap.GetLength(0) / 2 != chunkY)
+                    {
+                        GenerateTrees(offsetsX[1], offsetsY[1], chunk, chunkX, chunkY, floorMap);
+                    }
+
+                    GenerateGrass(offsetsX[2], offsetsY[2], chunk, chunkX, chunkY);
+
                 }
             }
 
@@ -66,24 +89,32 @@ namespace WorldGeneration
                 }
             }
         }
-
-        private void GenerateTrees(float offsetX, float offsetY, Chunk chunk, int chunkX, int chunkY)
+        /// <summary>
+        /// Generates trees in a chunk.
+        /// </summary>
+        /// <param name="offsetX">Tree noise map x-offset</param>
+        /// <param name="offsetY">Tree noise map y-offset</param>
+        /// <param name="chunk">Chunk we wish to generate trees into</param>
+        /// <param name="chunkX">X coordinate of the chunk</param>
+        /// <param name="chunkY">Y coordinate of the chunk</param>
+        private void GenerateTrees(float offsetX, float offsetY, Chunk chunk, int chunkX, int chunkY, Chunk[,] floorMap)
         {
+            // We dont want to spawn tree into teleport
+            if (chunkX == spawnX && chunkY == spawnY) return;
             int tree_count = 0;
 
-            //Generate position of two trees
             int cooldown = 8;
-            // Trees have id of XY, X represents the base and Y represents the leafs, X is 1-5, Y is 0-4
-            for (int y = 2; y < chunk.map.GetLength(1) - 2; y++)
-            {
-                for (int x = 2; x < chunk.map.GetLength(0) - 2; x++)
-                {
 
-                    Debug.Log($"TREES");
+            // Trees have id of XY, X represents the base and Y represents the leafs, X is 1-5, Y is 0-4
+            for (int y = 1; y < chunk.map.GetLength(1) - 2; y++)
+            {
+                for (int x = 1; x < chunk.map.GetLength(0) - 2; x++)
+                {
+                    // Lets get if there even are trees (chance 66%, 0-2)
                     int forestChance = GetIdUsingPerlinNM(x + chunkX * 5, offsetX, y + chunkY * 5, offsetY, 3);
-                    Debug.Log($"CHANCE {forestChance}");
                     if (forestChance == 2) continue;
 
+                    // If we already spawned 2 trees in the chunk, return
                     if (tree_count == 2) return;
                     if (tree_count == 1) cooldown--;
                     if (cooldown == 0) continue;
@@ -107,21 +138,129 @@ namespace WorldGeneration
 
                         tree_count++;
                         if (randomBase == 5) randomLeafs = 0;
-                        chunk.decorationMap[y, x] = int.Parse($"{randomBase}{randomLeafs}");
-                        Debug.Log($"{randomBase}-{randomLeafs}");
+
+                        // Check if we can spawn the tree
+                        bool overlaping = false;
+                        int[,] currTree = GetTreeTilesPositions(x, y, randomBase, randomLeafs);
+
+                        // Check the chunks around as well
+                        for (int chunkY1 = chunkY - 1; chunkY1 < chunkY + 1; chunkY1++)
+                        {
+                            // Check boundaries
+                            if (chunkY1 < 0 || chunkY1 >= floorMap.GetLength(0)) continue;
+
+                            for (int chunkX1 = chunkX - 1; chunkX1 < chunkX + 1; chunkX1++)
+                            {
+                                // Check boundaries
+                                if (chunkX1 < 0 || chunkX1 >= floorMap.GetLength(1)) continue;
+                                Chunk currChunk = floorMap[chunkY1, chunkX1];
+                                if (currChunk == null) continue;
+
+                                // Check if we found a tree
+                                // Now we go through the chunk
+                                for (int y1 = 0; y1 < currChunk.decorationMap.GetLength(0); y1++)
+                                {
+                                    if (overlaping) break;
+                                    for (int x1 = 0; x1 < currChunk.decorationMap.GetLength(1); x1++)
+                                    {
+                                        // Skip if there is something other than a tree
+                                        if (overlaping) break;
+                                        if (currChunk.decorationMap[y1, x1] == 0) continue;
+                                        if (x1 == x && y1 == y) continue;
+
+                                        // Its a tree
+                                        if (currChunk.decorationMap[y1, x1] >= 10 && currChunk.decorationMap[y1, x1] <= 54)
+                                        {
+                                            string treeIds = currChunk.decorationMap[y1, x1].ToString();
+                                            int baseId = int.Parse(treeIds[0].ToString());
+                                            int leafId = int.Parse(treeIds[1].ToString());
+                                            int[,] foundTree = GetTreeTilesPositions(x1, y1, baseId, leafId);
+                                            if (!CompareTrees(currTree, foundTree)) overlaping = true;
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                        if (!overlaping) { chunk.decorationMap[y, x] = int.Parse($"{randomBase}{randomLeafs}"); }
                     }
                 }
             }
+        }
+
+        private void GenerateGrass(float offsetX, float offsetY, Chunk chunk, int chunkX, int chunkY)
+        {
+            // We dont want to spawn grass into teleport
+            if (chunkX == spawnX && chunkY == spawnY) return;
+
+            for (int y = 0; y < chunk.map.GetLength(1); y++)
+            {
+                for (int x = 0; x < chunk.map.GetLength(0); x++)
+                {
+                    // Check if its not already taken
+                    if (chunk.decorationMap[y, x] != 0) continue;
+
+
+                    // Debug.Log($"GRASS");
+                    int grassChance = GetIdUsingPerlinNM(x + chunkX * 5, offsetX, y + chunkY * 5, offsetY, 5, 20);
+                    // Debug.Log($"CHANCE {grassChance}");
+
+                    int chance = Random.Range(0, 5);
+                    int chanceRock = Random.Range(0, 21); // 5% to spawn a rock
+
+                    if (chanceRock == 20)
+                    {
+                        // Spawn a rock
+                        continue;
+                    }
+
+                    // 20% chance to spawn (0-4)
+                    if (chance == 1)
+                    {
+                        switch (grassChance)
+                        {
+                            case 0:
+                                // Red flowers
+                                chunk.decorationMap[y, x] = 1;
+                                break;
+                            case 1:
+                                // Purple flowers
+                                chunk.decorationMap[y, x] = 2;
+                                break;
+                            case 2:
+                            case 3:
+                                // Grass
+                                int groundType = chunk.map[y, x];
+                                switch (groundType)
+                                {
+                                    case 0:
+                                        // Light Grass
+                                        chunk.decorationMap[y, x] = 4;
+                                        break;
+                                    case 1:
+                                        // Dark Grass
+                                        chunk.decorationMap[y, x] = 5;
+                                        break;
+                                }
+                                break;
+                            case 4:
+                                // Yellow flowers
+                                chunk.decorationMap[y, x] = 3;
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return;
         }
         // Generate TilesetCount-times a 2D map of noise, for ground, ground features, forests/rocks
         /// <summary>
         /// Generates groundTypes-times offset for perlin noise maps.
         /// </summary>
         /// <returns>Tuple of x and y offset float arrays.</returns>
-        private (float[] offsetsX, float[] offsetsY) GenOffsets()
+        private (float[] offsetsX, float[] offsetsY) GenOffsets(int offsetAmount)
         {
-            int offsetAmount = groundTypes;
-
             // We will keep track of the offset in two arrays, X and Y
             float[] NMOffsetsX = new float[offsetAmount];
             float[] NMOffsetsY = new float[offsetAmount];
@@ -148,12 +287,12 @@ namespace WorldGeneration
         /// <param name="y_offset"></param>
         /// <param name="typeAmmount">Range of output, [0; typeAmmount]</param>
         /// <returns></returns>
-        private int GetIdUsingPerlinNM(int x, float x_offset, int y, float y_offset, int typeAmmount)
+        private int GetIdUsingPerlinNM(int x, float x_offset, int y, float y_offset, int typeAmmount, int magnification_ = 40)
         {
 
             float raw_perlin = Mathf.PerlinNoise(
-                (x + x_offset) / magnification,
-                (y + y_offset) / magnification
+                (x + x_offset) / magnification_,
+                (y + y_offset) / magnification_
             );
 
             float clamp_perlin = Mathf.Clamp(raw_perlin, 0.0f, 1.0f);
@@ -162,6 +301,149 @@ namespace WorldGeneration
             if (scaled_perlin > typeAmmount) scaled_perlin = typeAmmount;
 
             return Mathf.FloorToInt(scaled_perlin);
+        }
+
+        /// <summary>
+        /// Gets array of all y,x coordinates where the tree will be rendered at.
+        /// </summary>
+        /// <param name="x_base">X coordinate of the tree</param>
+        /// <param name="y_base">Y coordinate of the tree</param>
+        /// <param name="baseType">Index of the tree base type</param>
+        /// <param name="leafsType">Index of the tree leaf type</param>
+        /// <returns></returns>
+        public static int[,] GetTreeTilesPositions(int x_base, int y_base, int baseType, int leafsType)
+        {
+            List<int[]> found = new List<int[]>();
+
+            int y_offset = 0;
+            int tile_offset = 0;
+            bool noLeafs = false;
+
+            int leaf_width = 6;
+            int leaf_height = 0;
+            int leaf_x_offset = 0;
+            int leaf_y_offset = 0;
+            int leaf_offset = 0;
+
+            // if (baseType != 4) return;
+            // 6, 14, 22, 30
+            // Setup leafs y_offset
+            switch (baseType)
+            {
+                case 1:
+                    y_offset = 2;
+                    leaf_y_offset = 3;
+                    break;
+                case 4:
+                    y_offset = 3;
+                    leaf_y_offset = 4;
+                    tile_offset = (baseType - 1) * 8 - 2;
+                    break;
+                case 2:
+                case 3:
+                    y_offset = 3;
+                    leaf_y_offset = 3;
+                    tile_offset = (baseType - 1) * 8 - 2;
+                    break;
+                case 5:
+                    y_offset = 2;
+                    leaf_y_offset = 4;
+                    tile_offset = (baseType - 1) * 8 - 2;
+                    noLeafs = true;
+                    break;
+            }
+
+            for (int y = 0; y <= y_offset; y++)
+            {
+                for (int x = 0; x < 2; x++)
+                {
+                    int totalY = y_base + y_offset - y;
+                    int totalX = x_base + y_offset + x;
+
+                    int[] loc = new int[2] { totalY, totalX };
+                    found.Add(loc);
+                }
+            }
+            switch (leafsType)
+            {
+                case 0:
+                    noLeafs = true;
+                    break;
+                case 1:
+                    leaf_height = 4;
+
+                    leaf_x_offset = 0;
+                    leaf_offset = 0;
+                    break;
+                case 2:
+                    leaf_height = 3;
+
+                    leaf_x_offset = 1;
+                    leaf_offset = 24;
+                    break;
+                case 3:
+                    leaf_height = 4;
+
+                    leaf_x_offset = 1;
+                    leaf_offset = 24 + 18;
+                    break;
+                case 4:
+                    leaf_height = 4;
+
+                    leaf_x_offset = 1;
+                    leaf_offset = 24 + 18 + 24;
+                    break;
+            }
+            if (!noLeafs)
+            {
+                for (int y = 0; y < leaf_height; y++)
+                {
+                    for (int x = 0; x < leaf_width; x++)
+                    {
+                        int totalY = y_base - y + leaf_y_offset + 1;
+                        int totalX = x_base + y_offset + x + leaf_x_offset - 2;
+
+                        int[] loc = new int[2] { totalY, totalX };
+                        found.Add(loc);
+                    }
+                }
+            }
+            int[,] foundArr = new int[found.Count, 2];
+
+            for (int i = 0; i < found.Count; i++)
+            {
+                foundArr[i, 0] = found[i][0];
+                foundArr[i, 1] = found[i][1];
+            }
+
+            return foundArr;
+        }
+
+        /// <summary>
+        /// Compares two tree arrays to check whenever they overlap.
+        /// </summary>
+        /// <param name="tree0">Array of all y,x coordinates where the tree will be rendered at.</param>
+        /// <param name="tree1">Array of all y,x coordinates where the tree will be rendered at.</param>
+        /// <returns></returns>
+        public static bool CompareTrees(int[,] tree0, int[,] tree1)
+        {
+
+
+            // Check each node of tree0 against each node of tree1
+            for (int i = 0; i < tree0.GetLength(0); i++)
+            {
+                for (int j = 0; j < tree1.GetLength(0); j++)
+                {
+                    if (tree0[i, 0] == tree1[j, 0] && tree0[i, 1] == tree1[j, 1])
+                    {
+                        // If a matching node is found, return false
+                        return false;
+                    }
+                }
+            }
+
+            // If no matching node is found, return true
+            return true;
         }
     }
 }

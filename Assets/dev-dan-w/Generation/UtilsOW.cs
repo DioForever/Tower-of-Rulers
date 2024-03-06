@@ -87,11 +87,8 @@ public class UtilsOW
                 leaf_offset = 24 + 18 + 24;
                 break;
         }
-        Debug.Log($"{baseType} - {leafsType} {x_base},{y_base}");
         if (!noLeafs)
         {
-            Debug.Log($"Leafs rendered");
-
             for (int y = 0; y < leaf_height; y++)
             {
                 for (int x = 0; x < leaf_width; x++)
