@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.2d.tilemap.extras": "https://github.com/Unity-Technologies/2d-extras.git#master",
     "com.unity.cinemachine": "2.8.9",
     "com.unity.collab-proxy": "2.0.7",
     "com.unity.feature.2d": "2.0.0",

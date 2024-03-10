@@ -15,7 +15,7 @@ namespace WorldGeneration
     {
         private static int[,] Layout;
 
-        private float magnification = 40.0f;
+        // private float magnification = 40.0f;
 
         private int groundTypes = 2;
 
@@ -34,7 +34,7 @@ namespace WorldGeneration
             // Generate offsets for the generations by the noise maps.
             (float[] offsetsX, float[] offsetsY) = GenOffsets(3);
 
-
+            GenerateVillage();
 
             for (int chunkX = 0; chunkX < floorMap.GetLength(1); chunkX++)
             {
@@ -53,7 +53,7 @@ namespace WorldGeneration
 
                     GenerateChunkGround(offsetsX[0], offsetsY[0], chunk, chunkX, chunkY);
 
-                    // GenerateVillages()
+                    // CheckVillage();
 
                     if ((int)floorMap.GetLength(1) / 2 != chunkX && (int)floorMap.GetLength(0) / 2 != chunkY)
                     {
@@ -89,6 +89,89 @@ namespace WorldGeneration
                 }
             }
         }
+
+        private void GenerateVillage()
+        {
+            int villageChunkWidth = Random.Range(6, 10);
+            if (villageChunkWidth % 2 == 0) villageChunkWidth++;
+            int villageChunkHeight = Random.Range(6, 10);
+            if (villageChunkHeight % 2 == 0) villageChunkHeight++;
+
+            // Generate the village layout
+            Layout = new int[villageChunkHeight, villageChunkWidth];
+
+            // Generate the village layout
+            Layout = GenerateVillageLayout(villageChunkWidth, villageChunkHeight);
+
+
+        }
+
+        private int[,] GenerateVillageLayout(int width, int height)
+        {
+            int[,] layout = new int[height, width];
+            // Make ?x (1-2 chunk wide buildings), 1x(2 chunks with stores)
+            // Connect them with roads = empty chunks
+
+            // Generate the village layout
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+
+
+                    // if distance form middle is less than 2, make it a ROAD/EMPTY
+                    if (GetDistance(width / 2, height / 2, x, y) < 2)
+                    {
+                        layout[y, x] = 1;
+                        continue;
+                    }
+
+                    // if distance from middle is less than 3 and its above the teleport, make it a SHOP
+                    if (GetDistance(width / 2, height / 2, x, y) < 3 && y < height / 2)
+                    {
+                        // 50% chance to make it a shop
+                        if (Random.Range(0, 2) == 1) layout[y, x] = 2;
+                        continue;
+                    }
+
+                    // if distance from middle is more than 4, make it a HOUSE
+                    if (GetDistance(width / 2, height / 2, x, y) >= 4)
+                    {
+                        // 80% chance to make it a house
+                        if (Random.Range(0, 5) != 0)
+                        {
+                            // 50% chance to make it a 1x2 house
+                            if (Random.Range(0, 2) == 1)
+                            {
+                                layout[y, x] = 3;
+                            }
+                            else
+                            {
+                                if (x + 1 < width) { layout[y, x + 1] = 4; layout[y, x] = 4; }
+                                else { layout[y, x - 1] = 3; }
+                            }
+                        }
+                    }
+                }
+
+                // We Debug.Log the layout
+                string line = "";
+                for (int x = 0; x < width; x++)
+                {
+                    line += layout[y, x] + " ";
+                }
+                Debug.Log(line);
+
+            }
+
+            return layout;
+        }
+
+        private bool CheckVillage()
+        {
+            return false;
+        }
+
         /// <summary>
         /// Generates trees in a chunk.
         /// </summary>
@@ -323,7 +406,6 @@ namespace WorldGeneration
             int leaf_height = 0;
             int leaf_x_offset = 0;
             int leaf_y_offset = 0;
-            int leaf_offset = 0;
 
             // if (baseType != 4) return;
             // 6, 14, 22, 30
@@ -373,25 +455,21 @@ namespace WorldGeneration
                     leaf_height = 4;
 
                     leaf_x_offset = 0;
-                    leaf_offset = 0;
                     break;
                 case 2:
                     leaf_height = 3;
 
                     leaf_x_offset = 1;
-                    leaf_offset = 24;
                     break;
                 case 3:
                     leaf_height = 4;
 
                     leaf_x_offset = 1;
-                    leaf_offset = 24 + 18;
                     break;
                 case 4:
                     leaf_height = 4;
 
                     leaf_x_offset = 1;
-                    leaf_offset = 24 + 18 + 24;
                     break;
             }
             if (!noLeafs)
@@ -444,6 +522,11 @@ namespace WorldGeneration
 
             // If no matching node is found, return true
             return true;
+        }
+
+        private float GetDistance(int x1, int y1, int x2, int y2)
+        {
+            return Mathf.Sqrt(Mathf.Pow(x2 - x1, 2) + Mathf.Pow(y2 - y1, 2));
         }
     }
 }

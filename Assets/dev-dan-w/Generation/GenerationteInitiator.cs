@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEditor;
 
 using FloorSystem;
 using DungeonGeneration;
@@ -27,6 +28,8 @@ public class GenerationteInitiator : MonoBehaviour
     public Tile[] treeTileset;
     public Tile[] leafsTileset;
     public Tile[] DecorationTilesetOW;
+    public GameObject[] treeBasePrefabs;
+    public GameObject[] treeLeafPrefabs;
 
     // Shared
     public Transform player;
@@ -129,7 +132,7 @@ public class GenerationteInitiator : MonoBehaviour
                     string treeIds = identififerDecoration.ToString();
                     int baseId = int.Parse(treeIds[0].ToString());
                     int leafId = int.Parse(treeIds[1].ToString());
-                    UtilsOW.LoadTree(tileDecorationMap, tileLeafMap, treeTileset, leafsTileset, totalX - 2, totalY - 2, baseId, leafId);
+                    UtilsOW.LoadTree(tileDecorationMap, tileLeafMap, totalX - 2, totalY - 2, baseId, leafId, treeBasePrefabs[baseId - 1], treeLeafPrefabs[leafId]);
                 }
                 else if (identififerDecoration >= 1 && identififerDecoration <= 5)
                 {
