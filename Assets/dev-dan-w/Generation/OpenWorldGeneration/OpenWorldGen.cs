@@ -22,8 +22,14 @@ namespace WorldGeneration
         public WorldFloor(int floorNumber, int SizeY, int SizeX, Chunk[,] fMap = null) : base(SizeX, SizeY, floorNumber)
         {
             if (fMap != null) floorMap = fMap;
-            spawnX = (int)SizeX / 2;
-            spawnY = (int)SizeY / 2;
+            else
+            {
+                spawnX = (int)SizeX / 2;
+                spawnY = (int)SizeY / 2;
+
+                playerX = spawnX;
+                playerY = spawnY;
+            }
 
 
         }
@@ -34,26 +40,26 @@ namespace WorldGeneration
             // Generate offsets for the generations by the noise maps.
             (float[] offsetsX, float[] offsetsY) = GenOffsets(3);
 
-            GenerateVillage();
+            /*
+                Chunk generate order:
+                1. Buildings
+                2. Ground
+                3. Trees
+                4. Grass
+                5. Monster camps
+            */
+
+            int[] villageSpecs = GenerateVillage();
 
             for (int chunkX = 0; chunkX < floorMap.GetLength(1); chunkX++)
             {
                 for (int chunkY = 0; chunkY < floorMap.GetLength(0); chunkY++)
                 {
-                    Chunk chunk = new Chunk();
+                    Chunk chunk = floorMap[chunkY, chunkX];
+                    if (chunk == null) chunk = new Chunk();
                     floorMap[chunkY, chunkX] = chunk;
 
-                    /*
-                        Chunk generate order:
-                        1. Ground
-                        2. Buildings
-                        3. Trees
-                        4. Grass
-                    */
-
                     GenerateChunkGround(offsetsX[0], offsetsY[0], chunk, chunkX, chunkY);
-
-                    // CheckVillage();
 
                     if ((int)floorMap.GetLength(1) / 2 != chunkX && (int)floorMap.GetLength(0) / 2 != chunkY)
                     {
@@ -64,6 +70,8 @@ namespace WorldGeneration
 
                 }
             }
+
+            GenerateMonsterCamps(10, 25, villageSpecs);
 
 
             // Set teleport to the middle of the middle chunk
@@ -90,7 +98,7 @@ namespace WorldGeneration
             }
         }
 
-        private void GenerateVillage()
+        private int[] GenerateVillage()
         {
             int villageChunkWidth = Random.Range(6, 10);
             if (villageChunkWidth % 2 == 0) villageChunkWidth++;
@@ -98,12 +106,47 @@ namespace WorldGeneration
             if (villageChunkHeight % 2 == 0) villageChunkHeight++;
 
             // Generate the village layout
-            Layout = new int[villageChunkHeight, villageChunkWidth];
+            int[,] layoutVillage = GenerateVillageLayout(villageChunkWidth, villageChunkHeight);
 
-            // Generate the village layout
-            Layout = GenerateVillageLayout(villageChunkWidth, villageChunkHeight);
+            bool wideHouse = false;
 
+            // Generate x, y of the middle of the village, but at least 10 chunks away from the middle and width+1 and height+1 away from the edges
+            int villageX = Random.Range(10, floorMap.GetLength(1) - 10);
+            int villageY = Random.Range(10, floorMap.GetLength(0) - 10);
+            // While villageX and villageY is not 10 chunks away from the middle, generate new ones
+            int count = 0;
+            while (GetDistance(spawnX, spawnY, villageX, villageY) < 10 && count <= 10000)
+            {
+                villageX = Random.Range(10, floorMap.GetLength(1) - 10);
+                villageY = Random.Range(10, floorMap.GetLength(0) - 10);
+                count++;
 
+                if (count >= 10000) { Debug.LogError("Could not find a suitable village location"); }
+            }
+
+            // Lets go through the layout and place the village into the floorMap
+            for (int y = 0; y < layoutVillage.GetLength(0); y++)
+            {
+                for (int x = 0; x < layoutVillage.GetLength(1); x++)
+                {
+                    // We skip the middle chunk
+                    if (layoutVillage[y, x] == 0) continue;
+                    Chunk chunk = new Chunk();
+
+                    // if its a building we place it in the middle bottom
+                    if (layoutVillage[y, x] != 0)
+                    {
+                        if (wideHouse) { wideHouse = false; continue; }
+                        chunk.decorationMap[4, 2] = layoutVillage[y, x];
+                        // We place the chunk into the floorMap
+                        // Debug.Log($"{(int)(villageX + y - villageChunkHeight / 2)}, {(int)(villageY + x - villageChunkWidth / 2)} = {layoutVillage[y, x]}");
+                        floorMap[(int)(villageX + y - villageChunkHeight / 2), (int)(villageY + x - villageChunkWidth / 2)] = chunk;
+                        if (layoutVillage[y, x] == 10) wideHouse = true;
+                    }
+                }
+            }
+
+            return new int[] { villageX, villageY, villageChunkWidth, villageChunkHeight };
         }
 
         private int[,] GenerateVillageLayout(int width, int height)
@@ -111,65 +154,100 @@ namespace WorldGeneration
             int[,] layout = new int[height, width];
             // Make ?x (1-2 chunk wide buildings), 1x(2 chunks with stores)
             // Connect them with roads = empty chunks
+            int shopTypes = 6;
 
             // Generate the village layout
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-
+                    // if its vertical or horizontal middle, make it a ROAD/EMPTY
+                    if (x == width / 2 || y == height / 2)
+                    {
+                        continue;
+                    }
 
                     // if distance form middle is less than 2, make it a ROAD/EMPTY
                     if (GetDistance(width / 2, height / 2, x, y) < 2)
                     {
-                        layout[y, x] = 1;
                         continue;
                     }
 
-                    // if distance from middle is less than 3 and its above the teleport, make it a SHOP
+                    // if distance from middle is less than 3 and its above the teleport, make it a SHOP or a HOUSE
+
                     if (GetDistance(width / 2, height / 2, x, y) < 3 && y < height / 2)
                     {
-                        // 50% chance to make it a shop
-                        if (Random.Range(0, 2) == 1) layout[y, x] = 2;
-                        continue;
+                        // 90% chance to make it a shop if its under 3 shops
+                        int buildingId = GenerateShops(shopTypes);
+                        if (buildingId != -1) shopTypes++;
+                        if (buildingId == -1) buildingId = GenerateHouses(x, y, width, true);
+
+                        if (buildingId != -1) layout[y, x] = buildingId;
                     }
 
-                    // if distance from middle is more than 4, make it a HOUSE
-                    if (GetDistance(width / 2, height / 2, x, y) >= 4)
+                    // if distance from middle is more than 3, make it a HOUSE
+                    if (GetDistance(width / 2, height / 2, x, y) >= 3)
                     {
-                        // 80% chance to make it a house
-                        if (Random.Range(0, 5) != 0)
-                        {
-                            // 50% chance to make it a 1x2 house
-                            if (Random.Range(0, 2) == 1)
-                            {
-                                layout[y, x] = 3;
-                            }
-                            else
-                            {
-                                if (x + 1 < width) { layout[y, x + 1] = 4; layout[y, x] = 4; }
-                                else { layout[y, x - 1] = 3; }
-                            }
-                        }
-                    }
-                }
+                        int buildingId = GenerateHouses(x, y, width);
 
-                // We Debug.Log the layout
-                string line = "";
-                for (int x = 0; x < width; x++)
-                {
-                    line += layout[y, x] + " ";
+                        if (buildingId != -1) layout[y, x] = buildingId;
+                    }
+
                 }
-                Debug.Log(line);
 
             }
 
             return layout;
         }
 
-        private bool CheckVillage()
+        private int GenerateShops(int shopTypes)
         {
-            return false;
+            int buildingId = -1;
+            if (shopTypes <= 8)
+            {
+                //90 % chance to make it a shop if its under 3 shops
+                if (Random.Range(0, 10) != 0)
+                {
+                    // There are 3 types of shops
+                    buildingId = shopTypes;
+                }
+            }
+            // 40% chance to make it a shop if its over 3 shops
+            else
+            {
+                if (Random.Range(0, 5) != 0)
+                {
+                    // Make the shop random one
+                    buildingId = Random.Range(6, 9);
+                }
+            }
+
+            return buildingId;
+        }
+
+        private int GenerateHouses(int x, int y, int width, bool smallOnly = false)
+        {
+            int buildingId = -1;
+            // 80% chance to make it a house
+            if (Random.Range(0, 5) != 0)
+            {
+                // 50% chance to make it a 1x2 house
+                if (Random.Range(0, 2) == 1)
+                {
+                    buildingId = 9;
+                }
+                else if (!smallOnly)
+                {
+                    if (x + 1 < width) { buildingId = 10; }
+                    else { buildingId = 9; }
+                }
+                else
+                {
+                    buildingId = 9;
+                }
+            }
+
+            return buildingId;
         }
 
         /// <summary>
@@ -271,6 +349,37 @@ namespace WorldGeneration
             }
         }
 
+        private void GenerateMonsterCamps(int minCamps, int maxCamps, int[] vilageSpecs)
+        {
+            // Generate monster camps
+            int camps = Random.Range(minCamps, maxCamps);
+
+            // Generate random position of the camp, and check if its at least 10 chunks away from the village
+            for (int i = 0; i < camps; i++)
+            {
+                int x = Random.Range(0, floorMap.GetLength(1));
+                int y = Random.Range(0, floorMap.GetLength(0));
+
+                // if (GetDistance(floorMap.GetLength(1) / 2, floorMap.GetLength(0) / 2, x, y) < 10) { i--; continue; }
+                // if its in the village or 10 chunks away from the village, skip
+                if (GetDistance(vilageSpecs[0], vilageSpecs[1], x, y) < 10) { i--; continue; }
+
+                // Generate the camp
+                Chunk chunk = floorMap[y, x];
+                if (chunk == null) chunk = new Chunk();
+                floorMap[y, x] = chunk;
+
+                // Generate the camp
+                GenerateCamp(chunk);
+            }
+
+        }
+
+        private void GenerateCamp(Chunk chunk)
+        {
+            // Generate the camp
+            chunk.decorationMap[2, 2] = 15;
+        }
         private void GenerateGrass(float offsetX, float offsetY, Chunk chunk, int chunkX, int chunkY)
         {
             // We dont want to spawn grass into teleport

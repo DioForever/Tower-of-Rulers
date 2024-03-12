@@ -270,6 +270,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 165dee8d948089447858dd9861c3422d, type: 3}
   - {fileID: 21300000, guid: dabc367e246bbce47abaca313b5d1588, type: 3}
   - {fileID: 21300000, guid: abab2d2fd0f38fe498254c70c4082933, type: 3}
+  - {fileID: 21300000, guid: dfd54eaf40539d144973701373deb1c8, type: 3}
   - {fileID: -1415093029, guid: 439a3abf87b9692418a0ea6a33253286, type: 3}
   - {fileID: 1633160979, guid: 439a3abf87b9692418a0ea6a33253286, type: 3}
   - {fileID: 1696170709, guid: 439a3abf87b9692418a0ea6a33253286, type: 3}
@@ -532,6 +533,7 @@ SpriteAtlas:
   - ShopPotions
   - TreeBase2
   - ShopFood
+  - MonsterCampDecoration
   - GroundTilesetV2.0-export_8
   - GroundTilesetV2.0-export_9
   - GroundTilesetV2.0-export_19

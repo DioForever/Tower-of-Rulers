@@ -63,5 +63,36 @@ public class UtilsOW : MonoBehaviour
         Instantiate(prefabBase, spawnPositionBase, Quaternion.identity);
     }
 
+    public static void LoadBuilding(Tilemap wallMap, int x_base, int y_base, GameObject prefabBuilding)
+    {
+        Vector3 spawnPositionBuilding = wallMap.GetCellCenterWorld(new Vector3Int((int)(x_base + 2), (int)(y_base + 2), 0));
+        // spawnPositionBuilding.x -= 0.5f;
+        // spawnPositionBuilding.y -= 0.5f;
+
+        // Instantiate the building at the calculated position
+        Instantiate(prefabBuilding, spawnPositionBuilding, Quaternion.identity);
+    }
+
+    public static void LoadTeleport(Tilemap wallMap, float x_base, float y_base, GameObject prefabTeleport)
+    {
+        // Vector3 spawnPositionTeleport = wallMap.GetCellCenterWorld(new Vector3Int((int)(x_base + 2), (int)(y_base + 2), 0));
+        Vector3 spawnPositionTeleport = new Vector3(x_base, y_base, 0);
+        // spawnPositionBuilding.x -= 0.5f;
+        // spawnPositionBuilding.y -= 0.5f;
+
+        // Instantiate the building at the calculated position
+        Instantiate(prefabTeleport, spawnPositionTeleport, Quaternion.identity);
+    }
+
+    public static void LoadDecoration(Tilemap wallMap, int x_base, int y_base, GameObject prefabDec)
+    {
+        Vector3 spawnPositionDecoration = wallMap.GetCellCenterWorld(new Vector3Int((int)(x_base + 2), (int)(y_base + 2), 0));
+        // spawnPositionBuilding.x -= 0.5f;
+        // spawnPositionBuilding.y -= 0.5f;
+
+        // Instantiate the building at the calculated position
+        Instantiate(prefabDec, spawnPositionDecoration, Quaternion.identity);
+    }
+
 
 }

@@ -15,6 +15,8 @@ namespace FloorSystem
         public Chunk[,] floorMap;
         public int spawnX;
         public int spawnY;
+        public int playerX;
+        public int playerY;
         public int exitX;
         public int exitY;
 
