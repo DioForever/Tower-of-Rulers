@@ -15,6 +15,8 @@ namespace FloorSystem
         public Chunk[,] floorMap;
         public int spawnX;
         public int spawnY;
+        public int playerX;
+        public int playerY;
         public int exitX;
         public int exitY;
 
@@ -23,6 +25,7 @@ namespace FloorSystem
             this.floorNumber = floorNumber;
             if (floorMap != null) this.floorMap = floorMap;
             else this.floorMap = new Chunk[SizeY, SizeX];
+            
         }
 
     }

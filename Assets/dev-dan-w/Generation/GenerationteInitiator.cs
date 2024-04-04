@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEditor;
 
 using FloorSystem;
 using DungeonGeneration;
@@ -8,54 +9,104 @@ using System.Collections.Generic;
 
 public class GenerationteInitiator : MonoBehaviour
 {
+    // Tilemaps
     public Tilemap wallMap;
     public Tilemap floorMap;
     public Tilemap tileChunkDecorationMap;
     public Tilemap tileDecorationMap;
     public Tilemap tileLeafMap;
+    public Tilemap tileGroundDecMap;
+
+    // Dungeon tiles
     public Tile[] Tileset;
-    public AnimatedTile[] DecorationTilesetAnimated;
     public Tile[] DecorationTileset;
 
+    // OpenWorld tiles
     public Tile[] TilesetOW;
     public RuleTile[] ruleTilesOW;
+    public RuleTile[] ruleTilesGroundDec;
     public Tile[] treeTileset;
     public Tile[] leafsTileset;
     public Tile[] DecorationTilesetOW;
+    public GameObject[] treeBasePrefabs;
+    public Tile[] wallTileset;
+    public GameObject[] treeLeafPrefabs;
+    public GameObject[] buldingsPrefabs;
+    public GameObject[] decorationPrefabs;
+
+    // Shared
     public Transform player;
+    public GameObject teleport;
+    public AnimatedTile[] DecorationTilesetAnimated;
 
     void Start()
     {
-        bool worldType = false;
-        // true = Dungeon, false = Open World
-        // DungeonFloor dungeon = new DungeonFloor(1, 15, 15);
-        // dungeon.GenerateLayout(true);
-        // dungeon.GenerateMap();
-
-        if (worldType)
-        {
-            // Its dungeon
-            DungeonFloor floor = new DungeonFloor(1, 15, 15);
-            floor.GenerateLayout(true);
-            floor.GenerateMap();
-
-            setPlayerLoc(floor);
-            initChunks(floor, worldType);
-        }
-        else
-        {
-            // its open world
-            WorldFloor floor = new WorldFloor(10, 15, 15);
-            floor.GenerateMap();
-
-            setPlayerLoc(floor);
-            initChunks(floor, worldType);
-        }
-
+        LoadFloor(false, false, 1);
 
         floorMap.RefreshAllTiles();
         wallMap.RefreshAllTiles();
         tileDecorationMap.RefreshAllTiles();
+    }
+
+    private void LoadFloor(bool worldType, bool worldGenerated, int floorNumber)
+    {
+        // true = Dungeon, false = Open World
+
+        SaveFloorType("floorType", worldType);
+
+        if (!worldGenerated)
+        {
+            if (worldType)
+            {
+                // Its dungeon
+                DungeonFloor floor = new DungeonFloor(floorNumber, 15, 15);
+                floor.GenerateLayout(true);
+                floor.GenerateMap();
+
+                setPlayerLoc(floor);
+                initChunks(floor, worldType);
+            }
+            else
+            {
+                // its open world
+                WorldFloor floor = new WorldFloor(floorNumber, 75, 75);
+                floor.GenerateMap();
+
+                setPlayerLoc(floor);
+                initChunks(floor, worldType);
+            }
+        }
+        else
+        {
+            // Load the world
+            if (worldType)
+            {
+                // Its dungeon - LOAD DUNEGON
+                DungeonFloor floor = new DungeonFloor(1, 15, 15);
+                floor.GenerateLayout(true);
+                floor.GenerateMap();
+
+                setPlayerLoc(floor);
+                initChunks(floor, worldType);
+            }
+            else
+            {
+                // its open world - LOAD OPEN WORLD
+                WorldFloor floor = new WorldFloor(10, 75, 75);
+                floor.GenerateMap();
+
+                setPlayerLoc(floor);
+                initChunks(floor, worldType);
+            }
+        }
+
+
+    }
+
+    public void SaveFloorType(string saveKey, bool type)
+    {
+        PlayerPrefs.SetInt(saveKey, type ? 1 : 0);
+        PlayerPrefs.Save();
     }
 
     public void setPlayerLoc(Floor floor)
@@ -69,8 +120,8 @@ public class GenerationteInitiator : MonoBehaviour
     public void initChunks(Floor floor, bool type)
     {
 
-        int maxX = floor.floorMap.GetLength(0) * 5;
-        int maxY = floor.floorMap.GetLength(1) * 5;
+        int maxX = floor.floorMap.GetLength(1) * 5;
+        int maxY = floor.floorMap.GetLength(0) * 5;
 
         for (int y = 0; y < floor.floorMap.GetLength(0); y++)
         {
@@ -85,15 +136,57 @@ public class GenerationteInitiator : MonoBehaviour
                 }
                 else
                 {
+                    // Spawn teleport in the middle of the world
+                    if (x == floor.floorMap.GetLength(1) / 2 && y == floor.floorMap.GetLength(0) / 2)
+                    {
+                        float spawnX = floor.spawnX * 5 + 2.5f;
+                        float spawnY = floor.floorMap.GetLength(1) * 5 - (float)(floor.spawnY) * 5 - 2.5f;
+                        UtilsOW.LoadTeleport(tileDecorationMap, spawnX, spawnY, teleport);
+                    }
                     setupOpenWorldChunk(chunk, maxX, maxY, chunkX, chunkY);
                 }
             }
+        }
+
+        // Setup the wall around the chunks, just the outer ones if its an Open World
+        if (!type)
+        {
+            // TOP WALL
+            for (int x = 0; x < maxX; x++)
+            {
+                wallMap.SetTile(new Vector3Int(x, maxY, 0), wallTileset[1]);
+            }
+            // BOTTOM WALL
+            for (int x = 0; x < maxX; x++)
+            {
+                wallMap.SetTile(new Vector3Int(x, -1, 0), wallTileset[6]);
+            }
+            // LEFT WALL
+            for (int y = 0; y < maxY; y++)
+            {
+                wallMap.SetTile(new Vector3Int(-1, y, 0), wallTileset[3]);
+            }
+            // RIGHT WALL
+            for (int y = 0; y < maxY; y++)
+            {
+                wallMap.SetTile(new Vector3Int(maxX, y, 0), wallTileset[4]);
+            }
+
+            // TOP LEFT CORNER
+            wallMap.SetTile(new Vector3Int(-1, maxY, 0), wallTileset[0]);
+            // TOP RIGHT CORNER
+            wallMap.SetTile(new Vector3Int(maxX, maxY, 0), wallTileset[2]);
+            // BOTTOM LEFT CORNER
+            wallMap.SetTile(new Vector3Int(-1, -1, 0), wallTileset[5]);
+            // BOTTOM RIGHT CORNER
+            wallMap.SetTile(new Vector3Int(maxX, -1, 0), wallTileset[7]);
+
         }
     }
 
     public void setupOpenWorldChunk(Chunk chunk, int maxX, int maxY, int chunkX, int chunkY)
     {
-
+        HashSet<int> identifiersTrees = new HashSet<int> { 10, 11, 12, 13, 14, 21, 22, 23, 24, 31, 32, 33, 34, 41, 42, 43, 44, 51, 52, 53, 54 };
         for (int y1 = 0; y1 < chunk.map.GetLength(0); y1++)
         {
             for (int x1 = 0; x1 < chunk.map.GetLength(1); x1++)
@@ -111,29 +204,35 @@ public class GenerationteInitiator : MonoBehaviour
 
 
                 // if its ground we need to add it to the floor map
-                floorMap.SetTile(position, ruleTilesOW[identififerTile]);
+                if (identififerTile < ruleTilesOW.Length) floorMap.SetTile(position, ruleTilesOW[identififerTile]);
 
                 // if its 0 we dont need to do anything
 
-                if (identififerDecoration > 10 && identififerDecoration <= 54)
+                if (identififerDecoration >= 1 && identififerDecoration <= 5)
                 {
+                    // Flowers, Grass
+                    tileGroundDecMap.SetTile(position, ruleTilesGroundDec[(identififerDecoration - 1)]);
+                }
+                else if (identififerDecoration >= 6 && identififerDecoration <= 10)
+                {
+                    // Buildings
+                    UtilsOW.LoadBuilding(tileDecorationMap, totalX, totalY, buldingsPrefabs[identififerDecoration - 6]);
+                }
+                else if (identififerDecoration == 15)
+                {
+                    // Monster campfire
+                    UtilsOW.LoadDecoration(tileDecorationMap, totalX, totalY, decorationPrefabs[identififerDecoration - 15]);
+                }
+                else if (identifiersTrees.Contains(identififerDecoration))
+                {
+                    // Trees
                     string treeIds = identififerDecoration.ToString();
                     int baseId = int.Parse(treeIds[0].ToString());
                     int leafId = int.Parse(treeIds[1].ToString());
-                    UtilsOW.LoadTree(tileDecorationMap, tileLeafMap, treeTileset, leafsTileset, totalX - 2, totalY - 2, baseId, leafId);
-                }
-                else if (identififerDecoration != 0)
-                {
-                    if (identififerDecoration == 3) tileChunkDecorationMap.SetTile(positionChunk, DecorationTileset[(identififerDecoration - 3)]);
-                    else tileDecorationMap.SetTile(position, DecorationTileset[(identififerDecoration - 1)]);
+                    UtilsOW.LoadTree(tileDecorationMap, tileLeafMap, totalX - 2, totalY - 2, baseId, leafId, treeBasePrefabs[baseId - 1], treeLeafPrefabs[leafId]);
                 }
             }
         }
-
-        // int totalYY = maxY - chunkY;
-        // int totalXX = chunkX;
-        // UtilsOW.LoadTree(tileDecorationMap, tileLeafMap, treeTileset, leafsTileset, totalXX, totalYY, 1, 2);
-
     }
 
     public void setupDungeonChunk(Chunk chunk, int maxX, int maxY, int chunkX, int chunkY)
