@@ -11,8 +11,9 @@ namespace WorldTime
     {
         private Light2D _light;
 
-        [SerializeField] private OpenWorldTime _worldTime;
+        [SerializeField] private WorldTime _worldTime;
         [SerializeField] private Gradient _gradiant;
+        [SerializeField] private Gradient _gradiantDungeon;
 
         private void Awake()
         {
@@ -27,12 +28,24 @@ namespace WorldTime
 
         private void OnWorldTimeChanged(object sender, TimeSpan newTime)
         {
-            _light.color = _gradiant.Evaluate(PercentOfDay(newTime));
+            if (LoadFloorType()) _light.color = _gradiant.Evaluate(PercentOfDay(newTime));
+            else _light.color = _gradiantDungeon.Evaluate(PercentOfDay(newTime));
         }
 
         private float PercentOfDay(TimeSpan time)
         {
             return (float)time.TotalMinutes % WorldTimeConstants.MinutesInDay / WorldTimeConstants.MinutesInDay;
+        }
+
+        public bool LoadFloorType()
+        {
+            // Get the saved value from PlayerPrefs, defaulting to 0 if not found
+            int floorTypeValue = PlayerPrefs.GetInt("floorType", 0);
+            // Set the floor type based on the saved value
+            bool isDungeonFloor = floorTypeValue != 1 ? true : false;
+            // dungeon floor is flase, overworld floor is true
+
+            return isDungeonFloor;
         }
     }
 }

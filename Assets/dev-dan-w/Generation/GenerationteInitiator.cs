@@ -41,8 +41,8 @@ public class GenerationteInitiator : MonoBehaviour
 
     void Start()
     {
-        LoadFloor(true, false, 1);
-        
+        LoadFloor(false, false, 1);
+
         floorMap.RefreshAllTiles();
         wallMap.RefreshAllTiles();
         tileDecorationMap.RefreshAllTiles();
@@ -53,7 +53,7 @@ public class GenerationteInitiator : MonoBehaviour
         // true = Dungeon, false = Open World
 
         SaveFloorType("floorType", worldType);
-        
+
         if (!worldGenerated)
         {
             if (worldType)
@@ -102,7 +102,7 @@ public class GenerationteInitiator : MonoBehaviour
 
 
     }
-    
+
     public void SaveFloorType(string saveKey, bool type)
     {
         PlayerPrefs.SetInt(saveKey, type ? 1 : 0);

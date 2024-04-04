@@ -25,6 +25,7 @@ namespace FloorSystem
             this.floorNumber = floorNumber;
             if (floorMap != null) this.floorMap = floorMap;
             else this.floorMap = new Chunk[SizeY, SizeX];
+            
         }
 
     }

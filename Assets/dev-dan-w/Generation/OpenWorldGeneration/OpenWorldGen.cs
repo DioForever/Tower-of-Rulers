@@ -34,6 +34,9 @@ namespace WorldGeneration
 
         }
 
+        /// <summary>
+        /// Generates the map of the world floor.
+        /// </summary>
         public void GenerateMap()
         {
 
@@ -98,6 +101,10 @@ namespace WorldGeneration
             }
         }
 
+        /// <summary>
+        /// Generates a village in the middle of the map.
+        /// </summary>
+        /// <returns>Returns a X,Y location of the village and its width and height</returns>
         private int[] GenerateVillage()
         {
             int villageChunkWidth = Random.Range(6, 10);
@@ -149,6 +156,12 @@ namespace WorldGeneration
             return new int[] { villageX, villageY, villageChunkWidth, villageChunkHeight };
         }
 
+        /// <summary>
+        /// Generates a layout for the village.
+        /// </summary>
+        /// <param name="width">Width of the village layout</param>
+        /// <param name="height">Height of the village layout</param>
+        /// <returns></returns>
         private int[,] GenerateVillageLayout(int width, int height)
         {
             int[,] layout = new int[height, width];
@@ -200,6 +213,11 @@ namespace WorldGeneration
             return layout;
         }
 
+        /// <summary>
+        /// Generates a shop in the village.
+        /// </summary>
+        /// <param name="shopTypes">Number keeping track of the shop types</param>
+        /// <returns></returns>
         private int GenerateShops(int shopTypes)
         {
             int buildingId = -1;
@@ -225,6 +243,14 @@ namespace WorldGeneration
             return buildingId;
         }
 
+        /// <summary>
+        /// Generates a house in the village.
+        /// </summary>
+        /// <param name="x">X chunk location</param>
+        /// <param name="y">Y chunk location</param>
+        /// <param name="width">Width of the layout</param>
+        /// <param name="smallOnly">Bool to check if only small houses should be generated</param>
+        /// <returns></returns>
         private int GenerateHouses(int x, int y, int width, bool smallOnly = false)
         {
             int buildingId = -1;
@@ -349,6 +375,12 @@ namespace WorldGeneration
             }
         }
 
+        /// <summary>
+        /// Generates monster camps around the map.
+        /// </summary>
+        /// <param name="minCamps">Min ammount of camps</param>
+        /// <param name="maxCamps">Max ammount of camps</param>
+        /// <param name="vilageSpecs">Width and Height of the village in the world</param>
         private void GenerateMonsterCamps(int minCamps, int maxCamps, int[] vilageSpecs)
         {
             // Generate monster camps
@@ -380,6 +412,15 @@ namespace WorldGeneration
             // Generate the camp
             chunk.decorationMap[2, 2] = 15;
         }
+
+        /// <summary>
+        /// Generates grass in the chunk.
+        /// </summary>
+        /// <param name="offsetX">X offset of noise map</param>
+        /// <param name="offsetY">Y offset of noise map</param>
+        /// <param name="chunk">Current chunk we wish to decorate with grass</param>
+        /// <param name="chunkX">X chunk location</param>
+        /// <param name="chunkY">Y chunk location</param>
         private void GenerateGrass(float offsetX, float offsetY, Chunk chunk, int chunkX, int chunkY)
         {
             // We dont want to spawn grass into teleport
