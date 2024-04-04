@@ -4,14 +4,10 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    public float moveSpeed;
+    public float moveSpeed = 10f;
     private Vector2 moveDirection;
 
     public StatModifier speedModifier;
-
-    public IWeapon meleeWeapon;
-    public IWeapon bow;    
-    public IWeapon currentWeapon;
 
     public delegate void MoveSpeedChanged();
     public event MoveSpeedChanged OnMoveSpeedChanged;
@@ -39,9 +35,6 @@ public class PlayerControl : MonoBehaviour
     private void Start()
     {
         canDash = true;
-        meleeWeapon = new MeleeWeapon();
-        bow = new Bow();
-        currentWeapon = meleeWeapon;
     }
 
     void Update()
@@ -53,26 +46,9 @@ public class PlayerControl : MonoBehaviour
 
         ProcessInputs();
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetMouseButtonDown(0)) // Left mouse button clicked
         {
-            // Switch to melee weapon
-            currentWeapon = meleeWeapon;
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            // Switch to bow
-            currentWeapon = bow;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            // Attack with current weapon
-            currentWeapon.Attack();
-
-            if (canDash)
-            {
-                StartCoroutine(Dash());
-            }
+            ApplyDamage();
         }
     }
 
@@ -97,6 +73,23 @@ public class PlayerControl : MonoBehaviour
     {
         GetComponent<Rigidbody2D>().velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
     }
+
+    void ApplyDamage()
+{
+    Vector2 currentPosition = transform.position;
+    Vector2 damageDirection = moveDirection.normalized * 10f; // 10 pixels in the last moved direction
+    RaycastHit2D hit = Physics2D.Raycast(currentPosition, damageDirection);
+
+    if (hit.collider != null)
+    {
+        CactusEnemy cactus = hit.collider.GetComponent<CactusEnemy>();
+        if (cactus != null)
+        {
+            cactus.TakeDamage(10); // Assuming 10 damage for now, you can change it as needed
+        }
+    }
+}
+
 
     private IEnumerator Dash()
     {
@@ -126,5 +119,4 @@ public class PlayerControl : MonoBehaviour
         mana = newMana;
         OnManaChanged?.Invoke(newMana);
     }
-
 }

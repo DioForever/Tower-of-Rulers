@@ -406,7 +406,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35df2fac24f44da428ccb6b5573f063d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0
+  moveSpeed: 10
   speedModifier: {fileID: 0}
   health: 100
   mana: 100
