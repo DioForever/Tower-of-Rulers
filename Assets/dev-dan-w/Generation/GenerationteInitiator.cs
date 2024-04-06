@@ -39,6 +39,8 @@ public class GenerationteInitiator : MonoBehaviour
     public GameObject teleport;
     public AnimatedTile[] DecorationTilesetAnimated;
 
+    public static Floor floor_;
+
     void Start()
     {
         LoadFloor(false, false, 1);
@@ -63,6 +65,10 @@ public class GenerationteInitiator : MonoBehaviour
                 floor.GenerateLayout(true);
                 floor.GenerateMap();
 
+                floor_ = floor;
+
+
+
                 setPlayerLoc(floor);
                 initChunks(floor, worldType);
             }
@@ -71,6 +77,8 @@ public class GenerationteInitiator : MonoBehaviour
                 // its open world
                 WorldFloor floor = new WorldFloor(floorNumber, 75, 75);
                 floor.GenerateMap();
+
+                floor_ = floor;
 
                 setPlayerLoc(floor);
                 initChunks(floor, worldType);

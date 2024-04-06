@@ -4,8 +4,7 @@ using UnityEngine.UI;
 public class SaveButton : MonoBehaviour
 {
     // Reference to the PlayerSaveSystem script
-    public PlayerSaveSystem playerSaveSystem;
-    
+
 
     void Start()
     {
@@ -19,9 +18,9 @@ public class SaveButton : MonoBehaviour
     // Function to call when the button is clicked
     void SavePlayerData()
     {
-      // Call the SavePlayerData function from PlayerSaveSystem
-       playerSaveSystem.SavePlayerData();
-       playerSaveSystem.SaveFloorData();
+        // Call the SavePlayerData function from PlayerSaveSystem
+        //    playerSaveSystem.SavePlayerData();
+        PlayerSaveSystem.SaveFloorData();
 
     }
 }
