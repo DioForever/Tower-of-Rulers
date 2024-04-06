@@ -21,6 +21,7 @@ public class SaveButton : MonoBehaviour
     {
       // Call the SavePlayerData function from PlayerSaveSystem
        playerSaveSystem.SavePlayerData();
+       playerSaveSystem.SaveFloorData();
 
     }
 }
