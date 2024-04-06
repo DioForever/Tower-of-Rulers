@@ -14,18 +14,7 @@ public class PlayerSaveSystem : MonoBehaviour
         SavePlayerData();
     }
 
-    void OnApplicationPause(bool isPaused)
-    {
-        if (isPaused)
-        {
-            SavePlayerData();
-        }
-    }
-
-    void Start()
-    {
-        LoadPlayerData();
-    }
+   
 
     // Function to save player data
     public void SavePlayerData()
@@ -44,17 +33,5 @@ public class PlayerSaveSystem : MonoBehaviour
         playerControl.mana = PlayerPrefs.GetFloat(ManaKey, playerControl.mana);
     }
 
-    // Example usage: saving player data
-    public void ExampleSave()
-    {
-        SavePlayerData();
-        Debug.Log("Player data saved.");
-    }
-
-    // Example usage: loading player data
-    public void ExampleLoad()
-    {
-        LoadPlayerData();
-        Debug.Log("Player data loaded. Health: " + playerControl.health + ", Mana: " + playerControl.mana);
-    }
+   
 }
