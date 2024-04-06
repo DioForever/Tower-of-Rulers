@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class FloorSetting : MonoBehaviour 
 {
+    private FloorSystem floorSystem;
     public float[] SpeedDebuffValues {get; private set;}
     public float[] HealthDebuffValues {get; private set;}
     public float[] StrengthDebuffValues  {get; private set;}
@@ -23,7 +24,7 @@ public class FloorSetting : MonoBehaviour
 
         ManaDebuffValues = new float[] {5.0f,0.25f,0.2f};
 
-        Floornumber = 5; 
+        Floornumber = floorSystem.floorNumber; 
     }
 
     
