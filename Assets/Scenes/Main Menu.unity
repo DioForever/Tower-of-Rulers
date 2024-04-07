@@ -177,7 +177,6 @@ MonoBehaviour:
   objHide: {fileID: 0}
   prefab: {fileID: 2941387356852871440, guid: 46cae3486ae8e4144af2113f5aaac478, type: 3}
   saveObjects: []
-  lastCheckedSavedObjSize: 0
   parent: {fileID: 976323908}
   selectedObject: {fileID: 0}
 --- !u!114 &20495567
@@ -3081,7 +3080,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02dbfe15a9a5e1348a05d4f76a6131df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: 
+  BtnName: 
 --- !u!114 &1194466104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3785,7 +3784,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playMenu: {fileID: 2103287395}
-  EditGSMenu: {fileID: 0}
 --- !u!1 &1546162997
 GameObject:
   m_ObjectHideFlags: 0
