@@ -4,66 +4,44 @@ using FloorSystem;
 
 public class PlayerSaveSystem : MonoBehaviour
 {
-    // klíče na saving dat
-    private const string HealthKey = "PlayerHealth";
-    private const string ManaKey = "PlayerMana";
-    private const string FloorKey = "FloorData";
-
+    // Define keys for saving data
+    private const string HealthKeyPrefix = "PlayerHealth_";
+    private const string ManaKeyPrefix = "PlayerMana_";
+    private const string FloorKeyPrefix = "FloorData_";
 
     public PlayerControl playerControl;
     public FloorSystem.Floor floorSystem;
 
-    void OnApplicationQuit()
+    // Save player data to a specific save slot
+    public void SavePlayerData(string saveSlotName)
     {
-        SavePlayerData();
-        SaveFloorData();
-    }
-
-
-
-    // Funkce SAVE playera
-    public void SavePlayerData()
-    {
-
-        PlayerPrefs.SetFloat(HealthKey, playerControl.health);
-        PlayerPrefs.SetFloat(ManaKey, playerControl.mana);
+        PlayerPrefs.SetFloat(HealthKeyPrefix + saveSlotName, playerControl.health);
+        PlayerPrefs.SetFloat(ManaKeyPrefix + saveSlotName, playerControl.mana);
         PlayerPrefs.Save();
     }
 
-    // Funkce load Playera
-    public void LoadPlayerData()
+    
+    public void LoadPlayerData(string saveSlotName)
     {
-
-        playerControl.health = PlayerPrefs.GetFloat(HealthKey, playerControl.health);
-        playerControl.mana = PlayerPrefs.GetFloat(ManaKey, playerControl.mana);
+        playerControl.health = PlayerPrefs.GetFloat(HealthKeyPrefix + saveSlotName, playerControl.health);
+        playerControl.mana = PlayerPrefs.GetFloat(ManaKeyPrefix + saveSlotName, playerControl.mana);
     }
 
-    // Funkce na SAVE floor
-
-    public static void SaveFloorData()
+   
+    public static void SaveFloorData(string saveSlotName)
     {
-        // convertuje floor objekt na JSON string
         string floorDataJson = JsonUtility.ToJson(GenerationteInitiator.floor_);
-
-
-        PlayerPrefs.SetString(FloorKey, floorDataJson);
+        PlayerPrefs.SetString(FloorKeyPrefix + saveSlotName, floorDataJson);
         PlayerPrefs.Save();
-        Debug.Log("Floor data saved");
+        Debug.Log("Floor data saved for slot " + saveSlotName);
         Debug.Log(floorDataJson);
     }
 
-    // Funkce na load Floor
-    public FloorSystem.Floor LoadFloorData()
+    
+    public FloorSystem.Floor LoadFloorData(string saveSlotName)
     {
-
-        string floorDataJson = PlayerPrefs.GetString(FloorKey);
-
-        // Convert JSON string to floor data
-        Floor floor = JsonUtility.FromJson<Floor>(floorDataJson);
-
-
+        string floorDataJson = PlayerPrefs.GetString(FloorKeyPrefix + saveSlotName);
+        FloorSystem.Floor floor = JsonUtility.FromJson<FloorSystem.Floor>(floorDataJson);
         return floor;
     }
-
-
 }

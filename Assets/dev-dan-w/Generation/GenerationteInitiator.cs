@@ -50,7 +50,7 @@ public class GenerationteInitiator : MonoBehaviour
         tileDecorationMap.RefreshAllTiles();
     }
 
-    private void LoadFloor(bool worldType, bool worldGenerated, int floorNumber)
+    public void LoadFloor(bool worldType, bool worldGenerated, int floorNumber)
     {
         // true = Dungeon, false = Open World
 

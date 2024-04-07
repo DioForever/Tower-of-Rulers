@@ -3,7 +3,9 @@ using UnityEngine.UI;
 
 public class SaveButton : MonoBehaviour
 {
-    // Reference to the PlayerSaveSystem script
+    public GameSaveBox gameSaveBox;
+
+    public PlayerSaveSystem playerSaveSystem;
 
 
     void Start()
@@ -20,7 +22,7 @@ public class SaveButton : MonoBehaviour
     {
         // Call the SavePlayerData function from PlayerSaveSystem
         //    playerSaveSystem.SavePlayerData();
-        PlayerSaveSystem.SaveFloorData();
+        PlayerSaveSystem.SaveFloorData(gameSaveBox.gameName);
 
     }
 }

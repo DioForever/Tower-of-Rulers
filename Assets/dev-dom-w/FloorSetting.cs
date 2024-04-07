@@ -28,9 +28,4 @@ public class FloorSetting : MonoBehaviour
         Floornumber = floorSystem.floorNumber;
       
     }
-
-    
-
-    
-    
 }
