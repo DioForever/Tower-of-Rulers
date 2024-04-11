@@ -43,16 +43,21 @@ public class GenerationteInitiator : MonoBehaviour
 
     void Start()
     {
-        LoadFloor(false, false, 1);
+        LoadFloor(false, 1);
 
         floorMap.RefreshAllTiles();
         wallMap.RefreshAllTiles();
         tileDecorationMap.RefreshAllTiles();
     }
 
-    public void LoadFloor(bool worldType, bool worldGenerated, int floorNumber)
+    public void LoadFloor(bool worldGenerated, int floorNumber)
     {
+        bool worldType = true;
         // true = Dungeon, false = Open World
+        if(floorNumber%10 == 0 && floorNumber != 0)
+        {
+            worldType = false;
+        }
 
         SaveFloorType("floorType", worldType);
 
@@ -267,7 +272,11 @@ public class GenerationteInitiator : MonoBehaviour
                 // if its 0 we dont need to do anything
                 if (identififerDecoration != 0)
                 {
-                    if (identififerDecoration == 3) tileChunkDecorationMap.SetTile(positionChunk, DecorationTileset[(identififerDecoration - 3)]);
+                    if (identififerDecoration == 3) {
+                        // tileChunkDecorationMap.SetTile(positionChunk, DecorationTileset[(identififerDecoration - 3)]);  
+                        // UtilsOW.LoadTeleport(tileDecorationMap, spawnX, spawnY, teleport);
+                        Instantiate(teleport, position, Quaternion.identity);
+                    }
                     else tileDecorationMap.SetTile(position, DecorationTileset[(identififerDecoration - 1)]);
                 }
             }

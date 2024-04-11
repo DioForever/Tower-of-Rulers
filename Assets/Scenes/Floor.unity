@@ -258,6 +258,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eb3a8612bd5f8a47978435fb697babd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSaveBox: {fileID: 0}
+  playerSaveSystem: {fileID: 0}
 --- !u!1 &58847119
 GameObject:
   m_ObjectHideFlags: 0
@@ -1155,6 +1157,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35df2fac24f44da428ccb6b5573f063d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 10
+  speedModifier: {fileID: 0}
+  health: 100
+  mana: 100
+  dashSpeed: 5
+  dashDuration: 0.25
+  dashCooldown: 3
+  isDashing: 0
+  canDash: 1
 --- !u!50 &907509421
 Rigidbody2D:
   serializedVersion: 4
@@ -2177,7 +2188,7 @@ MonoBehaviour:
   decorationPrefabs:
   - {fileID: 2222417835130039888, guid: efef457d39b3a3c429d9f800ca587dfa, type: 3}
   player: {fileID: 907509417}
-  teleport: {fileID: 3445807486707743548, guid: 99bdbd7df8b542d459c15cd493225b0e, type: 3}
+  teleport: {fileID: 2673357198530877267, guid: 99bdbd7df8b542d459c15cd493225b0e, type: 3}
   DecorationTilesetAnimated: []
 --- !u!4 &1457882407
 Transform:

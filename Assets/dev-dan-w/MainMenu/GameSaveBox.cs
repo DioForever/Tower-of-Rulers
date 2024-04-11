@@ -45,7 +45,7 @@ public class GameSaveBox : MonoBehaviour
 
        
         FloorSystem.Floor floor = playerSaveSystem.LoadFloorData(gameName);
-        generationteInitiator.LoadFloor(false, false, floor.floorNumber);
+        generationteInitiator.LoadFloor(false, floor.floorNumber);
 
         
         playerSaveSystem.LoadPlayerData(gameName);
