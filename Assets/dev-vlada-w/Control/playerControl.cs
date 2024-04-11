@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerControl : MonoBehaviour
+public class playerControl : MonoBehaviour
 {
     public float moveSpeed = 10f;
     private Vector2 moveDirection;
@@ -46,7 +46,8 @@ public class PlayerControl : MonoBehaviour
 
         ProcessInputs();
 
-        if (Input.GetMouseButtonDown(0)) // Left mouse button clicked
+        
+        if (Input.GetKeyDown(KeyCode.B))
         {
             ApplyDamage();
         }
@@ -75,21 +76,20 @@ public class PlayerControl : MonoBehaviour
     }
 
     void ApplyDamage()
-{
-    Vector2 currentPosition = transform.position;
-    Vector2 damageDirection = moveDirection.normalized * 10f; // 10 pixels in the last moved direction
-    RaycastHit2D hit = Physics2D.Raycast(currentPosition, damageDirection);
-
-    if (hit.collider != null)
     {
-        CactusEnemy cactus = hit.collider.GetComponent<CactusEnemy>();
-        if (cactus != null)
+        Vector2 currentPosition = transform.position;
+        Vector2 damageDirection = moveDirection.normalized * 50f;
+        RaycastHit2D hit = Physics2D.Raycast(currentPosition, damageDirection);
+
+        if (hit.collider != null)
         {
-            cactus.TakeDamage(10); // Assuming 10 damage for now, you can change it as needed
+            kaktus cactus = hit.collider.GetComponent<kaktus>();
+            if (cactus != null)
+            {
+                cactus.TakeDamage(10); // Assuming 10 damage for now, you can change it as needed
+            }
         }
     }
-}
-
 
     private IEnumerator Dash()
     {

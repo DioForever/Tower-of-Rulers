@@ -9,7 +9,7 @@ public class IceballScript : MonoBehaviour
     private float slowDuration;
     private float mana;
     private SpellManager spellManager;
-    private PlayerControl playercontrol;
+    private playerControl playercontrol;
 
     private void Start()
     {

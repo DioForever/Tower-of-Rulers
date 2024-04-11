@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StatModifier : MonoBehaviour
 {
-    private PlayerControl playerController; 
+    private playerControl playerController; 
 
     private FloorSetting FloorSetting;
 

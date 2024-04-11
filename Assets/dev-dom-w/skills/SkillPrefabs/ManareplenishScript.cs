@@ -6,7 +6,7 @@ public class ManaReplenishScript : MonoBehaviour
  
     private float manaboost;
     private SkillManager mySkillManager;
-    private PlayerControl playercontrol;
+    private playerControl playercontrol;
 
     private void Start()
     { 

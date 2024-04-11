@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CactusEnemy : MonoBehaviour
+public class kaktus : MonoBehaviour
 {
-    public float health = 50f; // Health of the cactus
+    public float health = 10f; // Health of the cactus
 
     public void TakeDamage(float damage)
     {

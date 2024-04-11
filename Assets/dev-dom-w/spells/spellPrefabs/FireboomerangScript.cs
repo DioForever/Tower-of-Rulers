@@ -10,7 +10,7 @@ public class FireboomerangScript : MonoBehaviour
     private float mana;
     private SpellManager spellManager;
 
-    private PlayerControl playercontrol;
+    private playerControl playercontrol;
     private Vector3 originPosition; // Store the original position
 
     private void Start()

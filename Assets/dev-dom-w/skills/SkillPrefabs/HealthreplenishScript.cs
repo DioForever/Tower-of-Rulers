@@ -6,7 +6,7 @@ public class HealthReplenishScript : MonoBehaviour
  
     private float healthboost;
     private SkillManager mySkillManager;
-    private PlayerControl playercontrol;
+    private playerControl playercontrol;
 
     private void Start()
     { 

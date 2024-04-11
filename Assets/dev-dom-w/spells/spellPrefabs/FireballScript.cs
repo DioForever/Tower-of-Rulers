@@ -9,7 +9,7 @@ public class FireballScript : MonoBehaviour
     private float burnDurations;
     private float mana;
     private SpellManager mySpellManager;
-    private PlayerControl playercontrol;
+    private playerControl playercontrol;
 
     private void Start()
     { 

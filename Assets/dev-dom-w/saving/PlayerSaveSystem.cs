@@ -9,7 +9,7 @@ public class PlayerSaveSystem : MonoBehaviour
     private const string ManaKeyPrefix = "PlayerMana_";
     private const string FloorKeyPrefix = "FloorData_";
 
-    public PlayerControl playerControl;
+    public playerControl playerControl;
     public FloorSystem.Floor floorSystem;
 
     // Save player data to a specific save slot

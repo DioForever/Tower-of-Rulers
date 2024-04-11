@@ -11,7 +11,7 @@ public class Ice3shooterScript : MonoBehaviour
     private float slowDuration;
     private SpellManager spellManager;
 
-    private PlayerControl playercontrol;
+    private playerControl playercontrol;
 
     private void Start()
     {

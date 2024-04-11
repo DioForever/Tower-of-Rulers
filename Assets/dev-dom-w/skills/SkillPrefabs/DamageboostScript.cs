@@ -6,7 +6,7 @@ public class DamageboostSkill : MonoBehaviour
  
     private float damageboost;
     private SkillManager mySkillManager;
-    private PlayerControl playercontrol;
+    private playerControl playercontrol;
 
     private void Start()
     { 
