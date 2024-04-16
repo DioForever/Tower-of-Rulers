@@ -13,7 +13,7 @@ public class Ice3shooterScript : MonoBehaviour
 
     private playerControl playercontrol;
 
-    private void Start()
+    private void Awake()
     {
        
             

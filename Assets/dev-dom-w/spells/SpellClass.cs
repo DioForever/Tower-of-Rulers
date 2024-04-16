@@ -13,7 +13,7 @@ namespace Spells
 
     // Base class for spells
     [System.Serializable]
-    public abstract class Spell : MonoBehaviour
+    public abstract class Spell : ScriptableObject
     {
         public string spellName;
         public float cooldown;
@@ -101,7 +101,7 @@ namespace Spells
 
         public void ApplyBurnEffect(GameObject target, float burnDuration)
         {
-            StartCoroutine(BurnTarget(target, burnDuration));
+           // StartCoroutine(BurnTarget(target, burnDuration));
         }
 
         
@@ -148,7 +148,7 @@ namespace Spells
 
         public void FreezeTarget(GameObject target, float freezeDuration)
         {
-            StartCoroutine(FreezeCoroutine(target, freezeDuration));
+            //StartCoroutine(FreezeCoroutine(target, freezeDuration));
         }
 
         // Coroutine for freezing the target for a specified duration
@@ -165,7 +165,7 @@ namespace Spells
 
         public void SlowTarget(GameObject target, float slowDuration)
         {
-            StartCoroutine(SlowCoroutine(target, slowDuration));
+           // StartCoroutine(SlowCoroutine(target, slowDuration));
         }
 
         // Coroutine for freezing the target for a specified duration

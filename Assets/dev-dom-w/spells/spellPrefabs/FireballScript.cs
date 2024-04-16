@@ -11,16 +11,17 @@ public class FireballScript : MonoBehaviour
     private SpellManager mySpellManager;
     private playerControl playercontrol;
 
+    
     private void Start()
     { 
         // kde v listu je dany spell
-        FireSpell fireballSpell = mySpellManager.spells[0] as FireSpell;
+       
 
         // nastaveni rychlosti
-        speeds = fireballSpell.SpellSpeed;
-        distances = fireballSpell.TravelDistance;
-       mana = fireballSpell.Manacost;
-       playercontrol.mana = playercontrol.mana - mana;
+        speeds = 7.0f;
+        distances = 15.0f;
+       mana = 20.0f;
+       //playercontrol.mana = playercontrol.mana - mana;
 
         // nastavit rychlost
         GetComponent<Rigidbody>().velocity = transform.forward * speeds;

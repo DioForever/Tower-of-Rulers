@@ -3,6 +3,7 @@ using Spells;
 
 public class Fire3shooterScript : MonoBehaviour
 {
+    public Fire3shooterScript SpellToCast;
     private float speed;
     private float distance;
     private float damage;
@@ -11,7 +12,9 @@ public class Fire3shooterScript : MonoBehaviour
     private SpellManager spellManager;
     private playerControl playercontrol;
 
-    private void Start()
+    
+
+    private void Awake()
     {
        
             

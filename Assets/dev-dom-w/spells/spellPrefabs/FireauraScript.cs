@@ -11,7 +11,7 @@ public class FireauraScript : MonoBehaviour
     private SpellManager spellManager;
     private playerControl playercontrol;
 
-    private void Start()
+    private void Awake()
     {
         FireSpell fireballSpell = spellManager.spells[3] as FireSpell;
 

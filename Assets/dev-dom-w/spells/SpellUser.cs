@@ -6,7 +6,10 @@ using Spells;
 
 public class SpellUser : MonoBehaviour
 {
+
+    private SpellCaster spellCaster;
     private bool isTextInputActive = false;
+    private bool isWaitingForKeyPress = false;
     private int qInput = 0;
     private int eInput = 0;
 
@@ -19,9 +22,11 @@ public class SpellUser : MonoBehaviour
 
     private SpellManager spellManager;
 
-    private void Start()
+    private void Awake()
     {
         spellManager = GetComponent<SpellManager>();
+
+        spellCaster = GetComponent<SpellCaster>();
 
         foreach (Spell spell in spellManager.spells)
         {
@@ -31,26 +36,46 @@ public class SpellUser : MonoBehaviour
 
     private void Update()
     {
-        // Q key input
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
-            isTextInputActive = true;
-            StartCoroutine(DisplayTextAndPrompt('Q'));
+            isWaitingForKeyPress = true;
+            Debug.Log("press Q or E to select spells on said keys");
         }
 
-        // E key input
-        if (Input.GetKeyDown(KeyCode.E))
+        // Check for key press to start the spell selection process
+        if (isWaitingForKeyPress)
         {
-            isTextInputActive = true;
-            StartCoroutine(DisplayTextAndPrompt('E'));
+            // Check if Q key is pressed
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                isWaitingForKeyPress = false; // Reset flag
+                isTextInputActive = true; // Start the spell selection process
+                StartCoroutine(DisplayTextAndPrompt('Q'));
+            }
+            // Check if E key is pressed
+            else if (Input.GetKeyDown(KeyCode.E))
+            {
+                isWaitingForKeyPress = false; // Reset flag
+                isTextInputActive = true; // Start the spell selection process
+                StartCoroutine(DisplayTextAndPrompt('E'));
+            }
+        }
+
+       
+
+        // Check if Tab key is released to deactivate selection
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            isTextInputActive = false;
         }
 
         // Check pokud je Q spell zakasten
-        if (Input.GetKeyDown(KeyCode.Space) && qInput != 0)
+        if (Input.GetKeyDown(KeyCode.Q) && qInput != 0)
         {
+            
             if (!IsOnCooldown(selectedQSpellName))
             {
-                CastSelectedSpell(selectedQSpellName);
+                CastSelectedSpell(qInput);
                 StartCooldown(selectedQSpellName);
             }
             else
@@ -60,11 +85,11 @@ public class SpellUser : MonoBehaviour
         }
 
         // Check pokud je e spell zakasten
-        if (Input.GetKeyDown(KeyCode.Space) && eInput != 0)
+        if (Input.GetKeyDown(KeyCode.E) && eInput != 0)
         {
             if (!IsOnCooldown(selectedESpellName))
             {
-                CastSelectedSpell(selectedESpellName);
+                CastSelectedSpell(eInput);
                 StartCooldown(selectedESpellName);
             }
             else
@@ -73,19 +98,13 @@ public class SpellUser : MonoBehaviour
             }
         }
 
-        
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            isTextInputActive = false;
-        }
-
         // Update cooldowns
         UpdateCooldowns();
     }
 
     private System.Collections.IEnumerator DisplayTextAndPrompt(char key)
     {
-        Debug.Log($"Press Tab again to stop, and input a number from 1 to {spellDictionary.Count} for spell on key {key}.");
+        Debug.Log($"Press Tab again to stop, or input a number from 1 to {spellDictionary.Count} for spell on key {key}.");
 
         while (isTextInputActive)
         {
@@ -127,23 +146,24 @@ public class SpellUser : MonoBehaviour
         }
     }
 
-    private void CastSelectedSpell(string spellName)
+    private void CastSelectedSpell(int spellIndex)
     {
-        if (!string.IsNullOrEmpty(spellName))
+        if (spellDictionary.ContainsKey(spellIndex))
         {
-            Type scriptType = Type.GetType(spellName);
-            if (scriptType != null)
+            Spell spell = spellDictionary[spellIndex];
+            if (spell != null)
             {
-                Component newScriptInstance = gameObject.AddComponent(scriptType);
+                spellCaster.CastSpell(spellIndex);
+                StartCooldown(spell.SpellName);
             }
             else
             {
-                Debug.LogError($"Script type not found: {spellName}");
+                Debug.LogError($"Spell not found at index: {spellIndex}");
             }
         }
         else
         {
-            Debug.LogError("No spell selected to cast.");
+            Debug.LogError($"Spell index not found: {spellIndex}");
         }
     }
 

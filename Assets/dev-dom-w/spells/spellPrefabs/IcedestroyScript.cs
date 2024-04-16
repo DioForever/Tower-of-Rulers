@@ -12,7 +12,7 @@ public class IcedestroyScript : MonoBehaviour
     private SpellManager spellManager;
     private playerControl playercontrol;
 
-    private void Start()
+    private void Awake()
     {
         IceSpell iceballSpell = spellManager.spells[8] as IceSpell;
 

@@ -11,7 +11,7 @@ public class IceballScript : MonoBehaviour
     private SpellManager spellManager;
     private playerControl playercontrol;
 
-    private void Start()
+    private void Awake()
     {
         
        

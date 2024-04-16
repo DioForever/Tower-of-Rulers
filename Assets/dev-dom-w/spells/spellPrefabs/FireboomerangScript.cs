@@ -13,7 +13,7 @@ public class FireboomerangScript : MonoBehaviour
     private playerControl playercontrol;
     private Vector3 originPosition; // Store the original position
 
-    private void Start()
+    private void Awake()
     {        
             FireSpell fireballSpell = spellManager.spells[2] as FireSpell;
 

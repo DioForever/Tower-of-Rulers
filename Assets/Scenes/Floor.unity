@@ -1096,6 +1096,9 @@ GameObject:
   - component: {fileID: 907509419}
   - component: {fileID: 907509418}
   - component: {fileID: 907509423}
+  - component: {fileID: 907509424}
+  - component: {fileID: 907509425}
+  - component: {fileID: 907509426}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -1252,6 +1255,53 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inGameMenu: {fileID: 731115862}
+--- !u!114 &907509424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907509416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9e90e0477c1994f9ed44065ca93647, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &907509425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907509416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93667af399ee9724d8e9da86c4f51d05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spells: []
+--- !u!114 &907509426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907509416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 138106f564916f94ea4be6d39e6f989c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireballPrefab: {fileID: 8815126583815198731, guid: 16c48bbe904325d4fb7d76f44c0d8222, type: 3}
+  fire3ShooterPrefab: {fileID: 6257671376229245576, guid: 66a3f684f9abfbf459df570039a69b1f, type: 3}
+  fireAuraPrefab: {fileID: 8752695564560658466, guid: 43f8b942381ecab4d8c200be23755bf5, type: 3}
+  fireBoomerangPrefab: {fileID: 920481067672999614, guid: bed7083e72ed5b14986f8c37d8bf0e26, type: 3}
+  fireLancePrefab: {fileID: 7807459772807660315, guid: be63825ee5340c0459618aedf48031ec, type: 3}
+  iceSpellPrefab: {fileID: 1424181735648726323, guid: 66931d484ebd9c949aa00e97d1a3aaa1, type: 3}
+  ice3ShooterPrefab: {fileID: 8198423270103606158, guid: f53860945f1c9fd48a9a7c8691c2d9ad, type: 3}
+  iceSlowPrefab: {fileID: 4269846031994551716, guid: 1e27f2e825f10194782b86731370ed29, type: 3}
+  iceDestroyPrefab: {fileID: 1439183691957753840, guid: d5c1e4a9ffe433d4fa98a30105240357, type: 3}
+  iceFreezePrefab: {fileID: 4401541975662218456, guid: 0d9a1e89351ffdf469cbac72385dda42, type: 3}
 --- !u!1 &1097841511
 GameObject:
   m_ObjectHideFlags: 0
