@@ -423,9 +423,10 @@ namespace WorldGeneration
             for (int i = 0; i < monsters; i++)
             {
                 // Spawn a monster
-                TempNpc monster = new TempNpc();
-                monster.x = x;
-                monster.y = y;
+                // Random x, y around the camp
+                int randX = Random.Range(x - 5, x + 5);
+                int randY = Random.Range(y - 5, y + 5);
+                TempNpc monster = new TempNpc(randX, randY, i+1);
                 floorMap[y, x].npcs.Add(monster);
             }
         }
@@ -433,11 +434,9 @@ namespace WorldGeneration
         private void SpawnBoss(int x, int y)
         {
             // Spawn a boss in 10 chunks around the camp
-            TempNpc boss = new TempNpc();
             int bossX = Random.Range(x - 10, x + 10);
             int bossY = Random.Range(y - 10, y + 10);
-            boss.x = bossX;
-            boss.y = bossY;
+            TempNpc boss = new TempNpc(bossX, bossY, 0);
             floorMap[bossY, bossX].npcs.Add(boss);
         }
 
