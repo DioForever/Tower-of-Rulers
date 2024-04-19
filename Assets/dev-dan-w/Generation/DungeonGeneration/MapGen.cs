@@ -26,11 +26,77 @@ namespace DungeonGeneration
                     chunk = ChunkTilesSetter(chunk, chunkX, chunkY);
                     chunk = DecorateChunk(chunk, chunkX, chunkY);
                     // We save the chunk to the floorMap
+
+                    // Check if the room isnt spawn room or guardian room, we generate monsters in the room and 3 chunks away from the spawn room
+                    if (Layout[chunkY, chunkX] == (int)RoomIdentifiers.ROOM || Layout[chunkY, chunkX] == (int)RoomIdentifiers.ROOMMIDDLE)
+                    {
+                        // We calculate the distance from the spawn room
+                        int distance = Math.Abs(chunkX - spawnX) + Math.Abs(chunkY - spawnY);
+
+                        // If the distance is 3 or more chunks, we generate monsters in the room
+                        if (distance >= 3)
+                        {
+                            chunk = GenerateMonsters(chunk, chunkX, chunkY);
+                        }
+                    }
+
+
+                    // Check if the chunk we are at is the middle of the boss room
+                    if (Layout[chunkY, chunkX] == (int)RoomIdentifiers.GUARDIANROOMMIDDLE)
+                    {
+                        // We generate boss in the room
+                        chunk = GenerateBoss(chunk, chunkX, chunkY);
+                    }
+
                     floorMap[chunkY, chunkX] = chunk;
                 }
             }
 
         }
+
+        private Chunk GenerateBoss(Chunk chunk, int x, int y)
+        {
+            // We generate boss location in the room in certain parameter from the middle of the room
+            // We generate boss in the room
+            Random rand = new Random();
+            int chunkXOffset = x * chunkSize;
+            int chunkYOffset = y * chunkSize;
+            int bossX = rand.Next(1, 4) + chunkXOffset;
+            int bossY = rand.Next(1, 4) + chunkYOffset;
+
+            // We add boss to the chunk
+            // chunk.npcs.Add(new TempNpc(bossX, bossY, 0));
+            List<TempNpc> npcs = chunk.npcs;
+            npcs.Add(new TempNpc(bossX, bossY, 0));
+            chunk.npcs = npcs;
+
+            return chunk;
+        }
+
+        private Chunk GenerateMonsters(Chunk chunk, int x, int y)
+        {
+            // We generate monsters locations in the room in certain parameter from the middle of the room
+            // We generate monsters in the room
+            Random rand = new Random();
+            int monsters = rand.Next(0, 2);
+            for (int i = 0; i < monsters; i++)
+            {
+                // We generate random location in the room
+                int chunkXOffset = x * chunkSize;
+                int chunkYOffset = y * chunkSize;
+                int monsterX = rand.Next(1, 4) + chunkXOffset;
+                int monsterY = rand.Next(1, 4) + chunkYOffset;
+
+                // We add monster to the chunk
+                // chunk.npc.Add(new TempNpc(monsterX, monsterY, i+1));
+                List<TempNpc> npcs = chunk.npcs;
+                npcs.Add(new TempNpc(monsterX, monsterY, i+1));
+                chunk.npcs = npcs;
+            }
+
+            return chunk;
+        }
+
         private Chunk DecorateChunk(Chunk chunk, int x, int y){
             // If its a spawn room or guardian room, we put a teleport in the middle 
             if(Layout[y,x] == (int)RoomIdentifiers.GUARDIANROOMMIDDLE || Layout[y,x] == (int)RoomIdentifiers.SPAWNMIDDLE){

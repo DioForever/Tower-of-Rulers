@@ -110,4 +110,9 @@ public class MonsterBehavior : MonoBehaviour
             currentState = MonsterState.Stalk;
         }
     }
+
+    public void SetPlayer(GameObject player)
+    {
+        this.player = player;
+    }
 }

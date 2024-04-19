@@ -5,6 +5,7 @@ using UnityEditor;
 using FloorSystem;
 using DungeonGeneration;
 using WorldGeneration;
+
 using System.Collections.Generic;
 
 public class GenerationteInitiator : MonoBehaviour
@@ -34,16 +35,21 @@ public class GenerationteInitiator : MonoBehaviour
     public GameObject[] buldingsPrefabs;
     public GameObject[] decorationPrefabs;
 
+
     // Shared
     public Transform player;
     public GameObject teleport;
+    public GameObject npcObject;
     public AnimatedTile[] DecorationTilesetAnimated;
 
     public static Floor floor_;
 
+    public List<GameObject> gameObjectsSpawned = new List<GameObject>();
+
     void Start()
     {
-        LoadFloor(false, 1);
+
+        LoadFloor(false, 9);
 
         floorMap.RefreshAllTiles();
         wallMap.RefreshAllTiles();
@@ -246,6 +252,8 @@ public class GenerationteInitiator : MonoBehaviour
                 }
             }
         }
+
+        SpawnNPCs(chunk.npcs);
     }
 
     public void setupDungeonChunk(Chunk chunk, int maxX, int maxY, int chunkX, int chunkY)
@@ -275,14 +283,69 @@ public class GenerationteInitiator : MonoBehaviour
                     if (identififerDecoration == 3) {
                         // tileChunkDecorationMap.SetTile(positionChunk, DecorationTileset[(identififerDecoration - 3)]);  
                         // UtilsOW.LoadTeleport(tileDecorationMap, spawnX, spawnY, teleport);
-                        Instantiate(teleport, position, Quaternion.identity);
+                        // Check if its the spawn teleport or the exit teleport
+                        if (chunkX == floor_.spawnX * 5 && chunkY == floor_.spawnY * 5)
+                        {
+                            // Spawn teleport   
+                            gameObjectsSpawned.Add(Instantiate(teleport, position, Quaternion.identity));
+                        }
+                        else
+                        {
+                            // Exit teleport
+                            GameObject tp = Instantiate(teleport, position, Quaternion.identity);
+                            tp.GetComponent<FloorTeleport>().achieved = false;
+                            tp.GetComponent<FloorTeleport>().initiatorScript = this;
+
+                            gameObjectsSpawned.Add(tp);
+                        }
                     }
                     else tileDecorationMap.SetTile(position, DecorationTileset[(identififerDecoration - 1)]);
                 }
             }
         }
+
+        SpawnNPCs(chunk.npcs);
     }
 
+    public void SpawnNPC(int x, int y, GameObject npc)
+    {
+        Vector3 spawnPosition = floorMap.GetCellCenterWorld(new Vector3Int(x, y, 0));
+        GameObject npcInstance = Instantiate(npc, spawnPosition, Quaternion.identity);
+        // Set player property of the Monster behaviour script to the npcInstance
+        npcInstance.GetComponent<MonsterBehavior>().SetPlayer(player.gameObject);
+
+        gameObjectsSpawned.Add(npcInstance);
+
+    }
+
+    public void SpawnNPCs(List<TempNpc> npcs)
+    {
+        foreach (TempNpc npc in npcs)
+        {
+            SpawnNPC(npc.x, npc.y, npcObject);
+        }
+    }
+
+    public void ResetMap()
+    {
+        floorMap.ClearAllTiles();
+        wallMap.ClearAllTiles();
+        tileChunkDecorationMap.ClearAllTiles();
+        tileDecorationMap.ClearAllTiles();
+        tileLeafMap.ClearAllTiles();
+        tileGroundDecMap.ClearAllTiles();
+
+        foreach (GameObject go in gameObjectsSpawned)
+        {
+            Destroy(go);
+        }
+    }
+
+    public void GenerateNextFloor()
+    {
+        ResetMap();
+        LoadFloor(false, floor_.floorNumber + 1);
+    }
 
 
 }

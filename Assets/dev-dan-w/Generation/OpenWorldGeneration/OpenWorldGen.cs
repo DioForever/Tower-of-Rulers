@@ -79,7 +79,10 @@ namespace WorldGeneration
 
             // Set teleport to the middle of the middle chunk
             floorMap[(int)floorMap.GetLength(0) / 2, (int)floorMap.GetLength(1) / 2].decorationMap[3, 3] = 3;
+            SpawnBoss((int)floorMap.GetLength(1) / 2, (int)floorMap.GetLength(0) / 2);
         }
+
+        
 
         /// <summary>
         /// Generates Ground for the chunk.
@@ -403,9 +406,42 @@ namespace WorldGeneration
 
                 // Generate the camp
                 GenerateCamp(chunk);
+                SpawnMonsters(x, y);
             }
 
         }
+
+        /// <summary>
+        /// Generates monsters in camps
+        /// </summary>
+        /// <param name="x"/>X location of the camp </param>
+        /// <param name="y"/>Y location of the camp </param>
+        private void SpawnMonsters(int x, int y)
+        {
+            // Spawn monsters around the camp, 2 - 5
+            int monsters = Random.Range(2, 6);
+            for (int i = 0; i < monsters; i++)
+            {
+                // Spawn a monster
+                TempNpc monster = new TempNpc();
+                monster.x = x;
+                monster.y = y;
+                floorMap[y, x].npcs.Add(monster);
+            }
+        }
+
+        private void SpawnBoss(int x, int y)
+        {
+            // Spawn a boss in 10 chunks around the camp
+            TempNpc boss = new TempNpc();
+            int bossX = Random.Range(x - 10, x + 10);
+            int bossY = Random.Range(y - 10, y + 10);
+            boss.x = bossX;
+            boss.y = bossY;
+            floorMap[bossY, bossX].npcs.Add(boss);
+        }
+
+
 
         private void GenerateCamp(Chunk chunk)
         {
