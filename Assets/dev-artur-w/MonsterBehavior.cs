@@ -29,6 +29,8 @@ public class MonsterBehavior : MonoBehaviour
         patrolWaitTimeRemaining = startPatrolWaitTime;
 
         SetNextPatrolPoint();
+
+        currentHealth = maxHealth;
     }
 
     void Update()
@@ -115,4 +117,25 @@ public class MonsterBehavior : MonoBehaviour
     {
         this.player = player;
     }
+
+    public float maxHealth = 50f;
+    private float currentHealth;
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+        // Check if enemy is defeated
+        if (currentHealth <= 0f)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        // Perform death-related actions (e.g., play death animation, remove enemy from scene)
+        Destroy(gameObject);
+    }
+
 }
+

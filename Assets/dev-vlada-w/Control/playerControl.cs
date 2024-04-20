@@ -1,13 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class playerControl : MonoBehaviour
 {
     public float moveSpeed = 10f;
     private Vector2 moveDirection;
-
-    public StatModifier speedModifier;
 
     public delegate void MoveSpeedChanged();
     public event MoveSpeedChanged OnMoveSpeedChanged;
@@ -32,9 +29,16 @@ public class playerControl : MonoBehaviour
     public bool isDashing;
     public bool canDash = true;
 
+    private Animator animator;
+    private Weapon weapon;
+
     private void Start()
     {
         canDash = true;
+
+        // Get references to Animator and Weapon components
+        animator = GetComponent<Animator>();
+        weapon = GetComponentInChildren<Weapon>();
     }
 
     void Update()
@@ -46,10 +50,14 @@ public class playerControl : MonoBehaviour
 
         ProcessInputs();
 
-        
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(KeyCode.Space) && canDash)
         {
-            ApplyDamage();
+            StartCoroutine(Dash());
+        }
+
+        if (Input.GetMouseButtonDown(0)) // Left mouse button
+        {
+            Attack();
         }
     }
 
@@ -75,22 +83,6 @@ public class playerControl : MonoBehaviour
         GetComponent<Rigidbody2D>().velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
     }
 
-    void ApplyDamage()
-    {
-        Vector2 currentPosition = transform.position;
-        Vector2 damageDirection = moveDirection.normalized * 50f;
-        RaycastHit2D hit = Physics2D.Raycast(currentPosition, damageDirection);
-
-        if (hit.collider != null)
-        {
-            kaktus cactus = hit.collider.GetComponent<kaktus>();
-            if (cactus != null)
-            {
-                cactus.TakeDamage(10); // Assuming 10 damage for now, you can change it as needed
-            }
-        }
-    }
-
     private IEnumerator Dash()
     {
         canDash = false;
@@ -100,6 +92,15 @@ public class playerControl : MonoBehaviour
         isDashing = false;
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
+    }
+
+    void Attack()
+    {
+        animator.SetTrigger("Attack");
+        if (weapon != null)
+        {
+            weapon.PerformAttack();
+        }
     }
 
     public void UpdateMoveSpeed(float newMoveSpeed)
@@ -118,5 +119,14 @@ public class playerControl : MonoBehaviour
     {
         mana = newMana;
         OnManaChanged?.Invoke(newMana);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        MonsterBehavior monsterbehavior = other.GetComponent<MonsterBehavior>();
+        if (monsterbehavior != null && weapon != null)
+        {
+            monsterbehavior.TakeDamage(weapon.damageAmount);
+        }
     }
 }
