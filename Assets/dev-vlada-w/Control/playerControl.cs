@@ -1,10 +1,15 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.DebugUI;
+
 
 public class playerControl : MonoBehaviour
 {
     public float moveSpeed = 10f;
     private Vector2 moveDirection;
+    private Vector2 moveInput;
 
     public delegate void MoveSpeedChanged();
     public event MoveSpeedChanged OnMoveSpeedChanged;
@@ -129,4 +134,16 @@ public class playerControl : MonoBehaviour
             monsterbehavior.TakeDamage(weapon.damageAmount);
         }
     }
+
+    public void OnMove(InputValue value)
+    {
+        moveInput = value.Get<Vector2>();
+
+        if (moveInput != Vector2.zero) 
+        {
+            animator.SetFloat("XInput", moveInput.x);
+            animator.SetFloat("YInput", moveInput.y);
+        }
+    }
+
 }
