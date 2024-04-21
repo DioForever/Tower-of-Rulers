@@ -408,7 +408,7 @@ namespace WorldGeneration
                 GenerateCamp(chunk);
                 int chunkOffsetX = 5 * x;
                 int chunkOffsetY = 5 * y;
-                SpawnMonsters(chunkOffsetX - 2, chunkOffsetY - 2, x, y);
+                GenerateMonsters(chunkOffsetX - 2, chunkOffsetY - 2, x, y);
             }
 
         }
@@ -418,7 +418,7 @@ namespace WorldGeneration
         /// </summary>
         /// <param name="x"/>X location of the camp </param>
         /// <param name="y"/>Y location of the camp </param>
-        private void SpawnMonsters(int x, int y, int chunkX, int chunkY)
+        private void GenerateMonsters(int x, int y, int chunkX, int chunkY)
         {
             // Spawn monsters around the camp, 2 - 5
             int monsters = Random.Range(2, 6);

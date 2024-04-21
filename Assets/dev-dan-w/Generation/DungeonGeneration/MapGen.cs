@@ -75,7 +75,6 @@ namespace DungeonGeneration
 
         private Chunk GenerateMonsters(Chunk chunk, int x, int y)
         {
-            // We generate monsters locations in the room in certain parameter from the middle of the room
             // We generate monsters in the room
             Random rand = new Random();
             int monsters = rand.Next(0, 2);
