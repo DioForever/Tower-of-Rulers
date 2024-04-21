@@ -58,6 +58,9 @@ public class GenerationteInitiator : MonoBehaviour
 
     public void LoadFloor(bool worldGenerated, int floorNumber)
     {
+        // Clean the map
+        ResetMap();
+
         bool worldType = true;
         // true = Dungeon, false = Open World
         if(floorNumber%10 == 0 && floorNumber != 0)
@@ -119,6 +122,7 @@ public class GenerationteInitiator : MonoBehaviour
             }
         }
 
+        SaveHighestFloor();
 
     }
 
@@ -126,6 +130,17 @@ public class GenerationteInitiator : MonoBehaviour
     {
         PlayerPrefs.SetInt(saveKey, type ? 1 : 0);
         PlayerPrefs.Save();
+    }
+
+    public static int SaveHighestFloor()
+    {
+        int highestFloor = PlayerPrefs.GetInt("highestFloor", 1);
+        if (floor_.floorNumber > highestFloor)
+        {
+            PlayerPrefs.SetInt("highestFloor", floor_.floorNumber);
+            return floor_.floorNumber;
+        }
+        return highestFloor;
     }
 
     public void setPlayerLoc(Floor floor)
@@ -160,7 +175,7 @@ public class GenerationteInitiator : MonoBehaviour
                     {
                         float spawnX = floor.spawnX * 5 + 2.5f;
                         float spawnY = floor.floorMap.GetLength(1) * 5 - (float)(floor.spawnY) * 5 - 2.5f;
-                        UtilsOW.LoadTeleport(tileDecorationMap, spawnX, spawnY, teleport);
+                        UtilsOW.LoadTeleport(tileDecorationMap, spawnX, spawnY, teleport, gameObjectsSpawned);
                     }
                     setupOpenWorldChunk(chunk, maxX, maxY, chunkX, chunkY);
                 }
@@ -235,12 +250,12 @@ public class GenerationteInitiator : MonoBehaviour
                 else if (identififerDecoration >= 6 && identififerDecoration <= 10)
                 {
                     // Buildings
-                    UtilsOW.LoadBuilding(tileDecorationMap, totalX, totalY, buldingsPrefabs[identififerDecoration - 6]);
+                    UtilsOW.LoadBuilding(tileDecorationMap, totalX, totalY, buldingsPrefabs[identififerDecoration - 6], gameObjectsSpawned);
                 }
                 else if (identififerDecoration == 15)
                 {
                     // Monster campfire
-                    UtilsOW.LoadDecoration(tileDecorationMap, totalX, totalY, decorationPrefabs[identififerDecoration - 15]);
+                    UtilsOW.LoadDecoration(tileDecorationMap, totalX, totalY, decorationPrefabs[identififerDecoration - 15], gameObjectsSpawned);
                 }
                 else if (identifiersTrees.Contains(identififerDecoration))
                 {
@@ -248,7 +263,7 @@ public class GenerationteInitiator : MonoBehaviour
                     string treeIds = identififerDecoration.ToString();
                     int baseId = int.Parse(treeIds[0].ToString());
                     int leafId = int.Parse(treeIds[1].ToString());
-                    UtilsOW.LoadTree(tileDecorationMap, tileLeafMap, totalX - 2, totalY - 2, baseId, leafId, treeBasePrefabs[baseId - 1], treeLeafPrefabs[leafId]);
+                    UtilsOW.LoadTree(tileDecorationMap, tileLeafMap, totalX - 2, totalY - 2, baseId, leafId, treeBasePrefabs[baseId - 1], treeLeafPrefabs[leafId], gameObjectsSpawned);
                 }
             }
         }
@@ -339,6 +354,12 @@ public class GenerationteInitiator : MonoBehaviour
         {
             Destroy(go);
         }
+    }
+
+    public void GenerateFloor(int floorNumber)
+    {
+        ResetMap();
+        LoadFloor(false, floorNumber);
     }
 
     public void GenerateNextFloor()

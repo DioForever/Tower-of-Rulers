@@ -12,12 +12,19 @@ namespace WorldTime
         private TimeSpan _currentTime = new TimeSpan();
         private bool stopTime = true;
         private bool initLight = false;
+        private GenerationteInitiator generationInitiator;
         private float _minuteLength => _dayLength / WorldTimeConstants.MinutesInDay;
 
         // Start is called before the first frame update
         void Start()
         {
             StartCoroutine(AddMinute());
+            // Get the GenerationInitiator component from the current scene
+            generationInitiator = FindObjectOfType<GenerationteInitiator>();
+            if (generationInitiator == null)
+            {
+                Debug.LogError("GenerationInitiator not found in the scene.");
+            }
         }
 
         private IEnumerator AddMinute()
@@ -25,6 +32,8 @@ namespace WorldTime
             if (!stopTime)
             {
                 _currentTime += TimeSpan.FromMinutes(1);
+            }else{
+                _currentTime = TimeSpan.FromMinutes(0);
             }
             if (!initLight)
             {

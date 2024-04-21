@@ -19,6 +19,7 @@ namespace FloorSystem
         public int playerY;
         public int exitX;
         public int exitY;
+        public float time = 0;
 
         public Floor(int SizeX, int SizeY, int floorNumber, Chunk[,] floorMap = null)
         {

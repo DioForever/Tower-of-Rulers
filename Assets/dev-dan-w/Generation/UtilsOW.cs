@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class UtilsOW : MonoBehaviour
 {
-    public static void LoadTree(Tilemap baseMap, Tilemap leafMap, int x_base, int y_base, int baseType, int leafsType, GameObject prefabBase, GameObject prefabLeafs)
+    public static void LoadTree(Tilemap baseMap, Tilemap leafMap, int x_base, int y_base, int baseType, int leafsType, GameObject prefabBase, GameObject prefabLeafs, List<GameObject> gameObjectsSpawned)
     {
 
         bool noLeafs = false;
@@ -53,27 +53,30 @@ public class UtilsOW : MonoBehaviour
             spawnPositionLeafs.x += 0.5f;
 
             // Instantiate the leafs at the calculated position
-            Instantiate(prefabLeafs, spawnPositionLeafs, Quaternion.identity);
+            GameObject gl = Instantiate(prefabLeafs, spawnPositionLeafs, Quaternion.identity);
+            gameObjectsSpawned.Add(gl);
         }
 
         Vector3 spawnPositionBase = baseMap.GetCellCenterWorld(new Vector3Int((int)(x_base + 2), (int)(y_base + 1), 0));
         spawnPositionBase.x -= 0.5f;
 
         // Instantiate the base at the calculated position
-        Instantiate(prefabBase, spawnPositionBase, Quaternion.identity);
+        GameObject go = Instantiate(prefabBase, spawnPositionBase, Quaternion.identity);
+        gameObjectsSpawned.Add(go);
     }
 
-    public static void LoadBuilding(Tilemap wallMap, int x_base, int y_base, GameObject prefabBuilding)
+    public static void LoadBuilding(Tilemap wallMap, int x_base, int y_base, GameObject prefabBuilding, List<GameObject> gameObjectsSpawned)
     {
         Vector3 spawnPositionBuilding = wallMap.GetCellCenterWorld(new Vector3Int((int)(x_base + 2), (int)(y_base + 2), 0));
         // spawnPositionBuilding.x -= 0.5f;
         // spawnPositionBuilding.y -= 0.5f;
 
         // Instantiate the building at the calculated position
-        Instantiate(prefabBuilding, spawnPositionBuilding, Quaternion.identity);
+        GameObject go = Instantiate(prefabBuilding, spawnPositionBuilding, Quaternion.identity);
+        gameObjectsSpawned.Add(go);
     }
 
-    public static void LoadTeleport(Tilemap wallMap, float x_base, float y_base, GameObject prefabTeleport)
+    public static void LoadTeleport(Tilemap wallMap, float x_base, float y_base, GameObject prefabTeleport, List<GameObject> gameObjectsSpawned)
     {
         // Vector3 spawnPositionTeleport = wallMap.GetCellCenterWorld(new Vector3Int((int)(x_base + 2), (int)(y_base + 2), 0));
         Vector3 spawnPositionTeleport = new Vector3(x_base, y_base, 0);
@@ -81,17 +84,19 @@ public class UtilsOW : MonoBehaviour
         // spawnPositionBuilding.y -= 0.5f;
 
         // Instantiate the building at the calculated position
-        Instantiate(prefabTeleport, spawnPositionTeleport, Quaternion.identity);
+        GameObject go = Instantiate(prefabTeleport, spawnPositionTeleport, Quaternion.identity);
+        gameObjectsSpawned.Add(go);
     }
 
-    public static void LoadDecoration(Tilemap wallMap, int x_base, int y_base, GameObject prefabDec)
+    public static void LoadDecoration(Tilemap wallMap, int x_base, int y_base, GameObject prefabDec, List<GameObject> gameObjectsSpawned)
     {
         Vector3 spawnPositionDecoration = wallMap.GetCellCenterWorld(new Vector3Int((int)(x_base + 2), (int)(y_base + 2), 0));
         // spawnPositionBuilding.x -= 0.5f;
         // spawnPositionBuilding.y -= 0.5f;
 
         // Instantiate the building at the calculated position
-        Instantiate(prefabDec, spawnPositionDecoration, Quaternion.identity);
+        GameObject go = Instantiate(prefabDec, spawnPositionDecoration, Quaternion.identity);
+        gameObjectsSpawned.Add(go);
     }
 
 
